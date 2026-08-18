@@ -99,7 +99,7 @@ const FAQSection = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=info@roimakers.in"
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=info@imakers.in"
                 target="blank"
                 className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-[#141414] text-[#fcf2e8] rounded-lg font-medium hover:bg-[#141414]/90 transition-colors text-sm sm:text-base"
               >

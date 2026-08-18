@@ -40,7 +40,7 @@ export default function ContactPage() {
   const contactInfo = [
     {
       label: 'Email',
-      value: 'info@roimakers.in',
+      value: 'info@rmakers.in',
       href: 'mailto:info@roimakers.in',
     },
     {
@@ -218,7 +218,7 @@ export default function ContactPage() {
               <div className="bg-[#060010] text-[#E9E4D7] rounded-[28px] p-6">
                 <p className="text-sm archivo-font">
                   <strong className="clash-display-font">Not sure where to start?</strong> Drop us a message anyway at{' '}
-                  <a href="mailto:info@roimakers.in" className="text-[#ff9933] hover:underline font-semibold">
+                  <a href="mailto:info@rmakers.in" className="text-[#ff9933] hover:underline font-semibold">
                     info@roimakers.in
                   </a>{' '}
                   we'll guide you in the right direction.

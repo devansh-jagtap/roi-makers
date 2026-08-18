@@ -37,8 +37,8 @@ export default function TermsConditions() {
               <p className="text-[#312619]">
                 This website is run by ROI Makers. When we say "we", "us" or "our", that's
                 who we mean. If you have any questions, hit us up at{" "}
-                <a href="mailto:hello@roimakers.com" className="text-[#FF9933] hover:underline">
-                  info@roimakers.com
+                <a href="mailto:hello@makers.com" className="text-[#FF9933] hover:underline">
+                  info@imakers.com
                 </a>
                 .
               </p>

@@ -1,4 +1,5 @@
 import { Lead, NewsletterSubscriber } from '@prisma/client';
+import { createUnsubscribeToken } from './unsubscribe';
 
 const esc = (value: string | null | undefined) => (value ?? 'Not provided').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 const wrap = (body: string) => `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;color:#060010">${body}<p style="color:#777;font-size:12px">ROI Makers</p></div>`;
@@ -17,7 +18,8 @@ export async function sendLeadEmails(lead: Lead) {
   ]);
 }
 export async function sendSubscriberWelcome(subscriber: NewsletterSubscriber) {
-  const unsubscribe = `${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/api/unsubscribe?email=${encodeURIComponent(subscriber.email)}`;
+  const token = createUnsubscribeToken(subscriber.email);
+  const unsubscribe = `${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/api/unsubscribe?token=${token}`;
   const topic = subscriber.subscriptionType === 'BLOG' ? 'blog updates' : subscriber.subscriptionType === 'BOTH' ? 'newsletter and blog updates' : 'newsletter updates';
-  return send(subscriber.email, 'Welcome to ROI Makers', wrap(`<h2>Welcome to ROI Makers</h2><p>You’re subscribed to ${topic}. Expect useful growth and marketing insights.</p><p><a href="${unsubscribe}">Unsubscribe</a></p>`), `You’re subscribed to ROI Makers ${topic}. Unsubscribe: ${unsubscribe}`);
+  return send(subscriber.email, 'Welcome to ROI Makers', wrap(`<h2>Welcome to ROI Makers</h2><p>You're subscribed to ${topic}. Expect useful growth and marketing insights.</p><p><a href="${unsubscribe}">Unsubscribe</a></p>`), `You're subscribed to ROI Makers ${topic}. Unsubscribe: ${unsubscribe}`);
 }

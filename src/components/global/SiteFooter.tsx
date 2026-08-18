@@ -92,7 +92,7 @@ const SiteFooter = () => (
           {/* <span className="hidden sm:inline">&nbsp;&bull;&nbsp;</span>
           <span>Company Number : 9009500202</span> */}
           <span className="hidden sm:inline">&nbsp;&bull;&nbsp;</span>
-          <span>Mail : info@roimakers.in</span>
+          <span>Mail : info@imakers.in</span>
           {/* <div className="flex flex-wrap justify-center sm:justify-start gap-1 mt-1 sm:mt-0">
             <span className="hidden sm:inline">&nbsp;&bull;&nbsp;</span>
             <a href="/privacy-policy" className="underline hover:text-[#FFAA17] transition-colors">Privacy Policy</a>

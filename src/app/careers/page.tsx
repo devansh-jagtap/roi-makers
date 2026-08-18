@@ -208,8 +208,8 @@ export default function CareersPage() {
             <h2 className="mt-4 text-4xl md:text-5xl font-bold text-[#060010]">Apply Now</h2>
             <p className="mt-4 text-base text-[#312619]/80 archivo-font max-w-2xl mx-auto">
               Fill out the form below or email your resume and portfolio to{' '}
-              <a href="mailto:info@roimakers.in" className="text-[#8c7b62] font-semibold hover:underline">
-                info@roimakers.in
+              <a href="mailto:info@imakers.in" className="text-[#8c7b62] font-semibold hover:underline">
+                info@imakers.in
               </a>
             </p>
           </motion.div>
