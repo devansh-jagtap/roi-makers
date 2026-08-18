@@ -1,12 +1,11 @@
-'use client';
-import React, { useEffect, useRef, useState } from "react";
-import { motion } from 'framer-motion';
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ScrollBaseAnimation from "@/components/ui/text-marquee";
 import VideoShowcase from "@/components/ui/media/VideoShowcase";
-import { ShaderGradientCanvas, ShaderGradient } from '@shadergradient/react';
-import * as reactSpring from '@react-spring/three';
+import { ShaderGradientCanvas, ShaderGradient } from "@shadergradient/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,190 +17,69 @@ interface HeroProps {
   videoSrc?: string;
 }
 
-export default function Hero({ 
-  showLoading, 
-  showHero, 
-  showContent, 
-  onLoadingFinish,
-  videoSrc = "https://www.youtube.com/embed/aYSp5qUTC54?autoplay=1&mute=1&loop=1&playlist=aYSp5qUTC54",
-}: HeroProps) {
-  const heroTitleRef = useRef<HTMLHeadingElement>(null);
+const marqueeItems = [
+  { text: "TRANSFORM YOUR BRAND", imageUrl: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=400&q=80" },
+  { text: "CREATIVE SOLUTIONS", imageUrl: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=400&q=80" },
+  { text: "ROI MAKERS", imageUrl: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=400&q=80" },
+];
+
+export default function HomeHero({ showLoading, showHero, showContent, onLoadingFinish, videoSrc }: HeroProps) {
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
-  const heroContainerRef = useRef<HTMLDivElement>(null);
-  const videoWrapperRef = useRef<HTMLDivElement>(null);
-  const headingSectionRef = useRef<HTMLDivElement>(null);
-  
+  const panelRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Check for mobile
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 900);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const update = () => setIsMobile(window.innerWidth <= 900);
+    update();
+    window.addEventListener("resize", update, { passive: true });
+    return () => window.removeEventListener("resize", update);
   }, []);
 
-  // Hero title animation
   useEffect(() => {
-    if (!showLoading && heroTitleRef.current) {
-      gsap.fromTo(
-        heroTitleRef.current,
-        { opacity: 0, y: 50 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          duration: 1, 
-          ease: "power2.out",
-          onComplete: () => {
-            setTimeout(() => onLoadingFinish(), 200);
-          }
-        }
-      );
-    }
+    if (showLoading || !titleRef.current) return;
+    const animation = gsap.fromTo(titleRef.current, { autoAlpha: 0, y: 44 }, {
+      autoAlpha: 1, y: 0, duration: 0.75, ease: "power3.out", onComplete: onLoadingFinish,
+    });
+    return () => animation.kill();
   }, [showLoading, onLoadingFinish]);
 
-  // Subtitle animation
   useEffect(() => {
-    if (showContent && subtitleRef.current) {
-      gsap.fromTo(
-        subtitleRef.current,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power2.out", delay: 0.2 }
-      );
-    }
+    if (!showContent || !subtitleRef.current) return;
+    const animation = gsap.fromTo(subtitleRef.current, { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.55, ease: "power2.out" });
+    return () => animation.kill();
   }, [showContent]);
 
-  // MONK-E STYLE SCROLL ANIMATION - Exact same as test page
   useEffect(() => {
-    if (typeof window === 'undefined' || window.innerWidth <= 900 || !showContent) return;
-
-    const heroBox = heroContainerRef.current;
-    const videoWrapper = videoWrapperRef.current;
-    const headingSection = headingSectionRef.current;
-    if (!heroBox || !videoWrapper) return;
-
-    // Config - same as MonkeHero
-    const config = {
-      initialScale: 0.4,
-      finalScale: 1.15,
-      initialLeft: 70,
-      finalLeft: 50,
-    };
-
-    // Animation state
-    const state = {
-      scale: config.initialScale,
-      leftPos: config.initialLeft,
-      headingY: 0,
-      headingOpacity: 1,
-      mouseX: 0,
-      targetMouseX: 0,
-    };
-
-    // Set initial transform
-    videoWrapper.style.transform = `translateX(-50%) translateY(-50%) scale(${config.initialScale})`;
-    videoWrapper.style.left = `${config.initialLeft}%`;
-    
-    if (headingSection) {
-      headingSection.style.transform = 'translateY(0)';
-      headingSection.style.opacity = '1';
-    }
-
-    // Mouse parallax handler
-    const handleMouseMove = (e: MouseEvent) => {
-      state.targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-    };
-    document.addEventListener('mousemove', handleMouseMove);
-
-    // RAF animation loop
-    let rafId: number;
-    const animateParallax = () => {
-      if (window.innerWidth < 900) return;
-
-      const movementMultiplier = (1 - state.scale) * 300;
-      const targetX = state.scale < 0.95 ? state.targetMouseX * movementMultiplier : 0;
-      state.mouseX = gsap.utils.interpolate(state.mouseX, targetX, 0.05);
-
-      // Apply transform to video
-      videoWrapper.style.transform = `
-        translateX(calc(-50% + ${state.mouseX}px)) 
-        translateY(-50%) 
-        scale(${state.scale})
-      `;
-      videoWrapper.style.left = `${state.leftPos}%`;
-
-      // Apply transform to heading
-      if (headingSection) {
-        headingSection.style.transform = `translateY(${state.headingY}px)`;
-        headingSection.style.opacity = `${state.headingOpacity}`;
-      }
-
-      rafId = requestAnimationFrame(animateParallax);
-    };
-    animateParallax();
-
-    // ScrollTrigger - pins and animates
-    const scrollTrigger = ScrollTrigger.create({
-      trigger: heroBox,
-      start: 'top top',
-      end: '+=100%',
-      pin: true,
-      scrub: true,
-      onUpdate: (self) => {
-        const progress = self.progress;
-
-        // Scale: 0.4 → 1.15
-        state.scale = gsap.utils.interpolate(config.initialScale, config.finalScale, progress);
-
-        // Left position: 70% → 50%
-        state.leftPos = gsap.utils.interpolate(config.initialLeft, config.finalLeft, progress);
-
-        // Heading: moves up and fades
-        state.headingY = gsap.utils.interpolate(0, -150, progress);
-        state.headingOpacity = gsap.utils.interpolate(1, 0, Math.min(progress * 1.6, 1));
-      },
-    });
-
-    return () => {
-      scrollTrigger.kill();
-      document.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(rafId);
-    };
-  }, [showContent]);
+    if (!showContent || isMobile || !panelRef.current || !videoRef.current || !headingRef.current) return;
+    const panel = panelRef.current;
+    const context = gsap.context(() => {
+      gsap.set(videoRef.current, { xPercent: -50, yPercent: -50, scale: 1, force3D: true });
+      gsap.timeline({
+        scrollTrigger: { trigger: panel, start: "top top", end: "+=100%", pin: true, scrub: 0.35, anticipatePin: 1, invalidateOnRefresh: true },
+      })
+        .to(videoRef.current, { left: "50%", scale: 2.3, ease: "none" }, 0)
+        .to(headingRef.current, { y: -120, autoAlpha: 0, ease: "none" }, 0);
+    }, panel);
+    return () => context.revert();
+  }, [showContent, isMobile]);
 
   return (
-    <section className={`relative w-full ${isMobile ? 'min-h-screen' : 'min-h-[200vh]'} bg-background`}>
-      {/* HERO BOX - The pinned container */}
-      <div 
-        ref={heroContainerRef}
-        className={`relative w-full ${isMobile ? 'h-[85vh] sm:h-[90vh]' : 'h-screen'} flex flex-col overflow-hidden`}
-      >
-        {/* Glass background */}
-        <div 
-          className="absolute inset-0 backdrop-blur-xl border border-foreground/10 rounded-2xl md:rounded-3xl shadow-2xl z-0 bg-white/10 dark:bg-black/20"
-        />
-        
-        {/* Shader Gradient Background */}
-        <div className="absolute inset-0 rounded-3xl md:rounded-3xl overflow-hidden z-[1] pointer-events-none">
-          <ShaderGradientCanvas
-            style={{
-              width: '100%',
-              height: '100%',
-            }}
-            lazyLoad={undefined}
-            fov={undefined}
-            pixelDensity={1}
-            pointerEvents="none"
-          >
+    <section className={`relative w-full bg-background ${isMobile ? "min-h-screen" : "min-h-[200vh]"}`}>
+      <div ref={panelRef} className={`relative m-2 flex w-[calc(100%_-_1rem)] flex-col overflow-hidden rounded-[1.75rem] bg-[#f6a46d] sm:m-5 sm:w-[calc(100%_-_2.5rem)] sm:rounded-[3rem] ${isMobile ? "h-[84svh]" : "h-[calc(100vh_-_4rem)]"}`}>
+        <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
+          <ShaderGradientCanvas style={{ width: "100%", height: "100%" }} pixelDensity={0.7} pointerEvents="none">
             <ShaderGradient
               animate="on"
               type="plane"
-              wireframe={false}
               shader="defaults"
-              uTime={5}
-              uSpeed={0.2}
-              uStrength={1.2}
-              uDensity={1}
+              wireframe={false}
+              uTime={0}
+              uSpeed={0.08}
+              uStrength={1.05}
+              uDensity={0.9}
               uFrequency={0}
               uAmplitude={0}
               positionX={0}
@@ -210,16 +88,16 @@ export default function Hero({
               rotationX={45}
               rotationY={0}
               rotationZ={0}
-              color1="#ff7e5f"
-              color2="#feb47b"
-              color3="#ffcda5"
-              reflection={0.2}
+              color1="#ffb35d"
+              color2="#ff7548"
+              color3="#ee312d"
+              reflection={0.15}
               cAzimuthAngle={180}
               cPolarAngle={75}
               cDistance={3}
               cameraZoom={8}
               lightType="3d"
-              brightness={1.2}
+              brightness={1.15}
               envPreset="dawn"
               grain="on"
               toggleAxis={false}
@@ -229,107 +107,16 @@ export default function Hero({
             />
           </ShaderGradientCanvas>
         </div>
-
-        {/* HERO CONTENT - flex-1 takes space above marquee */}
-        <section className="relative flex-1 flex flex-col px-6 sm:px-8 md:px-12 lg:px-[3em] pt-12 lg:pt-20 overflow-hidden z-[2]">
-          
-          {/* Heading Section - Centered on mobile, left-aligned on desktop */}
-          <div 
-            ref={headingSectionRef}
-            className={`relative z-[3] mt-4 md:mt-8 ${isMobile ? 'flex-1 flex flex-col items-center justify-center text-center' : ''}`}
-            style={{ willChange: 'transform, opacity' }}
-          >
-            <h1
-              ref={heroTitleRef}
-              className={`uppercase font-black text-[20vw] sm:text-[18vw] md:text-[16vw] lg:text-[14vw] tracking-[-0.04em] leading-[0.85] select-none text-foreground mb-4 md:mb-6 ${isMobile ? 'md:left-0' : 'md:left-[-0.05em]'}`}
-              style={{ opacity: showHero ? 1 : 0 }}
-            >
-              ROI<span className="align-super text-[0.5em] ml-1">™</span>
-            </h1>
-            {showContent && (
-              <div ref={subtitleRef} className={`mt-4 md:mt-6 ${isMobile ? 'flex flex-col items-center' : ''}`}>
-                <p className={`text-lg sm:text-xl md:text-2xl lg:text-[2.5vw] md:w-[50%] pp-neue-world-font font-normal select-none text-foreground leading-snug ${isMobile ? 'text-center w-full px-4' : ''}`}>
-                  ROI-first thinking for scale-hungry brands
-                </p>
-              </div>
-            )}
+        <div aria-hidden="true" className="absolute inset-0 hero-panel-gradient pointer-events-none opacity-35 mix-blend-overlay" />
+        <section className="relative z-10 flex flex-1 flex-col overflow-hidden px-6 pt-12 sm:px-8 md:px-12 lg:px-[3em] lg:pt-20">
+          <div ref={headingRef} className={`relative z-10 mt-4 md:mt-8 ${isMobile ? "flex flex-1 flex-col items-center justify-center text-center" : ""}`}>
+            <h1 ref={titleRef} className="mb-4 select-none text-[20vw] font-black uppercase leading-[0.85] tracking-[-0.04em] text-black sm:text-[18vw] md:mb-6 md:text-[16vw] lg:text-[14vw]" style={{ opacity: showHero ? 1 : 0 }}>ROI<span className="align-super ml-1 text-[0.5em]">™</span></h1>
+            {showContent && <div ref={subtitleRef} className={`mt-4 md:mt-6 ${isMobile ? "flex flex-col items-center" : ""}`}><p className={`pp-neue-world-font select-none text-lg font-normal leading-snug text-black sm:text-xl md:w-[50%] md:text-2xl lg:text-[2.5vw] ${isMobile ? "w-full px-4 text-center" : ""}`}>ROI-first thinking for scale-hungry brands</p></div>}
           </div>
-
-          {/* VIDEO WRAPPER - Desktop only, scroll-animated */}
-          {showContent && !isMobile && (
-            <div
-              ref={videoWrapperRef}
-              className="hidden md:flex absolute items-center justify-center w-full"
-              style={{
-                position: 'absolute',
-                top: '55%',
-                left: '70%',
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                willChange: 'transform',
-                transformOrigin: 'center center',
-                transform: 'translateX(-50%) translateY(-50%) scale(0.4)',
-              }}
-            >
-              <VideoShowcase 
-                videoSrc={videoSrc} 
-                containerClassName="w-full max-w-[1400px]"
-              />
-            </div>
-          )}
+          {showContent && !isMobile && <div ref={videoRef} className="absolute left-[74%] top-[55%] z-0 flex w-[44vw] items-center justify-center will-change-transform" style={{ transform: "translate3d(-50%, -50%, 0)" }}><VideoShowcase videoSrc={videoSrc ?? ""} containerClassName="w-full" /></div>}
         </section>
-
-        {/* MARQUEE - Locked to bottom with mt-auto, higher z-index */}
-        <motion.div 
-          className="relative w-full pb-4 sm:pb-6 md:pb-8 px-6 sm:px-8 md:px-12 lg:px-[3em] mt-auto z-[10] bg-gradient-to-t from-white/95 via-white/80 to-transparent dark:from-black/95 dark:via-black/80 dark:to-transparent"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.5 }}
-        >
-          <div className="w-full h-20 sm:h-24 md:h-28">
-            <div className="w-full py-3 sm:py-4 md:py-5 overflow-hidden">
-              <ScrollBaseAnimation
-                baseVelocity={-1}
-                clasname="font-extrabold text-foreground !text-3xl sm:!text-4xl md:!text-5xl lg:!text-base [&_span]:!w-14 [&_span]:!h-14 sm:[&_span]:!w-16 sm:[&_span]:!h-16 md:[&_span]:!w-17 md:[&_span]:!h-17"
-                scrollDependent={false}
-                items={[
-                  {
-                    text: "TRANSFORM YOUR BRAND",
-                    imageUrl: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=400&q=80"
-                  },
-                  {
-                    text: "CREATIVE SOLUTIONS",
-                    imageUrl: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=400&q=80"
-                  },
-                  {
-                    text: "ROI MAKERS",
-                    imageUrl: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=400&q=80"
-                  }
-                ]}
-              />
-            </div>
-          </div>
-        </motion.div>
       </div>
-      
-      {/* Animation keyframes */}
-      <style jsx>{`
-        @keyframes floatTopRight {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          25% { transform: translate(-20px, 10px) scale(1.1); }
-          50% { transform: translate(-10px, 20px) scale(0.9); }
-          75% { transform: translate(-30px, -5px) scale(1.05); }
-        }
-        
-        @keyframes floatBottomLeft {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          25% { transform: translate(15px, -10px) scale(1.08); }
-          50% { transform: translate(25px, -20px) scale(0.95); }
-          75% { transform: translate(5px, -15px) scale(1.02); }
-        }
-      `}</style>
+      {showContent && <div className="relative z-20 mt-0 w-full overflow-hidden bg-background px-2 py-5 sm:px-4 sm:py-7"><ScrollBaseAnimation baseVelocity={-0.65} clasname="font-extrabold text-foreground !text-3xl sm:!text-4xl md:!text-5xl [&_span]:!h-14 [&_span]:!w-14 sm:[&_span]:!h-16 sm:[&_span]:!w-16" items={marqueeItems} /></div>}
     </section>
   );
 }

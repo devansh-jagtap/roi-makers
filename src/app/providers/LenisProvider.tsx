@@ -9,45 +9,20 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function LenisProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
-    const lenis = new Lenis({
-      lerp: 0.07,
-      duration: 1.2,
-    });
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
+    const lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+    const tick = (time: number) => lenis.raf(time * 1000);
+    gsap.ticker.add(tick);
+    gsap.ticker.lagSmoothing(1000, 16);
 
     lenis.on("scroll", ScrollTrigger.update);
 
-    // Proxy GSAP to use Lenis instead of native scroll
-    ScrollTrigger.scrollerProxy(document.body, {
-      scrollTop(value) {
-        return arguments.length
-          ? lenis.scrollTo(value as number, { immediate: true })
-          : lenis.scroll;
-      },
-      getBoundingClientRect() {
-        return {
-          top: 0,
-          left: 0,
-          width: window.innerWidth,
-          height: window.innerHeight,
-        };
-      },
-      pinType: "transform",
-    });
-
-    ScrollTrigger.defaults({ scroller: document.body });
-
-    setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 50);
+    ScrollTrigger.refresh();
 
     return () => {
-      ScrollTrigger.killAll();
+      gsap.ticker.remove(tick);
+      lenis.destroy();
     };
   }, []);
 

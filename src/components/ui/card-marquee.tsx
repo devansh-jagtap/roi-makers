@@ -1,136 +1,34 @@
-'use client';
-import { useRef, useEffect } from 'react';
-import {
-  motion,
-  useScroll,
-  useSpring,
-  useTransform,
-  useVelocity,
-  useAnimationFrame,
-  useMotionValue,
-} from 'motion/react';
-import { wrap } from '@motionone/utils';
-import { cn } from '@/lib/utils';
-import Image from 'next/image';
+"use client";
 
-interface CardItem {
-  title: string;
-  description?: string;
-  imageUrl: string;
-  tag?: string;
-}
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 
-interface CardMarqueeProps {
-  cards: CardItem[];
-  baseVelocity: number;
-  className?: string;
-  scrollDependent?: boolean;
-  delay?: number;
-}
+interface CardItem { title: string; description?: string; imageUrl: string; tag?: string; }
+interface CardMarqueeProps { cards: CardItem[]; baseVelocity: number; className?: string; scrollDependent?: boolean; delay?: number; }
 
-export default function CardMarquee({
-  cards,
-  baseVelocity = -1,
-  className,
-  scrollDependent = true,
-  delay = 0,
-}: CardMarqueeProps) {
-  const baseX = useMotionValue(0);
-  const { scrollY } = useScroll();
-  const scrollVelocity = useVelocity(scrollY);
-  const smoothVelocity = useSpring(scrollVelocity, {
-    damping: 50,
-    stiffness: 400,
-  });
-  const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 2], {
-    clamp: false,
-  });
-
-  const x = useTransform(baseX, (v) => `${wrap(-20, -45, v)}%`);
-
-  const directionFactor = useRef<number>(1);
-  const hasStarted = useRef(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      hasStarted.current = true;
-    }, delay);
-
-    return () => clearTimeout(timer);
-  }, [delay]);
-
-  useAnimationFrame((t, delta) => {
-    if (!hasStarted.current) return;
-
-    let moveBy = directionFactor.current * baseVelocity * (delta / 1000);
-
-    if (scrollDependent) {
-      if (velocityFactor.get() < 0) {
-        directionFactor.current = -1;
-      } else if (velocityFactor.get() > 0) {
-        directionFactor.current = 1;
-      }
-    }
-
-    moveBy += directionFactor.current * moveBy * velocityFactor.get();
-
-    baseX.set(baseX.get() + moveBy);
-  });
+/** Continuous service rail without a Motion/JS animation frame. */
+export default function CardMarquee({ cards, baseVelocity, className, delay = 0 }: CardMarqueeProps) {
+  const duration = `${Math.max(38, 85 / Math.max(Math.abs(baseVelocity), 0.25))}s`;
+  const direction = baseVelocity > 0 ? "reverse" : "normal";
 
   return (
-    <div className='overflow-hidden whitespace-nowrap flex flex-nowrap'>
-      <motion.div
-        className='flex whitespace-nowrap gap-8 flex-nowrap'
-        style={{ x }}
-      >
-        {[...Array(4)].map((_, repeatIndex) => (
-          <div key={repeatIndex} className="flex gap-8">
-            {cards.map((card, cardIndex) => (
-              <div
-                key={cardIndex}
-                className={cn(
-                  "relative group cursor-pointer flex-shrink-0",
-                  "w-[300px] sm:w-[400px] md:w-[500px]",
-                  "h-[400px] sm:h-[500px] md:h-[600px]",
-                  "rounded-3xl overflow-hidden",
-                  "shadow-xl hover:shadow-2xl transition-all duration-300",
-                  className
-                )}
-              >
-                {/* Full image background */}
-                <div className="relative w-full h-full">
-                  <Image
-                    src={card.imageUrl}
-                    alt={card.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-700"
-                    sizes="(max-width: 640px) 400px, (max-width: 768px) 500px, 600px"
-                  />
-                  
-                  {/* Tag - always visible */}
-                  {card.tag && (
-                    <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-sm text-black px-4 py-2 rounded-full text-sm font-semibold z-10">
-                      {card.tag}
-                    </div>
-                  )}
-                  
-                  {/* Overlay with text - shows on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
-                      <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 whitespace-normal transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                      {card.title}
-                    </h3>
-                      {card.description && (
-                        <p className="text-lg text-white whitespace-normal line-clamp-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">
-                        {card.description}
-                      </p>
-                    )}
-                  </div>
+    <div className="overflow-hidden">
+      <div className="marquee-track flex w-max gap-8" style={{ animationDuration: duration, animationDirection: direction, animationDelay: `${delay}s` }}>
+        {[0, 1].map((group) => (
+          <div key={group} className="flex shrink-0 gap-8" aria-hidden={group === 1}>
+            {cards.map((card) => (
+              <article key={card.title} className={cn("group relative h-[400px] w-[300px] shrink-0 overflow-hidden rounded-3xl shadow-xl transition-shadow duration-300 hover:shadow-2xl sm:h-[500px] sm:w-[400px] md:h-[600px] md:w-[500px]", className)}>
+                <Image src={card.imageUrl} alt={card.title} fill sizes="(max-width: 640px) 300px, (max-width: 768px) 400px, 500px" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                {card.tag && <span className="absolute left-6 top-6 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-black backdrop-blur-sm">{card.tag}</span>}
+                <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/90 via-black/50 to-transparent p-8 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                  <h3 className="mb-4 translate-y-4 text-3xl font-bold text-white transition-transform duration-500 group-hover:translate-y-0 md:text-4xl">{card.title}</h3>
+                  {card.description && <p className="translate-y-4 text-lg text-white transition-transform delay-75 duration-500 group-hover:translate-y-0">{card.description}</p>}
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 }

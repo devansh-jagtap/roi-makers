@@ -2,13 +2,11 @@
 import React, { useEffect, useRef, lazy, Suspense } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
 import HomeHero from "@/components/sections/home/HomeHero";
 import LoadingOverlay from "@/components/ui/feedback/LoadingOverlay";
 
 // Lazy load components that aren't immediately visible
 const ImageWall = lazy(() => import("@/components/ui/shared/ImageWall"));
-const HomeBrandMarquee = lazy(() => import("@/components/sections/home/HomeBrandMarquee"));
 const ServicesShowcase = lazy(() => import("@/components/sections/home/ServicesShowcase")); 
 const HomeServicesGrid = lazy(() => import("@/components/sections/home/HomeServicesGrid"));
 const HomeTeamGallery = lazy(() => import("@/components/sections/home/HomeTeamGallery"));
@@ -24,29 +22,6 @@ const MenuPage = () => {
   const [showHero, setShowHero] = React.useState(false);
   const [showContent, setShowContent] = React.useState(false);
   const outroRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || window.innerWidth <= 900) return;
-
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-    });
-    
-    lenis.on("scroll", ScrollTrigger.update);
-
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-    gsap.ticker.lagSmoothing(0);
-
-    return () => {
-      gsap.ticker.remove(lenis.raf);
-      lenis.destroy();
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-    };
-  }, []);
 
   useEffect(() => {
     if (!showLoading) {
