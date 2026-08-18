@@ -43,13 +43,17 @@ export default function HomeHero({ showLoading, showHero, showContent, onLoading
     const animation = gsap.fromTo(titleRef.current, { autoAlpha: 0, y: 44 }, {
       autoAlpha: 1, y: 0, duration: 0.75, ease: "power3.out", onComplete: onLoadingFinish,
     });
-    return () => animation.kill();
+    return () => {
+      animation.kill();
+    };
   }, [showLoading, onLoadingFinish]);
 
   useEffect(() => {
     if (!showContent || !subtitleRef.current) return;
     const animation = gsap.fromTo(subtitleRef.current, { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.55, ease: "power2.out" });
-    return () => animation.kill();
+    return () => {
+      animation.kill();
+    };
   }, [showContent]);
 
   useEffect(() => {

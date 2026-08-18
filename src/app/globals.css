@@ -251,6 +251,7 @@ img {
 }
 */
 :root {
+  --font-ibm-plex-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --radius: 0.625rem;
   --background: #FFFFFF;
   --foreground: oklch(0.145 0 0);
