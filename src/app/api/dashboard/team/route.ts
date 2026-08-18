@@ -37,16 +37,15 @@ export async function POST(request: Request) {
     
     const supabaseAdmin = createSupabaseAdminClient();
     
-    // Create Supabase Auth user
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-      email: normalizedEmail,
-      email_confirm: true,
-      user_metadata: { name: normalizedName }
+    // Invite Supabase Auth user
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.inviteUserByEmail(normalizedEmail, {
+      data: { name: normalizedName },
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`
     });
     
     if (authError || !authData.user) {
-      console.error('Failed to create auth user', authError);
-      return NextResponse.json({ error: 'Failed to create user in authentication system.' }, { status: 500 });
+      console.error('Failed to invite auth user', authError);
+      return NextResponse.json({ error: 'Failed to invite user in authentication system.' }, { status: 500 });
     }
     
     // Create Prisma Profile
@@ -60,9 +59,6 @@ export async function POST(request: Request) {
           active: true
         }
       });
-      
-      // Send invite email via Supabase
-      await supabaseAdmin.auth.admin.inviteUserByEmail(normalizedEmail);
       
       return NextResponse.json({ success: true, profile }, { status: 201 });
     } catch (profileError) {
