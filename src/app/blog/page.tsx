@@ -103,6 +103,13 @@ const categories = ['All', 'Strategy', 'CRO', 'Analytics', 'Creative', 'Media'];
 
 export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+
+  const handleNewsletterSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const email = newsletterEmail.trim();
+    window.location.assign(`/contact?email=${encodeURIComponent(email)}#contact-form`);
+  };
 
   const filteredPosts =
     selectedCategory === 'All'
@@ -110,7 +117,7 @@ export default function BlogPage() {
       : blogPosts.filter((post) => post.category === selectedCategory);
 
   return (
-    <div className="min-h-screen boska-font" style={{ backgroundColor: '#FFFFFF' }}>
+    <div className="blog-page min-h-screen boska-font" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
@@ -120,7 +127,7 @@ export default function BlogPage() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <p className="text-xs uppercase tracking-[0.5em] text-[#8c7b62] mb-6 clash-display-font">blog Blog</p>
+            <p className="text-lg font-semibold uppercase tracking-[0.5em] text-[#8c7b62] mb-6 clash-display-font">Blog</p>
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-[#060010] mb-6">
               Insights & Stories
             </h1>
@@ -138,7 +145,7 @@ export default function BlogPage() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="group relative rounded-[40px] overflow-hidden border border-[#060010]/10 bg-white shadow-[0_25px_80px_-50px_rgba(6,0,16,0.4)] cursor-pointer"
+            className="blog-feature group relative cursor-pointer overflow-hidden rounded-[40px] border border-[#060010]/10 bg-white shadow-[0_25px_80px_-50px_rgba(6,0,16,0.4)]"
           >
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div className="relative h-[400px] md:h-[500px] overflow-hidden">
@@ -275,15 +282,18 @@ export default function BlogPage() {
             <p className="text-lg md:text-xl mb-8 text-[#E9E4D7]/80 archivo-font max-w-2xl mx-auto">
               Get weekly insights on performance marketing, creative systems, and data-driven growth delivered straight to your inbox.
             </p>
-            <form className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
+            <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
               <input
                 type="email"
                 placeholder="Enter your email"
+                value={newsletterEmail}
+                onChange={(event) => setNewsletterEmail(event.target.value)}
+                required
                 className="flex-1 px-6 py-4 rounded-full bg-white/10 backdrop-blur-sm border border-[#E9E4D7]/20 text-[#E9E4D7] placeholder:text-[#E9E4D7]/60 archivo-font focus:outline-none focus:ring-2 focus:ring-[#E9E4D7]/50"
               />
               <button
                 type="submit"
-                className="px-8 py-4 bg-[#E9E4D7] text-[#060010] rounded-full font-semibold text-sm uppercase tracking-wider clash-display-font hover:bg-white transition-all duration-300 hover:scale-105 shadow-lg whitespace-nowrap"
+                className="whitespace-nowrap rounded-full bg-primary px-8 py-4 text-sm font-semibold uppercase tracking-wider text-primary-foreground shadow-lg transition-all duration-300 hover:scale-105 hover:bg-primary/90 clash-display-font"
               >
                 Subscribe
               </button>

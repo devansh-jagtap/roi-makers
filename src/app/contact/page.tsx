@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import SiteFooter from '@/components/layout/SiteFooter';
 
@@ -13,6 +13,11 @@ export default function ContactPage() {
     budget: '',
     message: '',
   });
+
+  useEffect(() => {
+    const email = new URLSearchParams(window.location.search).get('email');
+    if (email) setFormData((current) => ({ ...current, email }));
+  }, []);
 
   const services = [
     'Performance Marketing',
@@ -87,7 +92,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen boska-font" style={{ backgroundColor: '#FFFFFF' }}>
+    <div className="contact-page min-h-screen boska-font" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
@@ -126,7 +131,7 @@ export default function ContactPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: idx * 0.1 }}
-                className="group bg-white/70 rounded-[28px] p-6 md:p-8 border border-[#060010]/10 shadow-[0_20px_60px_-40px_rgba(6,0,16,0.25)] hover:shadow-[0_30px_90px_-40px_rgba(6,0,16,0.4)] transition-all duration-300 hover:scale-105"
+                className="contact-info-card group rounded-[28px] border border-[#060010]/10 bg-white/70 p-6 shadow-[0_20px_60px_-40px_rgba(6,0,16,0.25)] transition-all duration-300 hover:scale-105 hover:shadow-[0_30px_90px_-40px_rgba(6,0,16,0.4)] md:p-8"
               >
                 <p className="text-xs uppercase tracking-[0.3em] text-[#8c7b62] clash-display-font mb-3">
                   {info.label}
@@ -216,6 +221,7 @@ export default function ContactPage() {
 
             {/* Right Column - Form */}
             <motion.form
+              id="contact-form"
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}

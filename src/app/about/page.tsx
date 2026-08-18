@@ -81,7 +81,7 @@ export default function About() {
 					transition={{ duration: 0.8 }}
 					className="text-center mb-16"
 				>
-					<p className="uppercase tracking-[0.5em] text-xs font-semibold text-[#8c7b62] clash-display-font">ABOUT ROI MAKERS</p>
+					<p className="uppercase tracking-[0.5em] text-lg font-semibold text-[#8c7b62] clash-display-font">ABOUT ROI MAKERS</p>
 					<h1 className="mt-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-[#060010]">
 						We Engineer Revenue<br />Acceleration
 					</h1>
@@ -316,7 +316,7 @@ export default function About() {
 					<div className="flex flex-wrap justify-center gap-4">
 						<a
 							href="/contact"
-							className="inline-flex items-center gap-3 px-8 py-4 bg-[#E9E4D7] text-[#060010] rounded-full font-semibold text-sm uppercase tracking-wider clash-display-font hover:bg-white transition-all duration-300 hover:scale-105 shadow-lg"
+							className="inline-flex items-center gap-3 rounded-full bg-primary px-8 py-4 text-sm font-semibold uppercase tracking-wider text-primary-foreground shadow-lg transition-all duration-300 hover:scale-105 hover:bg-primary/90 clash-display-font"
 						>
 							Explore Opportunities <span aria-hidden>→</span>
 						</a>

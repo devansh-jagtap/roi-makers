@@ -259,8 +259,8 @@ img {
   --card-foreground: oklch(0.145 0 0);
   --popover: #FFFFFF;
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: #f26b38;
+  --primary-foreground: #ffffff;
   --secondary: #FFFFFF;
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
@@ -270,7 +270,7 @@ img {
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --ring: #f26b38;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -293,8 +293,8 @@ img {
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
+  --primary: #ff9b62;
+  --primary-foreground: #111111;
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
@@ -304,7 +304,7 @@ img {
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --ring: #ff9b62;
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -369,6 +369,159 @@ img {
 
 .archivo-font {
   font-family: 'Archivo', sans-serif;
+}
+
+/* Shared orange + black/white theme, including the older hard-coded pages. */
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark [style*="background-color"] {
+  background-color: var(--background) !important;
+}
+
+html.dark [class*="text-[#060010]"] {
+  color: #ffffff !important;
+}
+
+html.dark [class*="text-[#312619]"] {
+  color: #d5d5d5 !important;
+}
+
+html.dark [class*="text-[#8c7b62]"] {
+  color: #ff9b62 !important;
+}
+
+/* Normalize the legacy brown/orange values to one shared brand accent. */
+[class*="text-[#8c7b62]"],
+[class*="text-[#ff9933]"],
+[class*="text-[#FF9933]"],
+[class*="text-[#FFAA17]"] {
+  color: var(--primary) !important;
+}
+
+[class*="bg-[#8c7b62]"],
+[class*="bg-[#ff9933]"],
+[class*="bg-[#FF9933]"],
+[class*="bg-[#FFAA17]"] {
+  background-color: var(--primary) !important;
+}
+
+[class*="border-[#8c7b62]"],
+[class*="border-[#ff9933]"],
+[class*="border-[#FF9933]"],
+[class*="border-[#FFAA17]"] {
+  border-color: var(--primary) !important;
+}
+
+html.dark [class*="border-[#060010]"] {
+  border-color: rgb(255 155 98 / 28%) !important;
+}
+
+html.dark main [class*="bg-white"] {
+  background-color: #1b1b1b !important;
+}
+
+html.dark main [class*="bg-[#E9E4D7]"] {
+  background-color: #1b1b1b !important;
+}
+
+/* Apply the same treatment to legacy pages whose top-level element is a div. */
+html.dark [class*="bg-white/"] {
+  background-color: #1b1b1b !important;
+}
+
+html.dark [class*="bg-[#E9E4D7]"] {
+  background-color: #1b1b1b !important;
+}
+
+html.dark main [class*="text-[#E9E4D7]"] {
+  color: #ffffff !important;
+}
+
+html.dark main .text-black {
+  color: #ffffff !important;
+}
+
+html.dark main [class*="bg-[#312619]"] {
+  background-color: #161616 !important;
+}
+
+html.dark .hero-theme-panel .text-black {
+  color: #000000 !important;
+}
+
+html.dark main button[class*="bg-white"],
+html.dark main a[class*="bg-[#E9E4D7]"] {
+  background-color: #f26b38 !important;
+  color: #ffffff !important;
+}
+
+html.dark button.bg-white,
+html.dark a.bg-white,
+html.dark button[class*="bg-[#E9E4D7]"],
+html.dark a[class*="bg-[#E9E4D7]"] {
+  background-color: #f26b38 !important;
+  color: #ffffff !important;
+}
+
+html.dark .blog-feature {
+  background-color: #1b1b1b !important;
+  border-color: rgb(255 155 98 / 28%) !important;
+}
+
+html.dark .contact-info-card {
+  background-color: #f26b38 !important;
+  border-color: #ff9b62 !important;
+}
+
+html.dark .contact-info-card [class*="text-[#060010]"],
+html.dark .contact-info-card [class*="text-[#8c7b62]"] {
+  color: #111111 !important;
+}
+
+html.dark main input,
+html.dark main textarea,
+html.dark main select {
+  background-color: #141414 !important;
+  color: #ffffff !important;
+  border-color: rgb(255 155 98 / 35%) !important;
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: #111111 !important;
+  color: #ffffff !important;
+  border-color: rgb(255 155 98 / 35%) !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: rgb(255 255 255 / 50%) !important;
+}
+
+/* Careers page: cards and application fields need opaque dark surfaces. */
+html.dark .careers-page [class*="bg-white"] {
+  background-color: #1b1b1b !important;
+}
+
+html.dark .careers-page input,
+html.dark .careers-page textarea,
+html.dark .careers-page select {
+  background-color: #111111 !important;
+  color: #ffffff !important;
+  border-color: rgb(255 155 98 / 45%) !important;
+}
+
+html.dark .careers-page input::placeholder,
+html.dark .careers-page textarea::placeholder {
+  color: rgb(255 255 255 / 50%) !important;
+}
+
+html.dark .careers-page input[type="file"]::file-selector-button {
+  background: #f26b38;
+  color: #ffffff;
 }
 
 .hero-panel-gradient {

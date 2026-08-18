@@ -119,7 +119,7 @@ export default function CareersPage() {
   };
 
   return (
-    <div className="min-h-screen boska-font" style={{ backgroundColor: '#FFFFFF' }}>
+    <div className="careers-page min-h-screen boska-font" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
@@ -129,7 +129,7 @@ export default function CareersPage() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <p className="text-xs uppercase tracking-[0.5em] text-[#8c7b62] mb-6 clash-display-font">Career</p>
+            <p className="text-lg font-semibold uppercase tracking-[0.5em] text-[#8c7b62] mb-6 clash-display-font">Career</p>
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-[#060010] mb-6">
               JOIN OUR TEAM
             </h1>

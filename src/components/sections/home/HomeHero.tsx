@@ -72,7 +72,7 @@ export default function HomeHero({ showLoading, showHero, showContent, onLoading
 
   return (
     <section className={`relative w-full bg-background ${isMobile ? "min-h-screen" : "min-h-[200vh]"}`}>
-      <div ref={panelRef} className={`relative m-2 flex w-[calc(100%_-_1rem)] flex-col overflow-hidden rounded-[1.75rem] bg-[#f6a46d] sm:m-5 sm:w-[calc(100%_-_2.5rem)] sm:rounded-[3rem] ${isMobile ? "h-[84svh]" : "h-[calc(100vh_-_4rem)]"}`}>
+      <div ref={panelRef} className={`hero-theme-panel relative m-2 flex w-[calc(100%_-_1rem)] flex-col overflow-hidden rounded-[1.75rem] bg-[#f6a46d] sm:m-5 sm:w-[calc(100%_-_2.5rem)] sm:rounded-[3rem] ${isMobile ? "h-[84svh]" : "h-[calc(100vh_-_4rem)]"}`}>
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
           <ShaderGradientCanvas style={{ width: "100%", height: "100%" }} pixelDensity={0.7} pointerEvents="none">
             <ShaderGradient
