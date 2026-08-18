@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -140,7 +141,7 @@ const ImageWall: React.FC<ImageWallProps> = ({
       scrollTrigger: scrollTriggerSettings,
     });
 
-    gsap.to("button", {
+    gsap.to(".btn [data-slot='button']", {
       y: 0,
       opacity: 1,
       delay: 0.25,
@@ -255,16 +256,12 @@ const ImageWall: React.FC<ImageWallProps> = ({
                 </p>
               </div>
             ))}
-            <div className="btn mt-2 sm:mt-3 md:mt-4">
-              <Button
-                className="relative overflow-hidden text-background cursor-pointer border-0 rounded-full px-4 sm:px-6 md:px-10 py-2 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg lg:text-2xl font-semibold bg-foreground shadow-lg opacity-0 translate-y-8 transition-all duration-300 ease-out hover:scale-105 focus:scale-105 active:scale-100 group"
-                style={{ boxShadow: "0 4px 24px 0 rgba(255, 72, 146, 0.15)" }}
-              >
-                <span className="relative z-10">{buttonText}</span>
-                <span
-                  className="absolute left-[-75%] top-0 w-1/2 h-full bg-white opacity-20 rotate-12 group-hover:animate-shine"
-                  aria-hidden="true"
-                />
+            <div className="btn pointer-events-auto mt-2 sm:mt-3 md:mt-4">
+              <Button asChild className="group relative cursor-pointer overflow-hidden rounded-full border-0 bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground opacity-0 shadow-lg shadow-orange-500/30 transition-all duration-300 ease-out hover:scale-105 hover:bg-primary/90 focus:scale-105 active:scale-100 sm:px-6 sm:py-3 sm:text-base md:px-10 md:py-4 md:text-lg lg:text-2xl">
+                <Link href="/contact?source=growth-story#contact-form">
+                  <span className="relative z-10">{buttonText}</span>
+                  <span className="absolute left-[-75%] top-0 h-full w-1/2 rotate-12 bg-white opacity-20 group-hover:animate-shine" aria-hidden="true" />
+                </Link>
               </Button>
               <style jsx global>{`
                 @keyframes shine {

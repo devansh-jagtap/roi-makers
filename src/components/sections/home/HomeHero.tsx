@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ScrollBaseAnimation from "@/components/ui/text-marquee";
 import VideoShowcase from "@/components/ui/media/VideoShowcase";
 import { ShaderGradientCanvas, ShaderGradient } from "@shadergradient/react";
+import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -115,7 +116,19 @@ export default function HomeHero({ showLoading, showHero, showContent, onLoading
         <section className="relative z-10 flex flex-1 flex-col overflow-hidden px-6 pt-12 sm:px-8 md:px-12 lg:px-[3em] lg:pt-20">
           <div ref={headingRef} className={`relative z-10 mt-4 md:mt-8 ${isMobile ? "flex flex-1 flex-col items-center justify-center text-center" : ""}`}>
             <h1 ref={titleRef} className="mb-4 select-none text-[20vw] font-black uppercase leading-[0.85] tracking-[-0.04em] text-black sm:text-[18vw] md:mb-6 md:text-[16vw] lg:text-[14vw]" style={{ opacity: showHero ? 1 : 0 }}>ROI<span className="align-super ml-1 text-[0.5em]">™</span></h1>
-            {showContent && <div ref={subtitleRef} className={`mt-4 md:mt-6 ${isMobile ? "flex flex-col items-center" : ""}`}><p className={`pp-neue-world-font select-none text-lg font-normal leading-snug text-black sm:text-xl md:w-[50%] md:text-2xl lg:text-[2.5vw] ${isMobile ? "w-full px-4 text-center" : ""}`}>ROI-first thinking for scale-hungry brands</p></div>}
+            {showContent && (
+              <div ref={subtitleRef} className={`mt-4 md:mt-6 ${isMobile ? "flex flex-col items-center" : ""}`}>
+                <p className={`pp-neue-world-font select-none text-lg font-normal leading-snug text-black sm:text-xl md:w-[50%] md:text-2xl lg:text-[2.5vw] ${isMobile ? "w-full px-4 text-center" : ""}`}>ROI-first thinking for scale-hungry brands</p>
+                <div className={`mt-7 flex flex-wrap gap-3 ${isMobile ? "justify-center" : ""}`}>
+                  <Link href="/contact#contact-form" className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white shadow-lg transition-transform duration-200 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black">
+                    Start your project <span aria-hidden="true">→</span>
+                  </Link>
+                  <Link href="/contact#contact-form" className="rounded-full border border-black/45 bg-white/20 px-6 py-3 text-sm font-semibold text-black transition-colors duration-200 hover:bg-white/50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black">
+                    Book a growth call
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
           {showContent && !isMobile && <div ref={videoRef} className="absolute left-[74%] top-[55%] z-0 flex w-[44vw] items-center justify-center will-change-transform" style={{ transform: "translate3d(-50%, -50%, 0)" }}><VideoShowcase videoSrc={videoSrc ?? ""} containerClassName="w-full" /></div>}
         </section>

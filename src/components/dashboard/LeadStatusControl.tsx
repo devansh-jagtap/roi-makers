@@ -1,0 +1,5 @@
+'use client';
+import { useState } from 'react';
+import { LeadStatus } from '@prisma/client';
+import { useRouter } from 'next/navigation';
+export function LeadStatusControl({ id, status }: { id: string; status: LeadStatus }) { const [value, setValue] = useState(status); const [saving, setSaving] = useState(false); const router = useRouter(); async function save() { setSaving(true); const response = await fetch(`/api/dashboard/leads/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: value }) }); setSaving(false); if (response.ok) router.refresh(); else alert('Unable to update the lead.'); } return <div className="flex gap-2"><select value={value} onChange={(e) => setValue(e.target.value as LeadStatus)} className="border rounded p-2">{Object.values(LeadStatus).map((s) => <option key={s}>{s}</option>)}</select><button onClick={save} disabled={saving} className="rounded bg-[#060010] px-3 text-white">{saving ? 'Saving…' : 'Update'}</button></div>; }

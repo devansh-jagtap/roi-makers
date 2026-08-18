@@ -1,1 +1,101 @@
-// Prisma schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL
+  WON
+  LOST
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum SubscriptionType {
+  NEWSLETTER
+  BLOG
+  BOTH
+}
+
+enum SubscriberStatus {
+  SUBSCRIBED
+  UNSUBSCRIBED
+}
+
+model Profile {
+  id         String   @id @default(cuid())
+  authUserId String   @unique @map("auth_user_id")
+  email      String   @unique
+  name       String?
+  role       Role     @default(MEMBER)
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("profiles")
+}
+
+model Lead {
+  id                         String             @id @default(cuid())
+  name                       String
+  email                      String
+  company                    String?
+  phone                      String?
+  service                    String
+  budget                     String?
+  message                    String
+  source                     String?
+  utmSource                  String?            @map("utm_source")
+  utmMedium                  String?            @map("utm_medium")
+  utmCampaign                String?            @map("utm_campaign")
+  utmTerm                    String?            @map("utm_term")
+  utmContent                 String?            @map("utm_content")
+  landingPage                String?            @map("landing_page")
+  referrer                   String?
+  status                     LeadStatus         @default(NEW)
+  roiNotificationStatus      NotificationStatus @default(PENDING) @map("roi_notification_status")
+  customerNotificationStatus NotificationStatus @default(PENDING) @map("customer_notification_status")
+  createdAt                  DateTime           @default(now()) @map("created_at")
+  updatedAt                  DateTime           @updatedAt @map("updated_at")
+
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([status])
+  @@index([email])
+  @@index([source])
+  @@map("leads")
+}
+
+model NewsletterSubscriber {
+  id               String           @id @default(cuid())
+  email            String           @unique
+  name             String?
+  source           String?
+  subscriptionType SubscriptionType @default(NEWSLETTER) @map("subscription_type")
+  status           SubscriberStatus @default(SUBSCRIBED)
+  subscribedAt     DateTime         @default(now()) @map("subscribed_at")
+  unsubscribedAt   DateTime?        @map("unsubscribed_at")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("newsletter_subscribers")
+}

@@ -93,7 +93,7 @@ const MenuPage = () => {
             />
           </section>
           <HomeServicesGrid/>
-          <ServicesShowcase />
+          {/* <ServicesShowcase /> */}
           <ClientsStats />
           <HomeAbout />
           <HomeTeamGallery />

@@ -1,14 +1,11 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { withinRateLimit } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
   try {
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ error: 'Email service is not configured' }, { status: 503 });
-    }
-
-    const resend = new Resend(apiKey);
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ?? 'unknown';
+    if (!withinRateLimit(`career:${ip}`, 5)) return NextResponse.json({ error: 'Too many requests.' }, { status: 429 });
+    if (!process.env.BREVO_API_KEY || !process.env.BREVO_FROM_EMAIL || !process.env.LEADS_NOTIFICATION_EMAIL) return NextResponse.json({ error: 'Email service is not configured' }, { status: 503 });
     const formData = await request.formData();
     
     const data = {
@@ -24,19 +21,23 @@ export async function POST(request: Request) {
     
     const resume = formData.get('resume') as File | null;
     
-    const attachments = [];
+    const attachments: { name: string; content: string }[] = [];
     if (resume && resume.size > 0) {
+      if (resume.size > 5 * 1024 * 1024) return NextResponse.json({ error: 'Resume must be under 5 MB.' }, { status: 400 });
       const buffer = await resume.arrayBuffer();
       attachments.push({
-        filename: resume.name,
-        content: Buffer.from(buffer),
+        name: resume.name,
+        content: Buffer.from(buffer).toString('base64'),
       });
     }
     
-    const { error } = await resend.emails.send({
-      from: 'ROI Makers <devanshjagtap2@gmail.com>',
-      to: 'info@roimakers.in',
-      replyTo: data.email,
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: { 'api-key': process.env.BREVO_API_KEY, 'content-type': 'application/json' },
+      body: JSON.stringify({
+      sender: { email: process.env.BREVO_FROM_EMAIL, name: process.env.BREVO_FROM_NAME ?? 'ROI Makers' },
+      to: [{ email: process.env.LEADS_NOTIFICATION_EMAIL }],
+      replyTo: { email: data.email },
       subject: `Job Application: ${data.position}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -64,12 +65,13 @@ export async function POST(request: Request) {
           </p>
         </div>
       `,
-      attachments: attachments.length > 0 ? attachments : undefined,
+      attachment: attachments.length > 0 ? attachments : undefined,
+      }),
     });
 
-    if (error) {
-      console.error('Resend error:', error);
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    if (!response.ok) {
+      console.error('Brevo error:', response.status);
+      return NextResponse.json({ error: 'Unable to send application' }, { status: 502 });
     }
 
     return NextResponse.json({ success: true });

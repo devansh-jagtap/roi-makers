@@ -1,4 +1,3 @@
-// admin index page
-export default function DashboardPage() {
-  return <div>Admin Dashboard</div>;
-}
+import { LeadStatus, SubscriberStatus } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
+export default async function DashboardPage() { const week = new Date(Date.now() - 7 * 864e5), month = new Date(Date.now() - 30 * 864e5); const [total, subscribers, activeSubscribers, weekly, monthly, grouped] = await Promise.all([prisma.lead.count(), prisma.newsletterSubscriber.count(), prisma.newsletterSubscriber.count({ where: { status: SubscriberStatus.SUBSCRIBED } }), prisma.lead.count({ where: { createdAt: { gte: week } } }), prisma.lead.count({ where: { createdAt: { gte: month } } }), prisma.lead.groupBy({ by: ['status'], _count: { _all: true } })]); const map = Object.fromEntries(grouped.map((item) => [item.status, item._count._all])); const cards = [['Total leads', total], ...Object.values(LeadStatus).map((s) => [s, map[s] ?? 0]), ['Leads this week', weekly], ['Leads this month', monthly], ['Conversion rate', total ? `${Math.round(((map.WON ?? 0) / total) * 100)}%` : '0%'], ['Subscribers', subscribers], ['Active subscribers', activeSubscribers]]; return <><h1 className="text-3xl font-bold mb-6">Overview</h1><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{cards.map(([label, value]) => <section key={String(label)} className="rounded-2xl bg-white p-5 shadow-sm"><p className="text-xs uppercase tracking-wide text-stone-500">{label}</p><p className="mt-2 text-3xl font-bold">{value}</p></section>)}</div></>; }

@@ -12,6 +12,7 @@ export default function ContactPage() {
     service: '',
     budget: '',
     message: '',
+    website: '',
   });
 
   useEffect(() => {
@@ -58,10 +59,11 @@ export default function ContactPage() {
     e.preventDefault();
     
     try {
-      const response = await fetch('/api/contact', {
+      const params = new URLSearchParams(window.location.search);
+      const response = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, source: params.get('source') || 'website', utmSource: params.get('utm_source'), utmMedium: params.get('utm_medium'), utmCampaign: params.get('utm_campaign'), utmTerm: params.get('utm_term'), utmContent: params.get('utm_content'), landingPage: window.location.href, referrer: document.referrer }),
       });
       
       if (response.ok) {
@@ -74,6 +76,7 @@ export default function ContactPage() {
           service: '',
           budget: '',
           message: '',
+          website: '',
         });
       } else {
         const error = await response.json();
@@ -102,7 +105,7 @@ export default function ContactPage() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <p className="text-xs uppercase tracking-[0.5em] text-[#8c7b62] mb-6 clash-display-font">
+            <p className="text-lg font-semibold uppercase tracking-[0.5em] text-[#8c7b62] mb-6 clash-display-font">
               Contact Us
             </p>
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-[#060010] mb-6">
@@ -164,6 +167,10 @@ export default function ContactPage() {
                 <p className="text-base md:text-lg text-[#312619]/80 archivo-font leading-relaxed">
                   Share a few details with us and our team will reach out shortly. We'll understand your needs, your goals, and see how we can help you grow.
                 </p>
+              </div>
+              <div className="hidden" aria-hidden="true">
+                <label htmlFor="website">Website</label>
+                <input id="website" name="website" value={formData.website} onChange={handleChange} tabIndex={-1} autoComplete="off" />
               </div>
 
               <div className="space-y-6">

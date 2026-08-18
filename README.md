@@ -1,6 +1,20 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## ROI Makers
 
-## Getting Started
+The public site is backed by a Prisma/Supabase lead and subscriber system, Supabase Auth dashboard, Brevo transactional mail, and XLSX/CSV exports.
+
+### Setup
+
+1. Copy `.env.example` to `.env.local` and add Supabase, database, and Brevo credentials.
+2. Apply `prisma/migrations/20260818000000_initial/migration.sql` to the Supabase database (or run `npx prisma migrate deploy`).
+3. Run `prisma/supabase-rls.sql` in the Supabase SQL editor.
+4. Create the first user in Supabase Auth, then create its `profiles` row with `role = 'ADMIN'` and the Auth user UUID in `auth_user_id`.
+5. Run `npm run dev`.
+
+Dashboard routes: `/dashboard`, `/dashboard/leads`, `/dashboard/analytics`, `/dashboard/subscribers`, `/dashboard/export`, and `/dashboard/team` (admin only).
+
+`/api/leads` persists a lead before attempting Brevo notifications. `/api/subscribers` handles explicit newsletter/blog opt-ins and `/api/unsubscribe` preserves records while marking them unsubscribed.
+
+## Development
 
 First, run the development server:
 

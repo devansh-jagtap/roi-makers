@@ -105,10 +105,11 @@ export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [newsletterEmail, setNewsletterEmail] = useState('');
 
-  const handleNewsletterSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleNewsletterSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const email = newsletterEmail.trim();
-    window.location.assign(`/contact?email=${encodeURIComponent(email)}#contact-form`);
+    const response = await fetch('/api/subscribers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, source: 'blog', subscriptionType: 'BLOG' }) });
+    if (response.ok) { setNewsletterEmail(''); alert('Thanks! Please check your inbox for a welcome email.'); } else { alert('We could not subscribe you right now. Please try again.'); }
   };
 
   const filteredPosts =
