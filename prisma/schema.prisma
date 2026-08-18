@@ -46,6 +46,7 @@ model Profile {
   active     Boolean  @default(true)
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
+  assignedLeads Lead[]
 
   @@map("profiles")
 }
@@ -72,12 +73,15 @@ model Lead {
   customerNotificationStatus NotificationStatus @default(PENDING) @map("customer_notification_status")
   createdAt                  DateTime           @default(now()) @map("created_at")
   updatedAt                  DateTime           @updatedAt @map("updated_at")
+  assignedToId               String?            @map("assigned_to_id")
+  assignedTo                 Profile?           @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
 
   @@index([createdAt])
   @@index([updatedAt])
   @@index([status])
   @@index([email])
   @@index([source])
+  @@index([assignedToId])
   @@map("leads")
 }
 

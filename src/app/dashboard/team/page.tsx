@@ -7,5 +7,13 @@ export default async function TeamPage() {
   await requireProfile(Role.ADMIN); 
   const team = await prisma.profile.findMany({ orderBy: { createdAt: 'asc' } }); 
   
-  return <TeamClient initialTeam={JSON.parse(JSON.stringify(team))} />; 
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight text-[#060010]">Team Management</h1>
+        <p className="text-stone-500 mt-1">Invite and manage team members.</p>
+      </div>
+      <TeamClient initialTeam={JSON.parse(JSON.stringify(team))} />
+    </div>
+  );
 }

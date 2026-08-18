@@ -1,5 +1,53 @@
-import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { requireProfile } from '@/lib/auth';
-import { LeadStatusControl } from '@/components/dashboard/LeadStatusControl';
-export default async function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) { await requireProfile(); const { id } = await params; const lead = await prisma.lead.findUnique({ where: { id } }); if (!lead) notFound(); const fields = [['Name', lead.name], ['Email', lead.email], ['Phone', lead.phone], ['Company', lead.company], ['Service', lead.service], ['Budget', lead.budget], ['Message', lead.message], ['Source', lead.source], ['UTM Source', lead.utmSource], ['UTM Medium', lead.utmMedium], ['UTM Campaign', lead.utmCampaign], ['UTM Term', lead.utmTerm], ['UTM Content', lead.utmContent], ['Landing page', lead.landingPage], ['Referrer', lead.referrer], ['Created', lead.createdAt.toLocaleString()], ['Updated', lead.updatedAt.toLocaleString()], ['ROI notification', lead.roiNotificationStatus], ['Customer notification', lead.customerNotificationStatus]]; return <><h1 className="text-3xl font-bold">{lead.name}</h1><div className="my-5"><LeadStatusControl id={lead.id} status={lead.status} /></div><dl className="grid gap-4 rounded-xl bg-white p-5 md:grid-cols-2">{fields.map(([name, value]) => <div key={name}><dt className="text-xs uppercase text-stone-500">{name}</dt><dd className="mt-1 break-words whitespace-pre-wrap">{value ?? '—'}</dd></div>)}</dl></>; }
+import { notFound } from 'next/navigation';
+import { LeadDetailClient } from '@/components/dashboard/LeadDetailClient';
+
+export default async function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const profile = await requireProfile();
+  const { id } = await params;
+
+  const lead = await prisma.lead.findUnique({
+    where: { id },
+    include: {
+      assignedTo: {
+        select: { id: true, name: true, email: true }
+      }
+    }
+  });
+
+  if (!lead) {
+    notFound();
+  }
+
+  // If Member, they can view any lead but not reassign.
+  // We'll fetch active team members only for admins so they can assign.
+  let teamMembers: { id: string; name: string | null; email: string }[] = [];
+  if (profile.role === 'ADMIN') {
+    teamMembers = await prisma.profile.findMany({
+      where: { active: true },
+      select: { id: true, name: true, email: true }
+    });
+  }
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-[#060010]">
+            Lead Details
+          </h1>
+          <p className="text-stone-500 mt-1">
+            View and manage information for {lead.name}
+          </p>
+        </div>
+      </div>
+
+      <LeadDetailClient 
+        lead={JSON.parse(JSON.stringify(lead))}
+        profile={JSON.parse(JSON.stringify(profile))}
+        teamMembers={JSON.parse(JSON.stringify(teamMembers))}
+      />
+    </div>
+  );
+}
