@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { LeadStatus } from '@prisma/client';
 import { Search, Filter, LayoutGrid, List, CheckCircle, Clock } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 type Profile = {
   id: string;
@@ -63,7 +66,7 @@ export function LeadsClient({ initialLeads, profile }: { initialLeads: Lead[], p
   };
 
   const renderTable = () => (
-    <div className="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+    <Card className="overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="bg-stone-50 text-stone-500 text-xs uppercase font-medium border-b border-stone-200">
@@ -110,13 +113,14 @@ export function LeadsClient({ initialLeads, profile }: { initialLeads: Lead[], p
                 </td>
                 <td className="px-5 py-4 text-right">
                   {!lead.assignedToId && profile.role === 'MEMBER' && (
-                    <button 
+                    <Button 
+                      size="sm"
                       onClick={() => handleClaim(lead.id)}
                       disabled={claiming === lead.id}
-                      className="px-3 py-1.5 bg-[#f26b38] hover:bg-[#d95b2b] text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                      className="bg-[#f26b38] hover:bg-[#d95b2b] text-white"
                     >
                       {claiming === lead.id ? 'Claiming...' : 'Claim'}
-                    </button>
+                    </Button>
                   )}
                   {profile.role === 'ADMIN' && (
                     <Link href={`/dashboard/leads/${lead.id}`} className="text-sm text-stone-500 hover:text-[#060010] font-medium">
@@ -136,7 +140,7 @@ export function LeadsClient({ initialLeads, profile }: { initialLeads: Lead[], p
           </tbody>
         </table>
       </div>
-    </div>
+    </Card>
   );
 
   const renderKanban = () => {
@@ -160,10 +164,9 @@ export function LeadsClient({ initialLeads, profile }: { initialLeads: Lead[], p
               
               <div className="flex-1 overflow-y-auto space-y-3 pr-1">
                 {colLeads.map(lead => (
-                  <div key={lead.id} className="bg-white p-4 rounded-lg shadow-sm border border-stone-200 hover:border-[#f26b38]/50 transition-colors cursor-pointer relative group">
+                  <Card key={lead.id} className="relative group hover:border-[#f26b38]/50 transition-colors">
                     <Link href={`/dashboard/leads/${lead.id}`} className="absolute inset-0 z-0" />
-                    
-                    <div className="relative z-10">
+                    <CardContent className="p-4 relative z-10">
                       <div className="flex justify-between items-start mb-2">
                         <h4 className="font-semibold text-[#060010] text-sm line-clamp-1">{lead.name}</h4>
                         <span className="text-[10px] text-stone-400 whitespace-nowrap ml-2">
@@ -187,17 +190,19 @@ export function LeadsClient({ initialLeads, profile }: { initialLeads: Lead[], p
                         )}
                         
                         {!lead.assignedToId && profile.role === 'MEMBER' && (
-                          <button 
+                          <Button 
+                            size="sm"
+                            variant="outline"
                             onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleClaim(lead.id); }}
                             disabled={claiming === lead.id}
-                            className="px-2 py-1 bg-white border border-[#f26b38] text-[#f26b38] hover:bg-[#f26b38] hover:text-white text-[10px] font-medium rounded transition-colors disabled:opacity-50"
+                            className="h-6 px-2 text-[10px] border-[#f26b38] text-[#f26b38] hover:bg-[#f26b38] hover:text-white"
                           >
                             {claiming === lead.id ? '...' : 'Claim'}
-                          </button>
+                          </Button>
                         )}
                       </div>
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </div>
@@ -209,15 +214,15 @@ export function LeadsClient({ initialLeads, profile }: { initialLeads: Lead[], p
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-stone-200">
+      <Card className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4">
         <div className="flex-1 w-full md:max-w-md relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={18} />
-          <input 
+          <Input 
             type="text" 
             placeholder="Search leads..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#f26b38]/20 focus:border-[#f26b38] transition-all"
+            className="pl-10 w-full"
           />
         </div>
         
@@ -227,7 +232,7 @@ export function LeadsClient({ initialLeads, profile }: { initialLeads: Lead[], p
             <select 
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-[#f26b38]/20 focus:border-[#f26b38] transition-all"
+              className="w-full pl-9 pr-4 h-9 bg-transparent border border-input rounded-md text-sm appearance-none focus:outline-none focus:ring-1 focus:ring-ring transition-colors shadow-sm"
             >
               <option value="ALL">All Statuses</option>
               {Object.values(LeadStatus).map(s => <option key={s} value={s}>{s}</option>)}
@@ -251,7 +256,7 @@ export function LeadsClient({ initialLeads, profile }: { initialLeads: Lead[], p
             </button>
           </div>
         </div>
-      </div>
+      </Card>
 
       {view === 'table' ? renderTable() : renderKanban()}
     </div>

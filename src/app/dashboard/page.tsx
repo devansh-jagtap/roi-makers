@@ -7,6 +7,7 @@ import {
   Trophy, UserPlus, ShieldAlert, Clock,
   ArrowRight
 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 export default async function DashboardPage() {
   const profile = await requireProfile();
@@ -83,8 +84,8 @@ export default async function DashboardPage() {
         {metrics.map((metric, idx) => {
           const Icon = metric.icon;
           return (
-            <div key={idx} className={`rounded-2xl p-5 shadow-sm border border-stone-100 ${metric.bg}`}>
-              <div className="flex justify-between items-start">
+            <Card key={idx} className={metric.bg}>
+              <CardContent className="p-5 flex justify-between items-start">
                 <div>
                   <p className="text-xs uppercase tracking-wider font-semibold text-stone-500 mb-1">
                     {metric.label}
@@ -96,74 +97,76 @@ export default async function DashboardPage() {
                 <div className={`p-2 rounded-lg bg-white/60 shadow-sm`}>
                   <Icon size={20} className={metric.color} />
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           );
         })}
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-        <div className="p-5 border-b border-stone-100 flex justify-between items-center">
-          <h2 className="text-lg font-semibold text-[#060010]">Recent Leads</h2>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between border-b border-stone-100 pb-4">
+          <CardTitle className="text-lg font-semibold text-[#060010]">Recent Leads</CardTitle>
           <Link href="/dashboard/leads" className="text-sm text-[#f26b38] hover:underline flex items-center gap-1 font-medium">
             View all <ArrowRight size={16} />
           </Link>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-stone-50 text-stone-500 text-xs uppercase font-medium">
-              <tr>
-                <th className="px-5 py-3">Lead</th>
-                <th className="px-5 py-3">Status</th>
-                <th className="px-5 py-3">Assigned To</th>
-                <th className="px-5 py-3 text-right">Created</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-stone-100">
-              {recentLeads.map((lead) => (
-                <tr key={lead.id} className="hover:bg-stone-50/50 transition-colors">
-                  <td className="px-5 py-4">
-                    <Link href={`/dashboard/leads/${lead.id}`} className="font-medium text-[#060010] hover:text-[#f26b38]">
-                      {lead.name}
-                    </Link>
-                    <div className="text-stone-500 text-xs mt-0.5">{lead.company || lead.email}</div>
-                  </td>
-                  <td className="px-5 py-4">
-                    <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium 
-                      ${lead.status === 'NEW' ? 'bg-blue-50 text-blue-700' :
-                        lead.status === 'WON' ? 'bg-green-50 text-green-700' :
-                        lead.status === 'LOST' ? 'bg-red-50 text-red-700' :
-                        lead.status === 'QUALIFIED' ? 'bg-purple-50 text-purple-700' :
-                        'bg-stone-100 text-stone-700'
-                      }`}>
-                      {lead.status}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4">
-                    {lead.assignedTo ? (
-                      <span className="text-sm text-stone-700">{lead.assignedTo.name || lead.assignedTo.email}</span>
-                    ) : (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">
-                        Unassigned
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-5 py-4 text-right text-stone-500">
-                    {new Date(lead.createdAt).toLocaleDateString()}
-                  </td>
-                </tr>
-              ))}
-              {recentLeads.length === 0 && (
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-stone-50 text-stone-500 text-xs uppercase font-medium">
                 <tr>
-                  <td colSpan={4} className="px-5 py-8 text-center text-stone-500">
-                    No recent leads found.
-                  </td>
+                  <th className="px-5 py-3">Lead</th>
+                  <th className="px-5 py-3">Status</th>
+                  <th className="px-5 py-3">Assigned To</th>
+                  <th className="px-5 py-3 text-right">Created</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+              </thead>
+              <tbody className="divide-y divide-stone-100">
+                {recentLeads.map((lead) => (
+                  <tr key={lead.id} className="hover:bg-stone-50/50 transition-colors">
+                    <td className="px-5 py-4">
+                      <Link href={`/dashboard/leads/${lead.id}`} className="font-medium text-[#060010] hover:text-[#f26b38]">
+                        {lead.name}
+                      </Link>
+                      <div className="text-stone-500 text-xs mt-0.5">{lead.company || lead.email}</div>
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium 
+                        ${lead.status === 'NEW' ? 'bg-blue-50 text-blue-700' :
+                          lead.status === 'WON' ? 'bg-green-50 text-green-700' :
+                          lead.status === 'LOST' ? 'bg-red-50 text-red-700' :
+                          lead.status === 'QUALIFIED' ? 'bg-purple-50 text-purple-700' :
+                          'bg-stone-100 text-stone-700'
+                        }`}>
+                        {lead.status}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4">
+                      {lead.assignedTo ? (
+                        <span className="text-sm text-stone-700">{lead.assignedTo.name || lead.assignedTo.email}</span>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">
+                          Unassigned
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-5 py-4 text-right text-stone-500">
+                      {new Date(lead.createdAt).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))}
+                {recentLeads.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="px-5 py-8 text-center text-stone-500">
+                      No recent leads found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

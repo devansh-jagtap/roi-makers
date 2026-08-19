@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import SiteHeader from "@/components/global/SiteHeader";
-import LenisProvider from "@/app/providers/LenisProvider";
+import ClientPathWrapper from "@/components/global/ClientPathWrapper";
 import { ThemeProvider } from "@/app/providers/ThemeProvider";
 import ThemeToggle from "@/components/ui/theme-toggle";
 
@@ -19,11 +18,10 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         <ThemeProvider>
-          <LenisProvider>
-            <SiteHeader/>
+          <ClientPathWrapper>
             {children}
             <ThemeToggle />
-          </LenisProvider>
+          </ClientPathWrapper>
         </ThemeProvider>
       </body>
     </html>

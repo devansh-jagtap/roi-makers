@@ -1,2 +1,22 @@
 import { prisma } from '@/lib/prisma';
-export default async function AnalyticsPage() { const [byStatus, byService, bySource] = await Promise.all([prisma.lead.groupBy({ by: ['status'], _count: { _all: true } }), prisma.lead.groupBy({ by: ['service'], _count: { _all: true } }), prisma.lead.groupBy({ by: ['source'], _count: { _all: true } })]); const groups = [['Leads by status', byStatus.map((r) => [r.status, r._count._all])], ['Leads by service', byService.map((r) => [r.service, r._count._all])], ['Leads by source', bySource.map((r) => [r.source ?? 'Unknown', r._count._all])]]; return <><h1 className="text-3xl font-bold">Analytics</h1><div className="mt-6 grid gap-5 md:grid-cols-3">{groups.map(([title, rows]) => <section key={String(title)} className="rounded-xl bg-white p-5"><h2 className="font-bold">{title}</h2><ul className="mt-3 space-y-2">{(rows as [string, number][]).map(([name, count]) => <li key={name} className="flex justify-between"><span>{name}</span><b>{count}</b></li>)}</ul></section>)}</div></>; }
+import { ChartAreaInteractive } from '@/components/dashboard/ChartAreaInteractive';
+import { ChartPieLabelList } from '@/components/dashboard/ChartPieLabelList';
+import { ChartBarInteractive } from '@/components/dashboard/ChartBarInteractive';
+
+export default async function AnalyticsPage() { 
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight text-[#060010]">Analytics</h1>
+        <p className="text-stone-500 mt-1">Visualize lead distributions and metrics.</p>
+      </div>
+      <div className="grid gap-6">
+        <ChartAreaInteractive />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <ChartPieLabelList />
+          <ChartBarInteractive />
+        </div>
+      </div>
+    </div>
+  ); 
+}
