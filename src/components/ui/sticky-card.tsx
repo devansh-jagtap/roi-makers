@@ -125,7 +125,7 @@ const StickyCard002 = ({
                 cardRefs.current[i] = el;
               }}
               className={cn(
-                "absolute inset-0 rounded-[40px] shadow-2xl",
+                "absolute inset-0 rounded-[40px] shadow-2xl sticky-card-item",
                 imageClassName
               )}
               style={{
@@ -137,9 +137,6 @@ const StickyCard002 = ({
               {/* Card Content */}
               <div 
                 className="relative h-full w-full p-6 md:p-8 lg:p-10 flex flex-col justify-between overflow-y-auto"
-                style={{ 
-                  color: card.bgColor === "#ffffff" || card.bgColor === "#a0f0e8" ? "#000000" : "#ffffff"
-                }}
               >
                 {/* Image */}
                 <div className="w-32 h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 mx-auto mb-4 md:mb-6 rounded-3xl overflow-hidden shadow-lg flex-shrink-0">
@@ -151,12 +148,18 @@ const StickyCard002 = ({
                 </div>
                 
                 {/* Title */}
-                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 text-center leading-tight flex-shrink-0">
+                <h2 
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 text-center leading-tight flex-shrink-0"
+                  style={{ color: (card.bgColor === "#ffffff" || card.bgColor === "#a0f0e8") ? "#000000" : "#ffffff" }}
+                >
                   {card.title || "Title Here"}
                 </h2>
                 
                 {/* Description */}
-                <p className="text-sm md:text-base lg:text-lg leading-relaxed text-center max-w-2xl mx-auto opacity-90 flex-shrink-0">
+                <p 
+                  className="text-sm md:text-base lg:text-lg leading-relaxed text-center max-w-2xl mx-auto flex-shrink-0"
+                  style={{ color: (card.bgColor === "#ffffff" || card.bgColor === "#a0f0e8") ? "#111111" : "#ffffffcc" }}
+                >
                   {card.description || "Add your description text here. This is placeholder content that shows the layout and design of the card."}
                 </p>
                 

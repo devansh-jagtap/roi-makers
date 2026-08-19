@@ -2,7 +2,6 @@
 
 import { TrendingUp } from "lucide-react"
 import { LabelList, Pie, PieChart } from "recharts"
-
 import {
   Card,
   CardContent,
@@ -18,48 +17,41 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 
-export const description = "A pie chart with a label list"
+type ServiceEntry = { service: string; count: number };
 
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
+const COLORS = [
+  "var(--chart-1, #f26b38)",
+  "var(--chart-2, #3b82f6)",
+  "var(--chart-3, #10b981)",
+  "var(--chart-4, #8b5cf6)",
+  "var(--chart-5, #f59e0b)",
+  "var(--chart-1, #ec4899)",
 ]
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "var(--chart-1, #f26b38)",
-  },
-  safari: {
-    label: "Safari",
-    color: "var(--chart-2, #3b82f6)",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "var(--chart-3, #10b981)",
-  },
-  edge: {
-    label: "Edge",
-    color: "var(--chart-4, #8b5cf6)",
-  },
-  other: {
-    label: "Other",
-    color: "var(--chart-5, #f59e0b)",
-  },
-} satisfies ChartConfig
+export function ChartPieLabelList({ data }: { data: ServiceEntry[] }) {
+  const chartData = data.map((item, index) => ({
+    service: item.service,
+    visitors: item.count,
+    fill: COLORS[index % COLORS.length],
+  }))
 
-export function ChartPieLabelList() {
+  const chartConfig: ChartConfig = {
+    visitors: { label: "Leads" },
+    ...Object.fromEntries(
+      data.map((item, index) => [
+        item.service,
+        { label: item.service, color: COLORS[index % COLORS.length] },
+      ])
+    ),
+  }
+
+  const total = data.reduce((sum, d) => sum + d.count, 0)
+
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Label List</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Leads by Service</CardTitle>
+        <CardDescription>Service breakdown for all leads</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -72,13 +64,11 @@ export function ChartPieLabelList() {
             />
             <Pie data={chartData} dataKey="visitors">
               <LabelList
-                dataKey="browser"
+                dataKey="service"
                 className="fill-background"
                 stroke="none"
-                fontSize={12}
-                formatter={(value) =>
-                  chartConfig[value as keyof typeof chartConfig]?.label
-                }
+                fontSize={11}
+                formatter={(value: string) => (value?.length > 10 ? value.slice(0, 10) + '…' : value)}
               />
             </Pie>
           </PieChart>
@@ -86,10 +76,10 @@ export function ChartPieLabelList() {
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 leading-none font-medium">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+          {total} total leads across {data.length} services <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          All-time service distribution
         </div>
       </CardFooter>
     </Card>

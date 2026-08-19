@@ -376,7 +376,7 @@ html.dark {
   color-scheme: dark;
 }
 
-html.dark [style*="background-color"] {
+html.dark [style*="background-color"]:not(.sticky-card-item) {
   background-color: var(--background) !important;
 }
 
