@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Link from 'next/link';
 import {
@@ -8,7 +9,32 @@ import {
   IconBrandInstagram,
 } from "@tabler/icons-react";
 
-const SiteFooter = () => (
+  const SiteFooter = () => {
+    const [email, setEmail] = React.useState('');
+    const [status, setStatus] = React.useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+    const [message, setMessage] = React.useState('');
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!email) return;
+      setStatus('loading');
+      try {
+        const res = await fetch('/api/subscribers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, subscriptionType: 'BOTH' })
+        });
+        if (!res.ok) throw new Error('Failed to subscribe');
+        setStatus('success');
+        setMessage('Subscribed successfully!');
+        setEmail('');
+      } catch (err) {
+        setStatus('error');
+        setMessage('Failed to subscribe. Please try again.');
+      }
+    };
+
+    return (
   <footer className="w-full flex items-center justify-center py-8 sm:py-12 bg-background">
     <div className="w-full max-w-[95vw] sm:max-w-[90vw] bg-black text-white rounded-2xl sm:rounded-[2.5rem] p-6 sm:p-12 lg:p-20 min-h-[30rem] sm:min-h-[35rem] lg:min-h-[40rem] flex flex-col gap-6 sm:gap-8 items-center justify-center border border-[#222] shadow-2xl">
       
@@ -20,18 +46,27 @@ const SiteFooter = () => (
           <div className="text-xl sm:text-2xl lg:text-3xl font-semibold text-center lg:text-left w-full">
             Stay updated with ROI™ Blog's
           </div>
-          <form className="w-full flex flex-col sm:flex-row gap-3 sm:gap-2">
+          <form onSubmit={handleSubmit} className="w-full flex flex-col sm:flex-row gap-3 sm:gap-2 relative">
             <input 
               type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={status === 'loading'}
               placeholder="Your Email Address" 
-              className="flex-1 rounded-full px-4 sm:px-6 py-3 sm:py-4 bg-[#222] text-white placeholder:text-gray-400 focus:outline-none text-sm sm:text-base" 
+              className="flex-1 rounded-full px-4 sm:px-6 py-3 sm:py-4 bg-[#222] text-white placeholder:text-gray-400 focus:outline-none text-sm sm:text-base disabled:opacity-50" 
             />
             <button 
               type="submit" 
-              className="rounded-full bg-white text-black px-6 sm:px-8 py-3 sm:py-4 font-bold text-lg sm:text-xl flex items-center justify-center whitespace-nowrap"
+              disabled={status === 'loading'}
+              className="rounded-full bg-white text-black px-6 sm:px-8 py-3 sm:py-4 font-bold text-lg sm:text-xl flex items-center justify-center whitespace-nowrap disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              Subscribe →
+              {status === 'loading' ? 'Subscribing...' : 'Subscribe →'}
             </button>
+            {message && (
+              <div className={`absolute -bottom-8 left-0 text-sm ${status === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+                {message}
+              </div>
+            )}
           </form>
           
           {/* Social Icons */}
@@ -63,7 +98,7 @@ const SiteFooter = () => (
           {/* Column 1: Core Navigation */}
           <div className="flex flex-col gap-2 sm:gap-3 sm:border-r border-white sm:pr-6 lg:pr-8 text-center sm:text-left">
             <Link href="/services" className="hover:text-[#FFAA17] transition-colors text-sm sm:text-base">Services</Link>
-            <Link href="/work" className="hover:text-[#FFAA17] transition-colors text-sm sm:text-base">Work</Link>
+            <Link href="/projects" className="hover:text-[#FFAA17] transition-colors text-sm sm:text-base">Work</Link>
             <Link href="/about" className="hover:text-[#FFAA17] transition-colors text-sm sm:text-base">About</Link>
           </div>
 
@@ -77,7 +112,7 @@ const SiteFooter = () => (
           {/* Column 3: Legal & Registration */}
           <div className="flex flex-col gap-2 sm:gap-3 sm:pr-6 lg:pr-8 text-center sm:text-left">
             <Link href="/privacy-policy" className="hover:text-[#FFAA17] transition-colors text-sm sm:text-base">Privacy Policy</Link>
-            <Link href="/terms-and-conditions" className="hover:text-[#FFAA17] transition-colors text-sm sm:text-base">Terms &amp; Conditions</Link>
+            <Link href="/terms-conditions" className="hover:text-[#FFAA17] transition-colors text-sm sm:text-base">Terms &amp; Conditions</Link>
             <span className="text-sm sm:text-base opacity-80">Company Number: 9009500202</span>
           </div>
         </div>
@@ -105,6 +140,7 @@ const SiteFooter = () => (
 
     </div>
   </footer>
-);
+  );
+};
 
 export default SiteFooter;

@@ -101,3 +101,34 @@ model NewsletterSubscriber {
   @@index([createdAt])
   @@map("newsletter_subscribers")
 }
+
+enum CareerApplicationStatus {
+  NEW
+  REVIEWING
+  SHORTLISTED
+  REJECTED
+  HIRED
+}
+
+model CareerApplication {
+  id          String                  @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  position    String
+  linkedin    String?
+  portfolio   String?
+  experience  String?
+  message     String                  @map("message")
+  resumeName  String?                 @map("resume_name")
+  resumeData  String?                 @map("resume_data")
+  status      CareerApplicationStatus @default(NEW)
+  createdAt   DateTime                @default(now()) @map("created_at")
+  updatedAt   DateTime                @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+  @@map("career_applications")
+}
+

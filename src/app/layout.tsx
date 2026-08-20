@@ -3,6 +3,7 @@ import "./globals.css";
 import ClientPathWrapper from "@/components/global/ClientPathWrapper";
 import { ThemeProvider } from "@/app/providers/ThemeProvider";
 import ThemeToggle from "@/components/ui/theme-toggle";
+import { ToastProvider } from "@/components/ui/toast";
 
 export const metadata: Metadata = {
   title: "ROI-MAKERS",
@@ -18,10 +19,12 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         <ThemeProvider>
+          <ToastProvider>
           <ClientPathWrapper>
             {children}
             <ThemeToggle />
           </ClientPathWrapper>
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>

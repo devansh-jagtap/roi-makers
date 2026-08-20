@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import SiteFooter from '@/components/layout/SiteFooter';
+import { useToast } from '@/components/ui/toast';
 
 type BlogPost = {
   id: string;
@@ -104,12 +105,14 @@ const categories = ['All', 'Strategy', 'CRO', 'Analytics', 'Creative', 'Media'];
 export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [subscribing, setSubscribing] = useState(false);
+  const { toast } = useToast();
 
   const handleNewsletterSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const email = newsletterEmail.trim();
-    const response = await fetch('/api/subscribers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, source: 'blog', subscriptionType: 'BLOG' }) });
-    if (response.ok) { setNewsletterEmail(''); alert('Thanks! Please check your inbox for a welcome email.'); } else { alert('We could not subscribe you right now. Please try again.'); }
+    if (subscribing) return;
+    setSubscribing(true);
+    try { const email = newsletterEmail.trim(); const response = await fetch('/api/subscribers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, source: 'blog', subscriptionType: 'BLOG' }) }); if (response.ok) { setNewsletterEmail(''); toast("You're subscribed successfully.", 'success'); } else { const data = await response.json().catch(() => null); toast(data?.error || 'We could not subscribe you right now. Please try again.', 'error'); } } catch { toast('We could not subscribe you right now. Please try again.', 'error'); } finally { setSubscribing(false); }
   };
 
   const filteredPosts =
@@ -294,9 +297,10 @@ export default function BlogPage() {
               />
               <button
                 type="submit"
+                disabled={subscribing}
                 className="whitespace-nowrap rounded-full bg-primary px-8 py-4 text-sm font-semibold uppercase tracking-wider text-primary-foreground shadow-lg transition-all duration-300 hover:scale-105 hover:bg-primary/90 clash-display-font"
               >
-                Subscribe
+                {subscribing ? 'Subscribing...' : 'Subscribe'}
               </button>
             </form>
             <p className="text-xs text-[#E9E4D7]/60 mt-6 archivo-font">

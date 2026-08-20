@@ -20,6 +20,10 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
     notFound();
   }
 
+  if (profile.role === 'MEMBER' && lead.assignedToId !== null && lead.assignedToId !== profile.id) {
+    notFound();
+  }
+
   // If Member, they can view any lead but not reassign.
   // We'll fetch active team members only for admins so they can assign.
   let teamMembers: { id: string; name: string | null; email: string }[] = [];
@@ -44,9 +48,9 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
       </div>
 
       <LeadDetailClient 
-        lead={JSON.parse(JSON.stringify(lead))}
-        profile={JSON.parse(JSON.stringify(profile))}
-        teamMembers={JSON.parse(JSON.stringify(teamMembers))}
+        lead={lead}
+        profile={profile}
+        teamMembers={teamMembers}
       />
     </div>
   );

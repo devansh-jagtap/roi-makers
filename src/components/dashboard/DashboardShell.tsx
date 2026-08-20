@@ -8,6 +8,7 @@ import {
   Users, 
   UserCheck, 
   Mail, 
+  Briefcase,
   BarChart3, 
   Download, 
   Shield, 
@@ -16,19 +17,20 @@ import {
   LogOut 
 } from 'lucide-react';
 
-type ProfileData = {
+type Profile = {
   id: string;
   name: string | null;
   email: string;
   role: 'ADMIN' | 'MEMBER';
   active: boolean;
+  createdAt?: string | Date;
 };
 
 export function DashboardShell({ 
   profile, 
   children 
 }: { 
-  profile: ProfileData; 
+  profile: Profile; 
   children: React.ReactNode;
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -39,13 +41,11 @@ export function DashboardShell({
     { label: profile.role === 'ADMIN' ? 'Leads' : 'Available Leads', href: '/dashboard/leads', icon: Users },
     { label: 'My Leads', href: '/dashboard/my-leads', icon: UserCheck },
     { label: 'Subscribers', href: '/dashboard/subscribers', icon: Mail },
+    ...(profile.role === 'ADMIN' ? [{ label: 'Career Applications', href: '/dashboard/careers', icon: Briefcase }] : []),
     { label: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
     { label: 'Export', href: '/dashboard/export', icon: Download },
+    ...(profile.role === 'ADMIN' ? [{ label: 'Team', href: '/dashboard/team', icon: Shield }] : []),
   ];
-
-  if (profile.role === 'ADMIN') {
-    navItems.push({ label: 'Team', href: '/dashboard/team', icon: Shield });
-  }
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 

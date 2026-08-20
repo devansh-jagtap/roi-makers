@@ -8,6 +8,7 @@ import { Search, Filter, LayoutGrid, List, CheckCircle, Clock } from 'lucide-rea
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/toast';
 
 type Profile = {
   id: string;
@@ -21,7 +22,7 @@ type Lead = {
   company: string | null;
   service: string | null;
   status: LeadStatus;
-  createdAt: string;
+  createdAt: string | Date;
   assignedToId: string | null;
   assignedTo: { id: string; name: string | null; email: string } | null;
 };
@@ -31,7 +32,9 @@ export function LeadsClient({ initialLeads, profile }: { initialLeads: Lead[], p
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [claiming, setClaiming] = useState<string | null>(null);
+  const [assigning, setAssigning] = useState<string | null>(null);
   const router = useRouter();
+  const { toast } = useToast();
 
   const filteredLeads = initialLeads.filter(lead => {
     const matchesSearch = (lead.name?.toLowerCase() || '').includes(search.toLowerCase()) || 
@@ -46,14 +49,33 @@ export function LeadsClient({ initialLeads, profile }: { initialLeads: Lead[], p
     try {
       const res = await fetch(`/api/dashboard/leads/${leadId}/claim`, { method: 'POST' });
       if (res.ok) {
+        toast('Lead claimed successfully.', 'success');
         router.refresh();
       } else {
-        alert('Failed to claim lead. It might already be assigned.');
+        const data = await res.json().catch(() => null);
+        toast(data?.error || 'Unable to claim this lead. It may have already been assigned.', 'error');
       }
-    } catch (e) {
-      alert('Error claiming lead');
+    } catch {
+      toast('Unable to claim this lead. Please try again.', 'error');
     }
     setClaiming(null);
+  };
+
+  const handleAssignToMe = async (leadId: string) => {
+    setAssigning(leadId);
+    try {
+      const res = await fetch(`/api/dashboard/leads/${leadId}/assign-to-me`, { method: 'POST' });
+      if (res.ok) {
+        toast('Lead assigned to you successfully.', 'success');
+        router.refresh();
+      } else {
+        const data = await res.json().catch(() => null);
+        toast(data?.error || 'Unable to assign this lead. Please try again.', 'error');
+      }
+    } catch {
+      toast('Unable to assign this lead. Please try again.', 'error');
+    }
+    setAssigning(null);
   };
 
   const statusColors: Record<string, string> = {
@@ -112,21 +134,40 @@ export function LeadsClient({ initialLeads, profile }: { initialLeads: Lead[], p
                   {new Date(lead.createdAt).toLocaleDateString()}
                 </td>
                 <td className="px-5 py-4 text-right">
-                  {!lead.assignedToId && profile.role === 'MEMBER' && (
-                    <Button 
-                      size="sm"
-                      onClick={() => handleClaim(lead.id)}
-                      disabled={claiming === lead.id}
-                      className="bg-[#f26b38] hover:bg-[#d95b2b] text-white"
-                    >
-                      {claiming === lead.id ? 'Claiming...' : 'Claim'}
-                    </Button>
-                  )}
-                  {profile.role === 'ADMIN' && (
-                    <Link href={`/dashboard/leads/${lead.id}`} className="text-sm text-stone-500 hover:text-[#060010] font-medium">
-                      View
-                    </Link>
-                  )}
+                  <div className="flex items-center justify-end gap-2">
+                    {!lead.assignedToId && profile.role === 'MEMBER' && (
+                      <Button 
+                        size="sm"
+                        onClick={() => handleClaim(lead.id)}
+                        disabled={claiming === lead.id}
+                        className="bg-[#f26b38] hover:bg-[#d95b2b] text-white"
+                      >
+                        {claiming === lead.id ? 'Claiming...' : 'Claim'}
+                      </Button>
+                    )}
+                    {profile.role === 'ADMIN' && (
+                      <>
+                        {lead.assignedToId === profile.id ? (
+                          <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200">
+                            Assigned to you
+                          </span>
+                        ) : (
+                          <Button 
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleAssignToMe(lead.id)}
+                            disabled={assigning === lead.id}
+                            className="h-7 px-2.5 text-xs border-[#f26b38] text-[#f26b38] hover:bg-[#f26b38] hover:text-white"
+                          >
+                            {assigning === lead.id ? 'Assigning...' : 'Assign to me'}
+                          </Button>
+                        )}
+                        <Link href={`/dashboard/leads/${lead.id}`} className="text-sm text-stone-500 hover:text-[#060010] font-medium ml-1">
+                          View
+                        </Link>
+                      </>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
@@ -182,6 +223,9 @@ export function LeadsClient({ initialLeads, profile }: { initialLeads: Lead[], p
                             <div className="w-5 h-5 rounded-full bg-stone-200 flex items-center justify-center text-[10px] font-medium text-stone-600" title={lead.assignedTo.name || lead.assignedTo.email}>
                               {(lead.assignedTo.name || lead.assignedTo.email).charAt(0).toUpperCase()}
                             </div>
+                            <span className="text-[11px] text-stone-600 truncate max-w-[100px]">
+                              {lead.assignedTo.name || lead.assignedTo.email}
+                            </span>
                           </div>
                         ) : (
                           <span className="text-[10px] font-medium bg-stone-100 text-stone-500 px-1.5 py-0.5 rounded">
@@ -199,6 +243,25 @@ export function LeadsClient({ initialLeads, profile }: { initialLeads: Lead[], p
                           >
                             {claiming === lead.id ? '...' : 'Claim'}
                           </Button>
+                        )}
+                        {profile.role === 'ADMIN' && (
+                          <>
+                            {lead.assignedToId === profile.id ? (
+                              <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
+                                Assigned to you
+                              </span>
+                            ) : (
+                              <Button 
+                                size="sm"
+                                variant="outline"
+                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAssignToMe(lead.id); }}
+                                disabled={assigning === lead.id}
+                                className="h-6 px-2 text-[10px] border-[#f26b38] text-[#f26b38] hover:bg-[#f26b38] hover:text-white"
+                              >
+                                {assigning === lead.id ? '...' : 'Assign to me'}
+                              </Button>
+                            )}
+                          </>
                         )}
                       </div>
                     </CardContent>

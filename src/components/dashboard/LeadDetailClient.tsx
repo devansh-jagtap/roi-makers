@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LeadStatusControl } from './LeadStatusControl';
+import { AlertDialog } from '@/components/ui/alert-dialog';
+import { useToast } from '@/components/ui/toast';
 import { 
   User, Mail, Phone, Building, Briefcase, 
   DollarSign, MessageSquare, Globe, Link as LinkIcon, 
@@ -14,6 +16,8 @@ export function LeadDetailClient({ lead, profile, teamMembers }: any) {
   const [assigning, setAssigning] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [claiming, setClaiming] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   const handleAssign = async (profileId: string | null) => {
     setAssigning(true);
@@ -23,10 +27,34 @@ export function LeadDetailClient({ lead, profile, teamMembers }: any) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ profileId })
       });
-      if (res.ok) router.refresh();
-      else alert('Failed to assign lead');
-    } catch (e) {
-      alert('Error assigning lead');
+      if (res.ok) {
+        toast('Lead assignment updated successfully.', 'success');
+        router.refresh();
+      } else {
+        const data = await res.json().catch(() => null);
+        toast(data?.error || 'Failed to assign lead.', 'error');
+      }
+    } catch {
+      toast('Unable to assign lead. Please try again.', 'error');
+    }
+    setAssigning(false);
+  };
+
+  const handleAssignToMe = async () => {
+    setAssigning(true);
+    try {
+      const res = await fetch(`/api/dashboard/leads/${lead.id}/assign-to-me`, {
+        method: 'POST',
+      });
+      if (res.ok) {
+        toast('Lead assigned to you successfully.', 'success');
+        router.refresh();
+      } else {
+        const data = await res.json().catch(() => null);
+        toast(data?.error || 'Failed to assign lead to you.', 'error');
+      }
+    } catch {
+      toast('Unable to assign lead. Please try again.', 'error');
     }
     setAssigning(false);
   };
@@ -35,25 +63,30 @@ export function LeadDetailClient({ lead, profile, teamMembers }: any) {
     setClaiming(true);
     try {
       const res = await fetch(`/api/dashboard/leads/${lead.id}/claim`, { method: 'POST' });
-      if (res.ok) router.refresh();
-      else alert('Failed to claim lead');
-    } catch (e) {
-      alert('Error claiming lead');
+      if (res.ok) {
+        toast('Lead claimed successfully.', 'success');
+        router.refresh();
+      } else {
+        const data = await res.json().catch(() => null);
+        toast(data?.error || 'Unable to claim this lead. It may have already been assigned.', 'error');
+      }
+    } catch {
+      toast('Unable to claim this lead. Please try again.', 'error');
     }
     setClaiming(false);
   };
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this lead? This action cannot be undone.')) return;
     setDeleting(true);
     try {
       const res = await fetch(`/api/dashboard/leads/${lead.id}`, { method: 'DELETE' });
-      if (res.ok) router.push('/dashboard/leads');
-      else alert('Failed to delete lead');
-    } catch (e) {
-      alert('Error deleting lead');
+      if (res.ok) { toast('Lead deleted successfully.', 'success'); router.push('/dashboard/leads'); }
+      else { const data = await res.json().catch(() => null); toast(data?.error || 'Failed to delete lead.', 'error'); }
+    } catch {
+      toast('Unable to delete lead. Please try again.', 'error');
     }
     setDeleting(false);
+    setDeleteDialogOpen(false);
   };
 
   return (
@@ -76,9 +109,24 @@ export function LeadDetailClient({ lead, profile, teamMembers }: any) {
               >
                 <option value="">-- Unassigned --</option>
                 {teamMembers.map((m: any) => (
-                  <option key={m.id} value={m.id}>{m.name || m.email}</option>
+                  <option key={m.id} value={m.id}>{m.name || m.email}{m.id === profile.id ? ' (You)' : ''}</option>
                 ))}
               </select>
+
+              {lead.assignedToId === profile.id ? (
+                <span className="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200">
+                  Assigned to you
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  disabled={assigning}
+                  onClick={handleAssignToMe}
+                  className="px-3 py-2 bg-[#f26b38] hover:bg-[#d95b2b] text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                >
+                  {assigning ? 'Assigning...' : 'Assign to me'}
+                </button>
+              )}
             </div>
           )}
 
@@ -94,7 +142,7 @@ export function LeadDetailClient({ lead, profile, teamMembers }: any) {
 
           {profile.role === 'ADMIN' && (
             <button
-              onClick={handleDelete}
+              onClick={() => setDeleteDialogOpen(true)}
               disabled={deleting}
               className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2 text-sm font-medium ml-2"
             >
@@ -103,6 +151,7 @@ export function LeadDetailClient({ lead, profile, teamMembers }: any) {
           )}
         </div>
       </div>
+      <AlertDialog open={deleteDialogOpen} title="Delete this lead?" description="This action cannot be undone." confirmLabel="Delete Lead" loading={deleting} onCancel={() => setDeleteDialogOpen(false)} onConfirm={handleDelete} />
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* Contact Info */}

@@ -3,8 +3,11 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import SiteFooter from '@/components/layout/SiteFooter';
+import { useToast } from '@/components/ui/toast';
 
 export default function CareersPage() {
+  const { toast } = useToast();
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -68,6 +71,8 @@ export default function CareersPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
     
     try {
       const data = new FormData();
@@ -86,7 +91,7 @@ export default function CareersPage() {
       });
       
       if (response.ok) {
-        alert('Thank you for applying! We\'ll review your application within 5 business days.');
+        toast('Application submitted successfully.', 'success');
         setFormData({
           name: '',
           email: '',
@@ -104,7 +109,9 @@ export default function CareersPage() {
       }
     } catch (error) {
       console.error('Form submission error:', error);
-      alert('There was an error submitting the form. Please try emailing us directly at info@roimakers.in');
+      toast(error instanceof Error ? error.message : 'There was an error submitting the form. Please try again.', 'error');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -324,9 +331,10 @@ export default function CareersPage() {
 
             <button
               type="submit"
+              disabled={submitting}
               className="w-full md:w-auto px-10 py-4 bg-[#060010] text-[#E9E4D7] rounded-full font-semibold text-sm uppercase tracking-wider clash-display-font hover:bg-[#8c7b62] transition-all duration-300 hover:scale-105 shadow-lg"
             >
-              Submit Now
+              {submitting ? 'Submitting...' : 'Submit Now'}
             </button>
           </motion.form>
         </div>

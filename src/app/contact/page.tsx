@@ -2,8 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import SiteFooter from '@/components/layout/SiteFooter';
+import { useToast } from '@/components/ui/toast';
 
 export default function ContactPage() {
+  const { toast } = useToast();
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -57,6 +60,8 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
     
     try {
       const params = new URLSearchParams(window.location.search);
@@ -67,7 +72,7 @@ export default function ContactPage() {
       });
       
       if (response.ok) {
-        alert('Thank you! Your message has been sent. We\'ll get back to you within 24 hours.');
+        toast("Thanks! Your enquiry has been submitted.", 'success');
         setFormData({
           name: '',
           email: '',
@@ -84,7 +89,9 @@ export default function ContactPage() {
       }
     } catch (error) {
       console.error('Form submission error:', error);
-      alert('There was an error submitting the form. Please try emailing us directly at info@roimakers.in ');
+      toast(error instanceof Error ? error.message : 'There was an error submitting the form. Please try again.', 'error');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -382,9 +389,10 @@ export default function ContactPage() {
 
               <button
                 type="submit"
+                disabled={submitting}
                 className="w-full px-10 py-4 bg-[#060010] text-[#E9E4D7] rounded-full font-semibold text-sm uppercase tracking-wider clash-display-font hover:bg-[#8c7b62] transition-all duration-300 hover:scale-105 shadow-lg"
               >
-                Send Message
+                {submitting ? 'Sending...' : 'Send Message'}
               </button>
 
               <p className="text-xs text-[#312619]/60 text-center archivo-font">

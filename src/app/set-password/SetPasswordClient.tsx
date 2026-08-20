@@ -4,6 +4,7 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabaseClient';
 import { ShieldAlert, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
+import { useToast } from '@/components/ui/toast';
 
 export function SetPasswordClient() {
   const [password, setPassword] = useState('');
@@ -11,6 +12,7 @@ export function SetPasswordClient() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -34,6 +36,7 @@ export function SetPasswordClient() {
       setError(updateError.message || 'Failed to update password. Please try again.');
       setLoading(false);
     } else {
+      toast('Password updated successfully.', 'success');
       router.replace('/dashboard');
     }
   };

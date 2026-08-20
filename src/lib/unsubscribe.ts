@@ -36,7 +36,9 @@ export function verifyUnsubscribeToken(token: string): string | null {
     hmac.update(payloadBase64);
     const expectedSignature = hmac.digest('hex');
     
-    if (signature !== expectedSignature) return null;
+    if (signature.length !== expectedSignature.length || !crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))) {
+      return null;
+    }
     
     // Decode payload
     const payload = Buffer.from(payloadBase64, 'base64url').toString('utf8');

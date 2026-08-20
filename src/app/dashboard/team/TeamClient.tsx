@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { Mail, UserPlus, Shield, ShieldAlert, CheckCircle2, XCircle } from 'lucide-react';
+import { AlertDialog } from '@/components/ui/alert-dialog';
+import { useToast } from '@/components/ui/toast';
 
 type Profile = {
   id: string;
@@ -9,7 +11,7 @@ type Profile = {
   email: string;
   role: 'ADMIN' | 'MEMBER';
   active: boolean;
-  createdAt: string;
+  createdAt: string | Date;
 };
 
 export function TeamClient({ initialTeam }: { initialTeam: Profile[] }) {
@@ -18,6 +20,8 @@ export function TeamClient({ initialTeam }: { initialTeam: Profile[] }) {
   const [error, setError] = useState('');
   const [inviteName, setInviteName] = useState('');
   const [inviteEmail, setInviteEmail] = useState('');
+  const [pendingAction, setPendingAction] = useState<{ id: string; action: string; role?: string } | null>(null);
+  const { toast } = useToast();
 
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +40,7 @@ export function TeamClient({ initialTeam }: { initialTeam: Profile[] }) {
       setTeam([...team, { ...data.profile, createdAt: new Date(data.profile.createdAt).toISOString() }]);
       setInviteName('');
       setInviteEmail('');
+      toast('Invitation sent successfully.', 'success');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -43,10 +48,9 @@ export function TeamClient({ initialTeam }: { initialTeam: Profile[] }) {
     }
   };
 
-  const handleAction = async (id: string, action: string, role?: string) => {
-    const actionText = action === 'setRole' ? `make this user ${role}` : `${action} this user`;
-    if (!confirm(`Are you sure you want to ${actionText}?`)) return;
-    
+  const handleAction = async () => {
+    if (!pendingAction) return;
+    const { id, action, role } = pendingAction;
     setLoading(true);
     setError('');
     
@@ -60,10 +64,12 @@ export function TeamClient({ initialTeam }: { initialTeam: Profile[] }) {
       if (!res.ok) throw new Error(data.error || 'Failed to update user');
       
       setTeam(team.map(p => p.id === id ? { ...p, ...data.profile, createdAt: new Date(data.profile.createdAt).toISOString() } : p));
+      toast(action === 'disable' ? 'Team member disabled successfully.' : 'Team member updated successfully.', 'success');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
       setLoading(false);
+      setPendingAction(null);
     }
   };
 
@@ -172,7 +178,7 @@ export function TeamClient({ initialTeam }: { initialTeam: Profile[] }) {
                   <td className="px-5 py-4 text-right">
                     <div className="flex items-center justify-end gap-3 text-xs font-medium">
                       <button 
-                        onClick={() => handleAction(p.id, 'setRole', p.role === 'ADMIN' ? 'MEMBER' : 'ADMIN')} 
+                        onClick={() => setPendingAction({ id: p.id, action: 'setRole', role: p.role === 'ADMIN' ? 'MEMBER' : 'ADMIN' })} 
                         disabled={loading} 
                         className="text-indigo-600 hover:text-indigo-800 disabled:opacity-50 transition-colors"
                       >
@@ -181,7 +187,7 @@ export function TeamClient({ initialTeam }: { initialTeam: Profile[] }) {
                       <span className="text-stone-300">|</span>
                       {p.active ? (
                         <button 
-                          onClick={() => handleAction(p.id, 'disable')} 
+                          onClick={() => setPendingAction({ id: p.id, action: 'disable' })} 
                           disabled={loading} 
                           className="text-red-600 hover:text-red-800 disabled:opacity-50 transition-colors"
                         >
@@ -189,7 +195,7 @@ export function TeamClient({ initialTeam }: { initialTeam: Profile[] }) {
                         </button>
                       ) : (
                         <button 
-                          onClick={() => handleAction(p.id, 'enable')} 
+                          onClick={() => setPendingAction({ id: p.id, action: 'enable' })} 
                           disabled={loading} 
                           className="text-green-600 hover:text-green-800 disabled:opacity-50 transition-colors"
                         >
@@ -204,6 +210,7 @@ export function TeamClient({ initialTeam }: { initialTeam: Profile[] }) {
           </table>
         </div>
       </div>
+      <AlertDialog open={!!pendingAction} title={pendingAction?.action === 'disable' ? 'Disable this team member?' : 'Update this team member?'} description={pendingAction?.action === 'disable' ? 'They will no longer be able to access the dashboard.' : 'This change will update this member’s dashboard access.'} confirmLabel={pendingAction?.action === 'disable' ? 'Disable Member' : 'Confirm Update'} loading={loading} onCancel={() => setPendingAction(null)} onConfirm={handleAction} />
     </div>
   );
 }

@@ -4,11 +4,13 @@ import { useState } from 'react';
 import { LeadStatus } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { Save } from 'lucide-react';
+import { useToast } from '@/components/ui/toast';
 
 export function LeadStatusControl({ id, status }: { id: string; status: LeadStatus }) {
   const [value, setValue] = useState(status);
   const [saving, setSaving] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
   async function save() {
     setSaving(true);
@@ -19,12 +21,14 @@ export function LeadStatusControl({ id, status }: { id: string; status: LeadStat
         body: JSON.stringify({ status: value }),
       });
       if (response.ok) {
+        toast('Lead status updated successfully.', 'success');
         router.refresh();
       } else {
-        alert('Unable to update the lead.');
+        const data = await response.json().catch(() => null);
+        toast(data?.error || 'Unable to update the lead.', 'error');
       }
-    } catch (e) {
-      alert('Error updating lead.');
+    } catch {
+      toast('Unable to update the lead. Please try again.', 'error');
     }
     setSaving(false);
   }

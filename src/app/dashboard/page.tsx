@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { 
   Users, UserCheck, Inbox, CheckCircle2, 
   Trophy, UserPlus, ShieldAlert, Clock,
-  ArrowRight
+  ArrowRight, Briefcase, FileCheck
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
@@ -17,7 +17,8 @@ export default async function DashboardPage() {
 
   if (isAdmin) {
     const [
-      total, newLeads, contacted, qualified, won, unassigned, activeMembers
+      total, newLeads, contacted, qualified, won, unassigned, activeMembers,
+      totalCareers, newCareers
     ] = await Promise.all([
       prisma.lead.count(),
       prisma.lead.count({ where: { status: 'NEW' } }),
@@ -25,7 +26,9 @@ export default async function DashboardPage() {
       prisma.lead.count({ where: { status: 'QUALIFIED' } }),
       prisma.lead.count({ where: { status: 'WON' } }),
       prisma.lead.count({ where: { assignedToId: null } }),
-      prisma.profile.count({ where: { active: true } })
+      prisma.profile.count({ where: { active: true } }),
+      prisma.careerApplication.count(),
+      prisma.careerApplication.count({ where: { status: 'NEW' } }),
     ]);
 
     metrics = [
@@ -35,6 +38,8 @@ export default async function DashboardPage() {
       { label: 'Qualified', value: qualified, icon: CheckCircle2, color: 'text-purple-600', bg: 'bg-purple-50' },
       { label: 'Won', value: won, icon: Trophy, color: 'text-green-600', bg: 'bg-green-50' },
       { label: 'Unassigned', value: unassigned, icon: ShieldAlert, color: 'text-[#f26b38]', bg: 'bg-[#f26b38]/10' },
+      { label: 'Career Apps', value: totalCareers, icon: Briefcase, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+      { label: 'New Apps', value: newCareers, icon: FileCheck, color: 'text-teal-600', bg: 'bg-teal-50' },
       { label: 'Active Team', value: activeMembers, icon: UserPlus, color: 'text-stone-600', bg: 'bg-white' }
     ];
   } else {

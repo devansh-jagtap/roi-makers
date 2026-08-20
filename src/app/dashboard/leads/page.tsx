@@ -31,8 +31,8 @@ export default async function LeadsPage() {
       </div>
       
       <LeadsClient 
-        initialLeads={JSON.parse(JSON.stringify(leads))} 
-        profile={JSON.parse(JSON.stringify(profile))} 
+        initialLeads={leads} 
+        profile={profile} 
       />
     </div>
   );
