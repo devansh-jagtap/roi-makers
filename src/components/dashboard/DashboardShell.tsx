@@ -50,7 +50,7 @@ export function DashboardShell({
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f7f4ee] text-[#060010]">
+    <div data-theme="dashboard" className="flex h-screen overflow-hidden bg-[#f7f4ee] text-[#060010]">
       {/* Mobile Topbar */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-[#060010] text-white z-50 flex items-center justify-between px-4">
         <span className="font-bold text-xl">ROI Makers</span>

@@ -447,7 +447,11 @@ html.dark main [class*="bg-[#312619]"] {
   background-color: #161616 !important;
 }
 
-/* The authenticated product is intentionally light, independent of the public-site theme. */
+/* =====================================================================
+   DASHBOARD THEME — Light theme enforced regardless of OS/html.dark.
+   Uses [data-theme="dashboard"] for high specificity that beats
+   all generic html.dark rules defined later in this file.
+   ===================================================================== */
 .dashboard-theme { 
   --background: #f7f4ee; 
   --foreground: #18120e; 
@@ -464,81 +468,146 @@ html.dark main [class*="bg-[#312619]"] {
   color-scheme: light; 
 }
 
-html.dark .dashboard-theme {
+/* Root wrapper isolation — [data-theme="dashboard"] attr beats html.dark */
+html.dark [data-theme="dashboard"] {
+  background-color: #f7f4ee !important;
+  color: #18120e !important;
+  color-scheme: light !important;
+}
+
+/* Main content background */
+html.dark [data-theme="dashboard"] main {
   background-color: #f7f4ee !important;
   color: #18120e !important;
 }
 
-html.dark .dashboard-theme main {
-  background-color: #f7f4ee !important;
-}
-
-html.dark .dashboard-theme [class*="bg-[#f7f4ee]"] {
-  background-color: #f7f4ee !important;
-}
-
-html.dark .dashboard-theme [class*="bg-white"],
-html.dark .dashboard-theme .bg-white {
+/* All cards and white-bg elements in dashboard */
+html.dark [data-theme="dashboard"] [class*="bg-white"],
+html.dark [data-theme="dashboard"] .bg-white {
   background-color: #ffffff !important;
 }
 
-html.dark .dashboard-theme [class*="bg-stone-50"] {
+html.dark [data-theme="dashboard"] [class*="bg-stone-50"],
+html.dark [data-theme="dashboard"] .bg-stone-50 {
   background-color: #fafaf9 !important;
 }
 
-html.dark .dashboard-theme [class*="bg-stone-100"] {
+html.dark [data-theme="dashboard"] [class*="bg-stone-100"],
+html.dark [data-theme="dashboard"] .bg-stone-100 {
   background-color: #f5f5f4 !important;
 }
 
-html.dark .dashboard-theme [class*="text-[#060010]"] {
+html.dark [data-theme="dashboard"] [class*="bg-[#f7f4ee]"] {
+  background-color: #f7f4ee !important;
+}
+
+/* Text colors */
+html.dark [data-theme="dashboard"] [class*="text-[#060010]"] {
   color: #060010 !important;
 }
 
-html.dark .dashboard-theme [class*="text-stone-700"] {
+html.dark [data-theme="dashboard"] [class*="text-stone-800"] {
+  color: #292524 !important;
+}
+
+html.dark [data-theme="dashboard"] [class*="text-stone-700"] {
   color: #44403c !important;
 }
 
-html.dark .dashboard-theme [class*="text-stone-600"] {
+html.dark [data-theme="dashboard"] [class*="text-stone-600"] {
   color: #57534e !important;
 }
 
-html.dark .dashboard-theme [class*="text-stone-500"] {
+html.dark [data-theme="dashboard"] [class*="text-stone-500"] {
   color: #78716c !important;
 }
 
-html.dark .dashboard-theme input,
-html.dark .dashboard-theme textarea,
-html.dark .dashboard-theme select {
+/* Inputs, textareas, selects — critical: overrides html.dark input rules below */
+html.dark [data-theme="dashboard"] input,
+html.dark [data-theme="dashboard"] textarea,
+html.dark [data-theme="dashboard"] select {
   background-color: #ffffff !important;
   color: #18120e !important;
   border-color: #e7e5e4 !important;
 }
 
-html.dark .dashboard-theme input::placeholder,
-html.dark .dashboard-theme textarea::placeholder {
+html.dark [data-theme="dashboard"] input::placeholder,
+html.dark [data-theme="dashboard"] textarea::placeholder {
   color: #a8a29e !important;
 }
 
-html.dark .dashboard-theme button.bg-white,
-html.dark .dashboard-theme button[class*="bg-white"] {
+/* Borders */
+html.dark [data-theme="dashboard"] [class*="border-stone-"] {
+  border-color: #e7e5e4 !important;
+}
+
+html.dark [data-theme="dashboard"] [class*="divide-stone-"] > * + * {
+  border-color: #f5f5f4 !important;
+}
+
+/* White buttons inside main content area */
+html.dark [data-theme="dashboard"] main button.bg-white,
+html.dark [data-theme="dashboard"] main button[class*="bg-white"] {
   background-color: #ffffff !important;
   color: #060010 !important;
 }
 
-html.dark .dashboard-theme aside {
+/* Stone buttons */
+html.dark [data-theme="dashboard"] [class*="bg-stone-100"]:is(button, a) {
+  background-color: #f5f5f4 !important;
+  color: #292524 !important;
+}
+
+/* Sidebar — intentionally stays dark (#060010) with white text.
+   These rules lock it regardless of any surrounding theme inheritance. */
+html.dark [data-theme="dashboard"] aside {
   background-color: #060010 !important;
   color: #ffffff !important;
 }
 
-html.dark .dashboard-theme aside nav a {
-  color: #a8a29e !important;
+html.dark [data-theme="dashboard"] aside * {
+  border-color: rgb(255 255 255 / 0.1) !important;
 }
 
-html.dark .dashboard-theme aside nav a:hover,
-html.dark .dashboard-theme aside nav a[class*="bg-white/10"] {
+html.dark [data-theme="dashboard"] aside nav a {
+  color: #a8a29e !important;
+  background-color: transparent !important;
+}
+
+html.dark [data-theme="dashboard"] aside nav a:hover {
+  color: #ffffff !important;
+  background-color: rgb(255 255 255 / 0.05) !important;
+}
+
+html.dark [data-theme="dashboard"] aside nav a[class*="bg-white/10"] {
+  background-color: rgb(255 255 255 / 0.1) !important;
   color: #ffffff !important;
 }
 
+html.dark [data-theme="dashboard"] aside nav a svg {
+  color: inherit !important;
+}
+
+html.dark [data-theme="dashboard"] aside p {
+  color: inherit !important;
+}
+
+html.dark [data-theme="dashboard"] aside span {
+  color: inherit !important;
+}
+
+/* Sidebar bottom profile row */
+html.dark [data-theme="dashboard"] aside .text-stone-400 {
+  color: #a8a29e !important;
+}
+
+/* Mobile topbar — also dark by design */
+html.dark [data-theme="dashboard"] > div[class*="lg:hidden"] {
+  background-color: #060010 !important;
+  color: #ffffff !important;
+}
+
+/* AlertDialog should always be light (it renders in a portal outside dashboard root) */
 html.dark div[role="alertdialog"] {
   background-color: #ffffff !important;
   color: #0c0a09 !important;

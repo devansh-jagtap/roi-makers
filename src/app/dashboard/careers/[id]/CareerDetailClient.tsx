@@ -243,13 +243,31 @@ export function CareerDetailClient({
             )}
 
             {application.resumeName && (
-              <div className="pt-2 border-t border-stone-100">
-                <p className="text-xs text-stone-500 mb-1 uppercase tracking-wider font-semibold flex items-center gap-1">
+              <div className="pt-3 border-t border-stone-100 space-y-2">
+                <p className="text-xs text-stone-500 uppercase tracking-wider font-semibold flex items-center gap-1">
                   <FileText size={14} /> Resume File
                 </p>
-                <p className="text-sm font-medium text-stone-700 flex items-center gap-1.5">
-                  📎 {application.resumeName}
-                </p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-medium text-stone-800">
+                     {application.resumeName}
+                  </span>
+                  <div className="flex items-center gap-2 ml-auto">
+                    <a
+                      href={`/api/dashboard/careers/${application.id}/resume`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#060010] hover:bg-black text-white text-xs font-semibold rounded-lg transition-colors shadow-sm"
+                    >
+                      <ExternalLink size={13} /> View
+                    </a>
+                    <a
+                      href={`/api/dashboard/careers/${application.id}/resume?download=1`}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-semibold rounded-lg transition-colors border border-stone-200"
+                    >
+                      Download
+                    </a>
+                  </div>
+                </div>
               </div>
             )}
           </div>

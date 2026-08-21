@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { CareerApplicationStatus } from '@prisma/client';
-import { Search, Filter, Briefcase, Mail, Phone, Calendar, ArrowRight } from 'lucide-react';
+import { Search, Filter, Briefcase, FileText, Download, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 
@@ -88,6 +88,7 @@ export function CareersListClient({
               <tr>
                 <th className="px-5 py-4">Applicant</th>
                 <th className="px-5 py-4">Position</th>
+                <th className="px-5 py-4">Resume</th>
                 <th className="px-5 py-4">Status</th>
                 <th className="px-5 py-4">Applied Date</th>
                 <th className="px-5 py-4 text-right">Action</th>
@@ -119,6 +120,26 @@ export function CareersListClient({
                     </span>
                   </td>
                   <td className="px-5 py-4">
+                    {app.resumeName ? (
+                      <div className="flex items-center gap-2">
+                        <FileText size={14} className="text-stone-400 flex-shrink-0" />
+                        <span className="text-xs text-stone-600 truncate max-w-[120px]" title={app.resumeName}>
+                          {app.resumeName}
+                        </span>
+                        <a
+                          href={`/api/dashboard/careers/${app.id}/resume?download=1`}
+                          title="Download resume"
+                          className="text-[#f26b38] hover:text-[#d95b2b] flex-shrink-0"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Download size={13} />
+                        </a>
+                      </div>
+                    ) : (
+                      <span className="text-xs text-stone-400 italic">None</span>
+                    )}
+                  </td>
+                  <td className="px-5 py-4">
                     <span
                       className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border ${
                         statusColors[app.status] || 'bg-stone-100 text-stone-800 border-stone-200'
@@ -147,7 +168,7 @@ export function CareersListClient({
 
               {filteredApplications.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-5 py-12 text-center text-stone-500">
+                  <td colSpan={6} className="px-5 py-12 text-center text-stone-500">
                     <Briefcase className="mx-auto h-8 w-8 text-stone-300 mb-2" />
                     <p className="font-medium text-stone-600">No career applications found</p>
                     <p className="text-xs text-stone-400 mt-1">
