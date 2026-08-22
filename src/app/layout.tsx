@@ -4,6 +4,7 @@ import ClientPathWrapper from "@/components/global/ClientPathWrapper";
 import { ThemeProvider } from "@/app/providers/ThemeProvider";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { ToastProvider } from "@/components/ui/toast";
+import { ChatWidget } from '@/components/chat/ChatWidget';
 
 export const metadata: Metadata = {
   title: "ROI-MAKERS",
@@ -22,6 +23,7 @@ export default function RootLayout({
           <ToastProvider>
           <ClientPathWrapper>
             {children}
+            <ChatWidget />
             <ThemeToggle />
           </ClientPathWrapper>
           </ToastProvider>
