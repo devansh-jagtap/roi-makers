@@ -119,12 +119,51 @@ export default function HomeHero({ showLoading, showHero, showContent, onLoading
             {showContent && (
               <div ref={subtitleRef} className={`mt-4 md:mt-6 ${isMobile ? "flex flex-col items-center" : ""}`}>
                 <p className={`pp-neue-world-font select-none text-lg font-normal leading-snug text-black sm:text-xl md:w-[50%] md:text-2xl lg:text-[2.5vw] ${isMobile ? "w-full px-4 text-center" : ""}`}>ROI-first thinking for scale-hungry brands</p>
-                <div className={`mt-7 flex flex-wrap gap-3 ${isMobile ? "justify-center" : ""}`}>
-                  <Link href="/contact#contact-form" className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white shadow-lg transition-transform duration-200 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black">
-                    Start your project <span aria-hidden="true">→</span>
+                <div className={`mt-7 flex flex-wrap gap-4 ${isMobile ? "justify-center" : ""}`}>
+                  {/* Primary CTA — shimmer glow */}
+                  <Link
+                    href="/contact#contact-form"
+                    className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-black px-7 py-3.5 text-sm font-bold text-white shadow-[0_0_24px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_32px_rgba(0,0,0,0.5)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
+                  >
+                    {/* shimmer sweep */}
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-white/15 transition-transform duration-700 group-hover:translate-x-[200%]"
+                    />
+                    <span>Start your project</span>
+                    <span
+                      aria-hidden="true"
+                      className="inline-block transition-transform duration-300 group-hover:translate-x-1"
+                    >
+                      →
+                    </span>
                   </Link>
-                  <Link href="/contact#contact-form" className="rounded-full border border-black/45 bg-white/20 px-6 py-3 text-sm font-semibold text-black transition-colors duration-200 hover:bg-white/50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black">
-                    Book a growth call
+
+                  {/* Secondary CTA — glass pill */}
+                  <Link
+                    href="/contact#contact-form"
+                    className="group inline-flex items-center gap-2 rounded-full border border-black/30 bg-white/30 px-7 py-3.5 text-sm font-bold text-black shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-black/60 hover:bg-white/60 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
+                  >
+                    {/* calendar icon */}
+                    <svg
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="15"
+                      height="15"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="shrink-0 transition-transform duration-300 group-hover:scale-110"
+                    >
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                      <line x1="16" y1="2" x2="16" y2="6" />
+                      <line x1="8" y1="2" x2="8" y2="6" />
+                      <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                    <span>Book a growth call</span>
                   </Link>
                 </div>
               </div>

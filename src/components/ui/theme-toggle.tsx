@@ -25,7 +25,7 @@ function ThemeToggleButton() {
   return (
     <button
       onClick={toggleTheme}
-      className="fixed bottom-6 right-6 z-50 rounded-full bg-primary p-3 text-primary-foreground shadow-lg shadow-orange-500/30 transition-all duration-300 hover:scale-110 hover:bg-primary/90"
+      className="fixed bottom-6 left-6 z-50 rounded-full bg-primary p-3 text-primary-foreground shadow-lg shadow-orange-500/30 transition-all duration-300 hover:scale-110 hover:bg-primary/90"
       aria-label="Toggle theme"
     >
       {theme === "light" ? (

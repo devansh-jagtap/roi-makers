@@ -8,33 +8,75 @@ interface VideoShowcaseProps {
 }
 
 /**
+ * Injects YouTube parameters that hide all player UI (controls, branding,
+ * progress bar, title, annotations, related videos, fullscreen button).
+ */
+function sanitizeYouTubeUrl(src: string): string {
+  try {
+    const url = new URL(src);
+    const isYouTube =
+      url.hostname.includes("youtube.com") ||
+      url.hostname.includes("youtu.be");
+
+    if (!isYouTube) return src;
+
+    const silentParams: Record<string, string> = {
+      controls: "0",
+      modestbranding: "1",
+      showinfo: "0",
+      rel: "0",
+      iv_load_policy: "3",
+      disablekb: "1",
+      fs: "0",
+      playsinline: "1",
+      color: "white",
+      autoplay: "1",
+      mute: "1",
+    };
+
+    Object.entries(silentParams).forEach(([key, value]) => {
+      url.searchParams.set(key, value); // enforce even if already present
+    });
+
+    // Switch to the privacy-enhanced / reduced-UI nocookie domain
+    if (url.hostname === "www.youtube.com" || url.hostname === "youtube.com") {
+      url.hostname = "www.youtube-nocookie.com";
+    }
+
+    return url.toString();
+  } catch {
+    return src;
+  }
+}
+
+/**
  * VideoShowcase Component
- * 
- * A clean, reusable video display component that handles both video files and iframe embeds.
- * Optimized for performance with proper aspect ratio and rounded corners.
- * 
- * @param videoSrc - URL to video file (.mp4, .webm) or iframe embed (YouTube, Vimeo)
- * @param className - Additional classes for the inner video/iframe element
- * @param containerClassName - Additional classes for the outer container
+ *
+ * Handles both video files (.mp4/.webm) and YouTube/Vimeo iframe embeds.
+ * For YouTube: automatically strips all player controls and branding.
+ * An invisible overlay prevents accidental clicks from revealing the YouTube UI.
  */
 const VideoShowcase: React.FC<VideoShowcaseProps> = ({
   videoSrc,
   className = "",
   containerClassName = "",
 }) => {
-  const isVideoFile = videoSrc.endsWith(".mp4") || videoSrc.endsWith(".webm");
+  const isVideoFile =
+    videoSrc.endsWith(".mp4") || videoSrc.endsWith(".webm");
+
+  const cleanSrc = isVideoFile ? videoSrc : sanitizeYouTubeUrl(videoSrc);
 
   return (
-    <div 
+    <div
       className={`relative w-full aspect-[16/9] rounded-[1rem] overflow-hidden ${containerClassName}`}
       style={{
-        backgroundColor: '#1a365d',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+        backgroundColor: "#1a365d",
+        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
       }}
     >
       {isVideoFile ? (
         <video
-          src={videoSrc}
+          src={cleanSrc}
           autoPlay
           loop
           muted
@@ -42,14 +84,38 @@ const VideoShowcase: React.FC<VideoShowcaseProps> = ({
           className={`absolute top-0 left-0 w-full h-full object-cover pointer-events-none ${className}`}
         />
       ) : (
+        /*
+         * Scale + overflow-crop trick:
+         * The iframe is positioned -15% on every side, making it 130% of the
+         * container's size. The parent's overflow:hidden crops the edges,
+         * which is exactly where YouTube renders its title bar (top) and
+         * its controls / branding bar (bottom). The video content itself
+         * is centred and fully visible.
+         */
         <iframe
-          src={videoSrc}
+          src={cleanSrc}
           frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           loading="lazy"
           title="Video showcase"
-          className={`absolute top-0 left-0 w-full h-full pointer-events-none ${className}`}
+          className={`pointer-events-none ${className}`}
+          style={{
+            position: "absolute",
+            top: "-15%",
+            left: "-15%",
+            width: "130%",
+            height: "130%",
+            border: "none",
+          }}
+        />
+      )}
+
+      {/* Invisible overlay — sits above the iframe so no click ever reaches YouTube */}
+      {!isVideoFile && (
+        <div
+          className="absolute inset-0 z-10"
+          aria-hidden="true"
+          style={{ cursor: "default" }}
         />
       )}
     </div>
@@ -57,6 +123,7 @@ const VideoShowcase: React.FC<VideoShowcaseProps> = ({
 };
 
 export default VideoShowcase;
+
 
 // Legacy commented code below for reference - can be deleted after migration
 
