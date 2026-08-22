@@ -9,6 +9,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@ai-sdk/google": "^4.0.50",
     "@gsap/react": "^2.1.2",
     "@motionone/utils": "^10.18.0",
     "@paper-design/shaders-react": "^0.0.62",
@@ -27,6 +28,7 @@
     "@tabler/icons-react": "^3.35.0",
     "@types/gsap": "^3.0.0",
     "@types/three": "^0.185.4",
+    "ai": "^7.0.77",
     "autoprefixer": "^10.4.21",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
