@@ -60,75 +60,121 @@ const services: Service[] = [
   },
 ];
 
+/* One easing curve for the whole section keeps the choreography feeling like a single motion. */
+const EASE = "[transition-timing-function:cubic-bezier(0.22,1,0.36,1)]";
+
 export default function ServicesGrid() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <main className="min-h-screen bg-muted dark:bg-background text-foreground">
-      <section className="mx-auto flex w-full max-w-7xl flex-col gap-8 sm:gap-10 md:gap-12 lg:gap-16 px-4 sm:px-6 py-12 sm:py-16 md:py-20">
-        <header className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
-          <div className="flex items-center gap-2 sm:gap-3 md:gap-4 text-3xl sm:text-4xl md:text-5xl lg:text-7xl xl:text-8xl font-bold tracking-tight">
+    <main className="bg-muted dark:bg-background text-foreground">
+      <section className="mx-auto flex w-full max-w-7xl flex-col gap-8 sm:gap-10 md:gap-12 px-4 sm:px-6 py-16 sm:py-20 md:py-28">
+        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 sm:gap-6">
+          <h2 className="flex items-center gap-2 sm:gap-3 md:gap-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-none">
             <span>Our</span>
-            <span className="relative inline-flex h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 lg:h-28 lg:w-28 overflow-hidden rounded-2xl sm:rounded-3xl">
+            <span className="relative inline-flex h-10 w-10 sm:h-14 sm:w-14 md:h-16 md:w-16 lg:h-20 lg:w-20 shrink-0 overflow-hidden rounded-2xl sm:rounded-[1.75rem]">
               <Image
                 src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=400&q=80"
                 alt="Strategy workshop"
                 fill
-                sizes="(max-width: 640px) 48px, (max-width: 768px) 64px, (max-width: 1024px) 80px, 120px"
+                sizes="(max-width: 640px) 40px, (max-width: 1024px) 64px, 80px"
                 className="object-cover"
                 priority
               />
             </span>
             <span>Services</span>
-          </div>
-          
-          <a
-            href="#services"
-            className="inline-flex items-center gap-2 rounded-full bg-transparent px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium text-black transition-all duration-300 ease-out hover:gap-3"
+          </h2>
+
+          <Link
+            href="/services"
+            className={`group inline-flex w-fit items-center gap-2 rounded-full border border-foreground/10 bg-background px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-medium text-foreground shadow-sm transition-all duration-500 ${EASE} hover:border-primary/40 hover:text-primary`}
           >
-            View All Services <span aria-hidden>↗</span>
-          </a>
+            View All Services
+            <span
+              aria-hidden
+              className={`inline-block transition-transform duration-500 ${EASE} group-hover:translate-x-0.5 group-hover:-translate-y-0.5`}
+            >
+              ↗
+            </span>
+          </Link>
         </header>
 
-        <div className="h-px w-full bg-black" />
+        <div className="h-px w-full bg-foreground/15" />
 
-        <div id="services" className="grid gap-0 md:grid-cols-2 md:gap-x-8 lg:gap-x-12">
-          {services.map((service, index) => (
-            <Link
-              key={service.href}
-              href={service.href}
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-              className="group relative block"
-            >
-              <div className="relative border-b border-black">
-                <div className="py-6 sm:py-8">
-                  {/* Default state text */}
-                  <h3 className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium transition-opacity duration-700 ease-in-out will-change-opacity ${hoveredIndex === index ? 'opacity-0' : 'opacity-100'}`}>
-                    {service.title}
-                  </h3>
-                </div>
-                
-                {/* Hover state with image background */}
-                <div className={`absolute inset-0 flex items-center overflow-hidden rounded-full transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] will-change-[opacity,transform] ${hoveredIndex === index ? 'opacity-100 scale-100' : 'opacity-0 scale-98 pointer-events-none'}`}>
-                  <Image
-                    src={service.image}
-                    alt={service.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/40" />
-                  <div className="relative z-10 flex items-center gap-2 sm:gap-3 md:gap-4 px-4 sm:px-6 md:px-8 w-full">
-                    <span className="text-2xl sm:text-3xl text-white">↗</span>
-                    <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium text-white">
+        <div
+          id="services"
+          onMouseLeave={() => setHoveredIndex(null)}
+          className="grid grid-cols-1 md:grid-cols-2 md:gap-x-10 lg:gap-x-16"
+        >
+          {services.map((service, index) => {
+            const isHovered = hoveredIndex === index;
+            const isDimmed = hoveredIndex !== null && !isHovered;
+
+            return (
+              <Link
+                key={service.href}
+                href={service.href}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onFocus={() => setHoveredIndex(index)}
+                onBlur={() => setHoveredIndex(null)}
+                className="group relative block border-b border-foreground/15 outline-none"
+              >
+                {/* The row keeps a fixed height so the pill can fill it exactly. */}
+                <div className="relative h-[72px] sm:h-[84px] md:h-[92px] lg:h-[104px]">
+                  {/* Resting state */}
+                  <div
+                    className={`absolute inset-0 flex items-center transition-all duration-500 ${EASE} ${
+                      isHovered ? "opacity-0 translate-x-3" : "opacity-100 translate-x-0"
+                    } ${isDimmed ? "opacity-35" : ""}`}
+                  >
+                    <h3 className="text-xl sm:text-2xl md:text-[1.75rem] lg:text-4xl font-medium tracking-tight">
                       {service.title}
-                    </span>
+                    </h3>
+                  </div>
+
+                  {/* Hover state: an image pill that wipes open from the left */}
+                  <div
+                    aria-hidden
+                    className={`absolute inset-y-1 -inset-x-1 sm:-inset-x-2 flex items-center overflow-hidden rounded-full transition-[clip-path] duration-[900ms] ${EASE} ${
+                      isHovered
+                        ? "[clip-path:inset(0_0_0_0_round_9999px)]"
+                        : "[clip-path:inset(0_100%_0_0_round_9999px)] pointer-events-none"
+                    }`}
+                  >
+                    <Image
+                      src={service.image}
+                      alt=""
+                      fill
+                      className={`object-cover transition-transform duration-[1200ms] ${EASE} ${
+                        isHovered ? "scale-100" : "scale-110"
+                      }`}
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                    {/* Warm brand wash over the photo so the pill stays on palette */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/25" />
+                    <div className="absolute inset-0 bg-primary/15 mix-blend-overlay" />
+
+                    <div className="relative z-10 flex items-center gap-3 sm:gap-4 px-5 sm:px-7 md:px-8 w-full">
+                      <span
+                        className={`text-xl sm:text-2xl md:text-3xl text-white transition-all duration-500 delay-100 ${EASE} ${
+                          isHovered ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
+                        }`}
+                      >
+                        ↗
+                      </span>
+                      <span
+                        className={`text-xl sm:text-2xl md:text-[1.75rem] lg:text-4xl font-medium tracking-tight text-white transition-all duration-500 delay-75 ${EASE} ${
+                          isHovered ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-6"
+                        }`}
+                      >
+                        {service.title}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </section>
     </main>
