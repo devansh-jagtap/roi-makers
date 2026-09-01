@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { LeadStatus } from '@prisma/client';
+import { LEAD_STATUSES, type LeadStatus } from '@/lib/domain';
 import { useRouter } from 'next/navigation';
 import { Save } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
@@ -52,7 +52,7 @@ export function LeadStatusControl({ id, status }: { id: string; status: LeadStat
           onChange={(e) => setValue(e.target.value as LeadStatus)}
           className={`appearance-none font-medium text-sm rounded-lg pl-3 pr-8 py-2 border outline-none focus:ring-2 focus:ring-[#f26b38] transition-colors ${statusColors[value] || 'bg-white border-stone-200 text-stone-700'}`}
         >
-          {Object.values(LeadStatus).map((s) => (
+          {LEAD_STATUSES.map((s) => (
             <option key={s} value={s}>{s}</option>
           ))}
         </select>

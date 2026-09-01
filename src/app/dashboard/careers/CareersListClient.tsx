@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { CareerApplicationStatus } from '@prisma/client';
+import { type CareerApplicationStatus } from '@/lib/domain';
 import { Search, Filter, Briefcase, FileText, Download, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CareerApplicationStatus } from '@prisma/client';
+import { type CareerApplicationStatus } from '@/lib/domain';
 import {
   User,
   Mail,

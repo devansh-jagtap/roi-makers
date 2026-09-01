@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { LeadStatus } from '@prisma/client';
+import { LEAD_STATUSES, type LeadStatus } from '@/lib/domain';
 import { Search, Filter, LayoutGrid, List, CheckCircle, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -185,7 +185,7 @@ export function LeadsClient({ initialLeads, profile }: { initialLeads: Lead[], p
   );
 
   const renderKanban = () => {
-    const columns = Object.values(LeadStatus);
+    const columns = LEAD_STATUSES;
     
     return (
       <div className="flex gap-4 overflow-x-auto pb-4 h-[calc(100vh-280px)]">
@@ -298,7 +298,7 @@ export function LeadsClient({ initialLeads, profile }: { initialLeads: Lead[], p
               className="w-full pl-9 pr-4 h-9 bg-transparent border border-input rounded-md text-sm appearance-none focus:outline-none focus:ring-1 focus:ring-ring transition-colors shadow-sm"
             >
               <option value="ALL">All Statuses</option>
-              {Object.values(LeadStatus).map(s => <option key={s} value={s}>{s}</option>)}
+              {LEAD_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
           
