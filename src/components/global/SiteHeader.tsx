@@ -6,6 +6,7 @@ import { useTheme } from "@/app/providers/ThemeProvider";
 const menuItems: StaggeredMenuItem[] = [
   { label: "Home", ariaLabel: "Home", link: "/" },
   { label: "Projects", ariaLabel: "Projects", link: "/projects" },
+  { label: "Services", ariaLabel: "Services", link: "/services" },
   { label: "About", ariaLabel: "About", link: "/about" },
   { label: "Careers", ariaLabel: "Careers", link: "/careers" },
   { label: "Blog", ariaLabel: "Blog", link: "/blog" },

@@ -2,63 +2,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { serviceLinks } from "@/data/site";
 
-type Service = {
-  title: string;
-  image: string;
-  href: string;
-};
-
-const services: Service[] = [
-  {
-    title: "Digital Marketing",
-    image:
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1600&q=80",
-    href: "/services/digital-marketing",
-  },
-  {
-    title: "Performance Marketing",
-    image:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1600&q=80",
-    href: "/services/performance-marketing",
-  },
-  {
-    title: "Website Development",
-    image:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80",
-    href: "/services/website-development",
-  },
-  {
-    title: "E-commerce",
-    image:
-      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1600&q=80",
-    href: "/services/ecommerce",
-  },
-  {
-    title: "Shopify Development",
-    image:
-      "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=1600&q=80",
-    href: "/services/shopify-development",
-  },
-  {
-    title: "Social Media Marketing",
-    image:
-      "https://images.unsplash.com/photo-1611926653458-09294b3142bf?auto=format&fit=crop&w=1600&q=80",
-    href: "/services/social-media-marketing",
-  },
-  {
-    title: "Search Engine Optimization",
-    image:
-      "https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?auto=format&fit=crop&w=1600&q=80",
-    href: "/services/search-engine-optimization",
-  },
-  {
-    title: "Virtual Tours",
-    image:
-      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1600&q=80",
-    href: "/services/virtual-tours",
-  },
-];
+/* The list lives in src/data/site.ts so the home grid, the services page
+   and the footer can never drift apart. */
+const services = serviceLinks;
 
 /* One easing curve for the whole section keeps the choreography feeling like a single motion. */
 const EASE = "[transition-timing-function:cubic-bezier(0.22,1,0.36,1)]";

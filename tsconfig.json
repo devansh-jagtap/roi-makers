@@ -36,6 +36,12 @@
     ".next/dev/types/**/*.ts"
 , "src/components/landing/CardStack.jsx"  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/components/ui/theme-context.ts",
+    "src/components/ui/theme-core.ts",
+    "src/components/ui/theme-component-contracts.ts",
+    "src/components/ui/theme.ts",
+    "src/theme/theme-store.ts",
+    "src/themes/my-design-system.ts"
   ]
 }

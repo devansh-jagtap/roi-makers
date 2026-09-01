@@ -741,3 +741,1120 @@ html.dark .careers-page input[type="file"]::file-selector-button {
 @media (prefers-reduced-motion: reduce) {
   .marquee-track { animation-play-state: paused; }
 }
+
+/* =====================================================================
+   AURORA GLASS DESIGN SYSTEM
+   ---------------------------------------------------------------------
+   One shared vocabulary for every marketing page: translucent surfaces,
+   a warm orange/white/black aurora behind them, one type scale and one
+   set of motion primitives. Pages never hard-code a colour, radius,
+   blur or shadow — they compose these classes.
+
+   Appended at the end on purpose. The blocks above (legacy orange
+   normalisation, the dashboard light lock) depend on source order, and
+   keeping this additive makes `git checkout -- src/app/globals.css`
+   an exact revert.
+   ===================================================================== */
+
+:root {
+  /* Brand — the only three hues on the site: orange, white, black. */
+  --brand: #f26b38;
+  --brand-bright: #ff8a5c;
+  --brand-deep: #d2481c;
+  --brand-rgb: 242 107 56;
+
+  /* Page ground — white in light, black in dark. Nothing else. Orange is
+     an accent on top of that, never the field. */
+  --page: #ffffff;
+
+  /* Surfaces. On a flat white page a translucent panel has nothing to
+     refract, so cards read through a hairline and a soft shadow instead.
+     The frosted treatment is kept only where a surface sits over an
+     image — pills on photography, the hero chrome. */
+  --glass-tint: 255 255 255;
+  --glass-alpha: 1;
+  --glass-alpha-strong: 1;
+  --glass-alpha-soft: 1;
+  --glass-edge: 0 0 0;
+  --glass-edge-alpha: 0.09;
+  --glass-ring: 0 0 0;
+  --glass-ring-alpha: 0;
+  --glass-blur: 20px;
+  --glass-sat: 180%;
+  --glass-shadow: 0 1px 2px rgb(0 0 0 / 4%), 0 8px 24px -14px rgb(0 0 0 / 14%);
+  --glass-shadow-lift: 0 2px 6px rgb(0 0 0 / 6%), 0 24px 54px -22px rgb(0 0 0 / 22%);
+  --glass-sheen: 255 255 255;
+  --glass-sheen-alpha: 0;
+
+  /* The near-black counterpart used for CTA bands */
+  --ink-tint: 0 0 0;
+  --ink-alpha: 1;
+  --ink-edge-alpha: 0.1;
+
+  /* Hairlines that build the editorial grid */
+  --rule: rgb(0 0 0 / 10%);
+  --rule-strong: rgb(0 0 0 / 18%);
+
+  /* Geometry + rhythm */
+  --radius-glass-sm: 1.125rem;
+  --radius-glass: 1.75rem;
+  --radius-glass-lg: 2.25rem;
+  --radius-glass-xl: 2.75rem;
+  --shell-max: 78rem;
+  --shell-pad: clamp(1rem, 4vw, 2.5rem);
+  --section-y: clamp(3.5rem, 8vw, 7rem);
+
+  /* Motion */
+  --ease-glass: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 240ms;
+  --dur: 480ms;
+  --dur-slow: 900ms;
+}
+
+html.dark {
+  --page: #000000;
+  --glass-tint: 255 255 255;
+  --glass-alpha: 0.045;
+  --glass-alpha-strong: 0.07;
+  --glass-alpha-soft: 0.03;
+  --glass-edge: 255 255 255;
+  --glass-edge-alpha: 0.12;
+  --glass-ring: 255 255 255;
+  --glass-ring-alpha: 0;
+  --glass-shadow: 0 1px 2px rgb(0 0 0 / 60%), 0 16px 40px -22px rgb(0 0 0 / 80%);
+  --glass-shadow-lift: 0 2px 8px rgb(0 0 0 / 65%), 0 34px 72px -28px rgb(0 0 0 / 90%);
+  --glass-sheen-alpha: 0.05;
+  --ink-tint: 255 255 255;
+  --ink-alpha: 0.05;
+  --ink-edge-alpha: 0.12;
+  --rule: rgb(255 255 255 / 12%);
+  --rule-strong: rgb(255 255 255 / 22%);
+}
+
+/* ---------------------------------------------------------------------
+   Typography — bind the real families to the class names the codebase
+   already uses, so no component has to change to get proper type.
+   --------------------------------------------------------------------- */
+:root {
+  /* Editorial pairing. The serif is a display face at a single weight —
+     it earns its keep on the two largest steps and nowhere else. Anything
+     at UI size, including card titles, stays in the sans so it holds up. */
+  --font-stack-display: var(--font-display), "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --font-stack-ui: var(--font-body), "DM Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-stack-body: var(--font-stack-ui);
+  --font-stack-mono: var(--font-mono-brand), "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+body { font-family: var(--font-stack-ui); }
+
+/* Page-level class — must stay in the sans, or every paragraph on the site
+   inherits the display serif. */
+.boska-font { font-family: var(--font-stack-ui); letter-spacing: -0.008em; }
+.pp-neue-world-font { font-family: var(--font-stack-display); font-weight: 400; letter-spacing: -0.012em; }
+.archivo-font { font-family: var(--font-stack-ui); letter-spacing: -0.006em; }
+.clash-display-font { font-family: var(--font-stack-ui); }
+.ibm-plex-mono-regular,
+.ibm-plex-mono-medium,
+.ibm-plex-mono-semibold,
+.ibm-plex-mono-bold { font-family: var(--font-stack-mono); }
+
+/* Headline scale. The serif runs at 400 — its only weight — so the two
+   display steps carry a touch more size and looser leading to compensate
+   for the lighter colour on the page. Steps 3 and 4 are UI-sized titles
+   and stay in DM Sans at 600. */
+.display-1 {
+  font-family: var(--font-stack-display);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.018em;
+  font-size: clamp(2.35rem, 5vw, 3.75rem);
+}
+.display-2 {
+  font-family: var(--font-stack-display);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.014em;
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+}
+.display-3 { font-family: var(--font-stack-ui); font-weight: 600; line-height: 1.25; letter-spacing: -0.016em; font-size: clamp(1.05rem, 1.5vw, 1.25rem); }
+.display-4 { font-family: var(--font-stack-ui); font-weight: 600; line-height: 1.35; letter-spacing: -0.01em;  font-size: clamp(0.9375rem, 1.1vw, 1.0rem); }
+
+/* An accent word set in the serif italic is the pairing's signature move. */
+.display-accent { font-style: italic; color: var(--brand); }
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-stack-ui);
+  font-weight: 500;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+
+.lede {
+  font-family: var(--font-stack-ui);
+  font-size: clamp(0.9375rem, 1.05vw, 1.0625rem);
+  line-height: 1.6;
+  letter-spacing: -0.006em;
+  color: color-mix(in oklab, var(--foreground) 72%, transparent);
+}
+
+.body-copy {
+  font-family: var(--font-stack-ui);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  letter-spacing: -0.004em;
+  color: color-mix(in oklab, var(--foreground) 70%, transparent);
+}
+
+.text-soft { color: color-mix(in oklab, var(--foreground) 66%, transparent); }
+
+/* ---------------------------------------------------------------------
+   Layout primitives
+   --------------------------------------------------------------------- */
+.shell { width: 100%; max-width: var(--shell-max); margin-inline: auto; padding-inline: var(--shell-pad); }
+.shell-wide { max-width: 88rem; }
+.section { padding-block: var(--section-y); position: relative; }
+.section-tight { padding-block: calc(var(--section-y) * 0.55); position: relative; }
+
+/* ---------------------------------------------------------------------
+   Glass surfaces
+   --------------------------------------------------------------------- */
+.glass {
+  position: relative;
+  border-radius: var(--radius-glass);
+  background: rgb(var(--glass-tint) / var(--glass-alpha));
+  border: 1px solid rgb(var(--glass-edge) / var(--glass-edge-alpha));
+  box-shadow: var(--glass-shadow), inset 0 1px 0 rgb(var(--glass-sheen) / var(--glass-sheen-alpha));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  background-clip: padding-box;
+}
+
+/* A second hairline in the page ink keeps the edge readable on white. */
+.glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgb(var(--glass-ring) / var(--glass-ring-alpha));
+  pointer-events: none;
+}
+
+.glass-soft { background: rgb(var(--glass-tint) / var(--glass-alpha-soft)); }
+.glass-strong { background: rgb(var(--glass-tint) / var(--glass-alpha-strong)); }
+.glass-sm { border-radius: var(--radius-glass-sm); }
+.glass-lg { border-radius: var(--radius-glass-lg); }
+.glass-xl { border-radius: var(--radius-glass-xl); }
+
+/* Ink glass: the dark, high-contrast surface for CTA bands. */
+.glass-ink {
+  position: relative;
+  border-radius: var(--radius-glass-lg);
+  background:
+    radial-gradient(120% 140% at 12% 0%, rgb(var(--brand-rgb) / 26%) 0%, transparent 58%),
+    rgb(var(--ink-tint) / var(--ink-alpha));
+  border: 1px solid rgb(255 255 255 / var(--ink-edge-alpha));
+  box-shadow: var(--glass-shadow-lift), inset 0 1px 0 rgb(255 255 255 / 12%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  color: #f7f3f0;
+  overflow: hidden;
+}
+
+/* Interactive card: lifts and catches a specular sweep on hover. */
+.glass-card {
+  overflow: hidden;
+  transition:
+    transform var(--dur) var(--ease-glass),
+    box-shadow var(--dur) var(--ease-glass),
+    border-color var(--dur) var(--ease-glass);
+}
+.glass-card > * { position: relative; z-index: 1; }
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: -40% -60%;
+  z-index: 0;
+  background: linear-gradient(105deg, transparent 38%, rgb(255 255 255 / 30%) 50%, transparent 62%);
+  transform: translateX(-70%);
+  transition: transform var(--dur-slow) var(--ease-glass);
+  pointer-events: none;
+}
+.glass-card:hover,
+.glass-card:focus-visible,
+.glass-card:focus-within {
+  transform: translateY(-6px);
+  box-shadow: var(--glass-shadow-lift), inset 0 1px 0 rgb(var(--glass-sheen) / var(--glass-sheen-alpha));
+  border-color: rgb(var(--brand-rgb) / 34%);
+}
+.glass-card:hover::before,
+.glass-card:focus-within::before { transform: translateX(70%); }
+
+/* Pills — filters, tags, chips. */
+.glass-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  padding: 0.45rem 0.95rem;
+  font-family: var(--font-stack-ui);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  background: rgb(var(--glass-tint) / var(--glass-alpha));
+  border: 1px solid rgb(var(--glass-edge) / var(--glass-edge-alpha));
+  box-shadow: inset 0 1px 0 rgb(var(--glass-sheen) / var(--glass-sheen-alpha));
+  backdrop-filter: blur(14px) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(14px) saturate(var(--glass-sat));
+  color: var(--foreground);
+  transition: transform var(--dur-fast) var(--ease-glass), border-color var(--dur-fast) var(--ease-glass),
+    background-color var(--dur-fast) var(--ease-glass), color var(--dur-fast) var(--ease-glass);
+}
+.glass-pill:hover { border-color: rgb(var(--brand-rgb) / 45%); transform: translateY(-2px); }
+.glass-pill[data-active="true"] {
+  background: var(--brand);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 8px 24px -10px rgb(var(--brand-rgb) / 70%);
+}
+
+/* Form fields inherit the same material. */
+.glass-field {
+  width: 100%;
+  border-radius: var(--radius-glass-sm);
+  padding: 0.85rem 1.1rem;
+  font-family: var(--font-stack-body);
+  color: var(--foreground);
+  background: rgb(var(--glass-tint) / var(--glass-alpha-strong));
+  border: 1px solid rgb(var(--glass-ring) / 12%);
+  backdrop-filter: blur(12px) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(12px) saturate(var(--glass-sat));
+  transition: border-color var(--dur-fast) var(--ease-glass), box-shadow var(--dur-fast) var(--ease-glass);
+}
+.glass-field::placeholder { color: color-mix(in oklab, var(--foreground) 42%, transparent); }
+.glass-field:focus {
+  outline: none;
+  border-color: rgb(var(--brand-rgb) / 55%);
+  box-shadow: 0 0 0 4px rgb(var(--brand-rgb) / 14%);
+}
+
+/* These beat the legacy `html.dark input` block further up the file. */
+html.dark .glass-field,
+html.dark main .glass-field {
+  background: rgb(255 255 255 / 6%) !important;
+  border-color: rgb(255 255 255 / 14%) !important;
+  color: #f6f2ef !important;
+}
+html.dark .glass-field::placeholder { color: rgb(246 242 239 / 45%) !important; }
+
+/* ---------------------------------------------------------------------
+   Buttons
+   --------------------------------------------------------------------- */
+.btn-glass,
+.btn-brand,
+.btn-ink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  overflow: hidden;
+  border-radius: 9999px;
+  padding: 0.7rem 1.35rem;
+  font-family: var(--font-stack-ui);
+  font-size: 0.875rem;
+  font-weight: 550;
+  letter-spacing: -0.008em;
+  white-space: nowrap;
+  transition: transform var(--dur-fast) var(--ease-glass), box-shadow var(--dur-fast) var(--ease-glass),
+    background-color var(--dur-fast) var(--ease-glass), border-color var(--dur-fast) var(--ease-glass);
+}
+.btn-brand {
+  background: var(--brand);
+  color: #fff;
+  border: 1px solid transparent;
+  box-shadow: 0 10px 30px -12px rgb(var(--brand-rgb) / 75%);
+}
+.btn-brand:hover { background: var(--brand-bright); transform: translateY(-3px); box-shadow: 0 16px 40px -14px rgb(var(--brand-rgb) / 85%); }
+.btn-ink {
+  background: #0d0906;
+  color: #fbf8f5;
+  border: 1px solid rgb(255 255 255 / 12%);
+}
+.btn-ink:hover { transform: translateY(-3px); box-shadow: 0 18px 42px -18px rgb(16 11 8 / 70%); }
+.btn-glass {
+  background: rgb(var(--glass-tint) / var(--glass-alpha));
+  border: 1px solid rgb(var(--glass-edge) / var(--glass-edge-alpha));
+  color: var(--foreground);
+  box-shadow: inset 0 1px 0 rgb(var(--glass-sheen) / var(--glass-sheen-alpha));
+  backdrop-filter: blur(14px) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(14px) saturate(var(--glass-sat));
+}
+.btn-glass:hover { transform: translateY(-3px); border-color: rgb(var(--brand-rgb) / 45%); }
+
+/* The legacy `html.dark button.bg-white` rules paint any light button
+   orange. These sit later in the file and win for the new system. */
+html.dark .btn-ink,
+html.dark main .btn-ink { background: #f6f2ef !important; color: #0d0906 !important; }
+html.dark .btn-glass,
+html.dark main .btn-glass { background: rgb(255 255 255 / 8%) !important; color: #f6f2ef !important; }
+html.dark .btn-brand,
+html.dark main .btn-brand { background: var(--brand) !important; color: #fff !important; }
+
+/* Shimmer sweep shared by every button. */
+.btn-glass::after,
+.btn-brand::after,
+.btn-ink::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 40%, rgb(255 255 255 / 26%) 50%, transparent 60%);
+  transform: translateX(-100%);
+  transition: transform var(--dur-slow) var(--ease-glass);
+  pointer-events: none;
+}
+.btn-glass:hover::after,
+.btn-brand:hover::after,
+.btn-ink:hover::after { transform: translateX(100%); }
+
+/* ---------------------------------------------------------------------
+   Aurora backdrop — three drifting radial washes in brand orange.
+   Pure gradients plus transforms, so it costs the GPU almost nothing:
+   no WebGL context, no blur filter, no per-frame repaint.
+   --------------------------------------------------------------------- */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--page);
+}
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.75;
+  will-change: transform;
+}
+.aurora-blob-1 {
+  width: 62vw; height: 62vw; top: -18vw; left: -12vw;
+  background: radial-gradient(circle at 50% 50%, rgb(var(--brand-rgb) / 32%) 0%, rgb(var(--brand-rgb) / 11%) 42%, transparent 70%);
+  animation: aurora-drift-a 26s var(--ease-glass) infinite alternate;
+}
+.aurora-blob-2 {
+  width: 54vw; height: 54vw; top: 24vh; right: -16vw;
+  background: radial-gradient(circle at 50% 50%, rgb(255 138 92 / 28%) 0%, rgb(255 138 92 / 9%) 45%, transparent 72%);
+  animation: aurora-drift-b 32s var(--ease-glass) infinite alternate;
+}
+.aurora-blob-3 {
+  width: 70vw; height: 70vw; bottom: -30vw; left: 16vw;
+  background: radial-gradient(circle at 50% 50%, rgb(210 72 28 / 20%) 0%, rgb(210 72 28 / 6%) 46%, transparent 74%);
+  animation: aurora-drift-c 38s var(--ease-glass) infinite alternate;
+}
+.aurora-grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("/hero-grain.png");
+  background-size: 340px;
+  opacity: 0.3;
+  mix-blend-mode: overlay;
+}
+html.dark .aurora-blob { opacity: 0.5; }
+html.dark .aurora-grain { opacity: 0.16; }
+
+@keyframes aurora-drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(6vw, 8vh, 0) scale(1.12); }
+}
+@keyframes aurora-drift-b {
+  from { transform: translate3d(0, 0, 0) scale(1.05); }
+  to   { transform: translate3d(-8vw, -6vh, 0) scale(0.95); }
+}
+@keyframes aurora-drift-c {
+  from { transform: translate3d(0, 0, 0) scale(0.95); }
+  to   { transform: translate3d(5vw, -7vh, 0) scale(1.1); }
+}
+
+/* Page shell: the aurora sits behind, content scrolls above it. */
+.glass-page { position: relative; min-height: 100vh; color: var(--foreground); }
+.glass-page-content { position: relative; z-index: 1; }
+
+/* ---------------------------------------------------------------------
+   Small shared behaviours
+   --------------------------------------------------------------------- */
+.hairline { height: 1px; width: 100%; background: linear-gradient(90deg, transparent, rgb(var(--glass-ring) / 18%) 12%, rgb(var(--glass-ring) / 18%) 88%, transparent); }
+html.dark .hairline { background: linear-gradient(90deg, transparent, rgb(255 255 255 / 14%) 12%, rgb(255 255 255 / 14%) 88%, transparent); }
+
+.media-zoom img { transition: transform var(--dur-slow) var(--ease-glass); }
+.group:hover .media-zoom img { transform: scale(1.07); }
+
+.link-arrow { display: inline-flex; align-items: center; gap: 0.45rem; }
+.link-arrow > span:last-child { transition: transform var(--dur-fast) var(--ease-glass); }
+.group:hover .link-arrow > span:last-child { transform: translate(0.25rem, -0.25rem); }
+
+/* ---------------------------------------------------------------------
+   Cost controls
+   --------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  :root { --glass-blur: 14px; --radius-glass: 1.375rem; --radius-glass-lg: 1.75rem; --radius-glass-xl: 2rem; }
+}
+
+/* Devices that cannot composite backdrop blur cheaply get a solid tint
+   instead of a janky one. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass, .glass-pill, .btn-glass, .glass-field { background: rgb(var(--glass-tint) / 0.92); }
+  html.dark .glass, html.dark .glass-pill, html.dark .btn-glass { background: rgb(28 24 22 / 0.94); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob { animation: none; }
+  .glass-card, .glass-card::before, .btn-glass, .btn-brand, .btn-ink,
+  .btn-glass::after, .btn-brand::after, .btn-ink::after, .media-zoom img { transition: none; }
+  .glass-card:hover { transform: none; }
+}
+
+/* =====================================================================
+   HOME HERO MESH
+   ---------------------------------------------------------------------
+   Replaces the ShaderGradient WebGL canvas that used to paint this panel.
+   Same warm orange character, but it is five drifting radial gradients on
+   transform-only keyframes instead of a three.js context — no GL
+   compositing, no shader recompiles on resize, and it keeps running at
+   60fps while GSAP pins and scrubs the video on top of it.
+   ===================================================================== */
+
+.hero-mesh {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(140deg, #ffc178 0%, #ff8f55 38%, #f4603a 68%, #e0402a 100%);
+}
+
+.hero-mesh-blob {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+  mix-blend-mode: soft-light;
+}
+.hero-mesh-blob-1 {
+  width: 78%; height: 96%; top: -30%; left: -14%;
+  background: radial-gradient(circle at 50% 50%, #ffe0a3 0%, rgb(255 214 132 / 55%) 40%, transparent 70%);
+  mix-blend-mode: normal;
+  opacity: 0.85;
+  animation: hero-mesh-a 22s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+.hero-mesh-blob-2 {
+  width: 72%; height: 104%; top: -22%; right: -18%;
+  background: radial-gradient(circle at 50% 50%, #ff3d24 0%, rgb(255 61 36 / 60%) 38%, transparent 72%);
+  mix-blend-mode: normal;
+  opacity: 0.8;
+  animation: hero-mesh-b 27s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+.hero-mesh-blob-3 {
+  width: 92%; height: 78%; bottom: -34%; left: 12%;
+  background: radial-gradient(circle at 50% 50%, #f5502f 0%, rgb(245 80 47 / 55%) 42%, transparent 74%);
+  mix-blend-mode: normal;
+  opacity: 0.72;
+  animation: hero-mesh-c 31s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+.hero-mesh-blob-4 {
+  width: 46%; height: 60%; top: 26%; left: 34%;
+  background: radial-gradient(circle at 50% 50%, #ffd27a 0%, transparent 66%);
+  opacity: 0.55;
+  animation: hero-mesh-d 19s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+
+@keyframes hero-mesh-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(9%, 14%, 0) scale(1.16); }
+}
+@keyframes hero-mesh-b {
+  from { transform: translate3d(0, 0, 0) scale(1.08); }
+  to   { transform: translate3d(-11%, 12%, 0) scale(0.94); }
+}
+@keyframes hero-mesh-c {
+  from { transform: translate3d(0, 0, 0) scale(0.96); }
+  to   { transform: translate3d(8%, -12%, 0) scale(1.14); }
+}
+@keyframes hero-mesh-d {
+  from { transform: translate3d(-6%, 4%, 0) scale(1); }
+  to   { transform: translate3d(10%, -8%, 0) scale(1.3); }
+}
+
+/* The grain sits above the blobs so the whole panel reads as one surface
+   rather than four gradients sliding past each other. */
+.hero-mesh-grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("/hero-grain.png");
+  background-size: 300px;
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+}
+
+/* Vignette keeps the black headline legible wherever the blobs drift. */
+.hero-mesh-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 22%) 0%, transparent 34%),
+    radial-gradient(120% 90% at 20% 18%, rgb(255 233 200 / 40%) 0%, transparent 62%),
+    linear-gradient(0deg, rgb(120 34 12 / 24%) 0%, transparent 42%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-mesh-blob { animation: none; }
+}
+
+/* Glass chips on the hero read against the warm panel rather than the page. */
+.hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  padding: 0.45rem 0.95rem;
+  font-family: var(--font-stack-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #150a05;
+  background: rgb(255 255 255 / 42%);
+  border: 1px solid rgb(255 255 255 / 55%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 70%), 0 8px 22px -14px rgb(60 18 6 / 60%);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  border-radius: var(--radius-glass-sm);
+  padding: 0.75rem 1.1rem;
+  background: rgb(255 255 255 / 34%);
+  border: 1px solid rgb(255 255 255 / 50%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 65%);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  color: #150a05;
+}
+
+/* Headline mask reveal — cheaper and smoother than animating opacity on a
+   14vw glyph, because only the transform is composited. */
+.hero-line { display: block; overflow: hidden; }
+.hero-line > span { display: block; will-change: transform; }
+
+/* ---------------------------------------------------------------------
+   Framed media
+   ---------------------------------------------------------------------
+   A photo that fills its container has nothing to see through, so it gets
+   the glass edge and shadow without the backdrop-filter. Cheaper, and it
+   avoids compositing a blur behind an opaque image.
+   --------------------------------------------------------------------- */
+.frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-glass);
+  border: 1px solid rgb(var(--glass-edge) / var(--glass-edge-alpha));
+  box-shadow: var(--glass-shadow);
+  background: rgb(var(--glass-tint) / var(--glass-alpha-strong));
+}
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgb(var(--glass-ring) / var(--glass-ring-alpha));
+  pointer-events: none;
+  z-index: 2;
+}
+.frame-lg { border-radius: var(--radius-glass-lg); }
+
+/* =====================================================================
+   MOTION + LAYOUT PRIMITIVES (v2)
+   ---------------------------------------------------------------------
+   Added after the first pass: tighter vertical rhythm, a pointer-tracked
+   specular highlight on glass, per-word headline reveals, and a bento
+   grid so pages stop reading as one centred column after another.
+   ===================================================================== */
+
+:root {
+  --section-y: clamp(3rem, 6vw, 5.5rem);
+}
+
+/* --- Pointer spotlight ------------------------------------------------
+   The card writes --mx/--my on pointermove; only this layer's gradient
+   position changes, so there is no layout or paint on the card itself. */
+.spotlight-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 320ms var(--ease-glass);
+  background: radial-gradient(
+    240px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(var(--brand-rgb) / 18%),
+    transparent 68%
+  );
+}
+.group:hover .spotlight-glow,
+.glass-card:hover .spotlight-glow,
+.glass-card:focus-within .spotlight-glow { opacity: 1; }
+
+/* --- Per-word headline reveal ----------------------------------------- */
+.word-mask { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.06em; }
+.word-mask > span { display: inline-block; will-change: transform; }
+
+/* --- Bento --------------------------------------------------------------
+   Apple's marketing pages are grids of rounded cards at mixed spans, not a
+   uniform 3-up. `data-span` keeps that expressive without a class per tile. */
+.bento {
+  display: grid;
+  gap: 0.875rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 900px) {
+  .bento { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1rem; }
+  .bento > [data-span="2"] { grid-column: span 2; }
+  .bento > [data-span="3"] { grid-column: span 3; }
+  .bento > [data-span="4"] { grid-column: span 4; }
+  .bento > [data-span="6"] { grid-column: span 6; }
+  .bento > [data-tall="true"] { grid-row: span 2; }
+}
+@media (max-width: 899px) {
+  .bento > [data-span="6"],
+  .bento > [data-span="4"] { grid-column: span 2; }
+}
+
+/* --- Index rows ---------------------------------------------------------
+   A numbered list that reveals a preview image on hover — cheaper and more
+   editorial than another wall of cards. */
+.index-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.15rem 0.25rem;
+  border-top: 1px solid rgb(var(--glass-ring) / 12%);
+  transition: padding-inline var(--dur) var(--ease-glass), color var(--dur) var(--ease-glass);
+}
+html.dark .index-row { border-top-color: rgb(255 255 255 / 12%); }
+.index-row:last-child { border-bottom: 1px solid rgb(var(--glass-ring) / 12%); }
+html.dark .index-row:last-child { border-bottom-color: rgb(255 255 255 / 12%); }
+.index-row:hover { padding-inline: 0.9rem 0.6rem; }
+.index-row::before {
+  content: "";
+  position: absolute;
+  inset: 0.25rem 0;
+  border-radius: var(--radius-glass-sm);
+  background: rgb(var(--brand-rgb) / 8%);
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease-glass);
+  z-index: -1;
+}
+.index-row:hover::before { opacity: 1; }
+
+/* --- Marquee row for quotes -------------------------------------------- */
+.quote-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  animation: marquee-track 46s linear infinite;
+  will-change: transform;
+}
+.quote-rail:hover .quote-track { animation-play-state: paused; }
+
+@media (prefers-reduced-motion: reduce) {
+  .quote-track { animation: none; }
+  .spotlight-glow { display: none; }
+}
+
+/* Numbers stay in the sans. A high-contrast display serif makes figures
+   harder to scan, and stats are the one thing on these pages people
+   actually compare at a glance. */
+.stat-value {
+  font-family: var(--font-stack-ui);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.022em;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: clamp(1.6rem, 2.5vw, 2.15rem);
+}
+.stat-value-sm { font-size: clamp(1.15rem, 1.6vw, 1.375rem); }
+
+/* =====================================================================
+   FLAT GROUND (v3)
+   ---------------------------------------------------------------------
+   Backgrounds are white in light and black in dark — nothing else. The
+   orange survives only as an accent on top. These rules sit last so they
+   win over the earlier aurora/tint blocks without editing them.
+   ===================================================================== */
+
+.glass-page { background: var(--page); }
+
+/* The coloured wash is gone. Kept as a no-op element so GlassPage does not
+   have to change shape, but it paints nothing but the page ground. */
+.aurora { background: var(--page); }
+.aurora-blob,
+.aurora-grain { display: none; }
+
+/* CTA band: a flat black plate on white, a raised surface on black. */
+.glass-ink {
+  background: rgb(var(--ink-tint) / var(--ink-alpha));
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+html.dark .glass-ink { color: #ffffff; }
+
+/* Cards: hairline + shadow rather than a tint, so they read on flat white. */
+.glass {
+  background: rgb(var(--glass-tint) / var(--glass-alpha));
+  border-color: rgb(var(--glass-edge) / var(--glass-edge-alpha));
+}
+.glass::after { border-color: transparent; }
+
+/* Frosted stays only where a surface genuinely overlays an image. */
+.glass-pill.on-media {
+  background: rgb(255 255 255 / 16%);
+  border-color: rgb(255 255 255 / 28%);
+  color: #fff;
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+}
+
+/* Hairlines drive the editorial grid now that there is no colour behind. */
+.hairline { background: var(--rule); }
+html.dark .hairline { background: var(--rule); }
+.rule-top { border-top: 1px solid var(--rule); }
+.rule-bottom { border-bottom: 1px solid var(--rule); }
+
+.index-row,
+.index-row:last-child { border-color: var(--rule); }
+html.dark .index-row,
+html.dark .index-row:last-child { border-color: var(--rule); }
+
+/* --- Index list with a cursor-following preview ------------------------
+   The signature interaction on a white page: rows of type, and the image
+   only appears where the pointer is. */
+.index-list { border-top: 1px solid var(--rule); }
+.index-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.75rem 1fr auto;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding: 1.5rem 0.25rem;
+  border-bottom: 1px solid var(--rule);
+  transition: padding-inline 500ms var(--ease-glass), opacity 400ms var(--ease-glass);
+}
+@media (min-width: 900px) {
+  .index-item { grid-template-columns: 3.5rem minmax(0, 22rem) 1fr auto; padding-block: 1.9rem; }
+}
+.index-list:hover .index-item { opacity: 0.4; }
+.index-list .index-item:hover { opacity: 1; padding-inline: 1rem 0.75rem; }
+
+.index-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  width: 20rem;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-glass);
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(-50%, -50%, 0) scale(0.94);
+  transition: opacity 320ms var(--ease-glass), transform 420ms var(--ease-glass);
+  box-shadow: var(--glass-shadow-lift);
+  will-change: transform, opacity;
+}
+.index-preview[data-visible="true"] { opacity: 1; transform: translate3d(-50%, -50%, 0) scale(1); }
+
+@media (max-width: 899px) {
+  .index-preview { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .index-preview { display: none; }
+  .index-list:hover .index-item { opacity: 1; }
+}
+
+/* Pure white / pure black grounds, overriding the earlier oklch greys. */
+:root { --background: #ffffff; }
+html.dark { --background: #000000; --foreground: #ffffff; }
+html.dark body { background-color: #000000; }
+
+/* Word masks need room for the serif's descenders, or "growth systems"
+   loses the tails on g, y and p. The negative margin cancels the padding
+   so the extra space never affects layout. */
+.word-mask {
+  padding-bottom: 0.18em;
+  margin-bottom: -0.18em;
+  line-height: inherit;
+}
+.display-1 { line-height: 1.08; }
+.display-2 { line-height: 1.14; }
+
+/* =====================================================================
+   GLASS v4 — matched to the reference panel
+   ---------------------------------------------------------------------
+   The earlier pass made surfaces opaque because a flat page has nothing
+   to refract. The fix is not to drop the material, it is to put content
+   behind it: every page opens on a "stage" of real cards, and the panel
+   floats over them. Grounds stay pure white / pure black.
+   ===================================================================== */
+
+:root {
+  --g-fill: 255 255 255;
+  --g-fill-a: 0.55;
+  --g-edge: 255 255 255;
+  --g-edge-a: 0.85;
+  --g-ring: 0 0 0;
+  --g-ring-a: 0.08;
+  --g-blur: 32px;
+  --g-sheen-a: 0.9;
+  --g-shadow: 0 2px 6px rgb(0 0 0 / 4%), 0 24px 64px -20px rgb(0 0 0 / 18%);
+  --g-shadow-lift: 0 4px 10px rgb(0 0 0 / 6%), 0 44px 90px -28px rgb(0 0 0 / 28%);
+}
+
+html.dark {
+  --g-fill: 255 255 255;
+  --g-fill-a: 0.055;
+  --g-edge: 255 255 255;
+  --g-edge-a: 0.13;
+  --g-ring: 0 0 0;
+  --g-ring-a: 0;
+  --g-sheen-a: 0.1;
+  --g-shadow: 0 2px 8px rgb(0 0 0 / 50%), 0 28px 70px -22px rgb(0 0 0 / 75%);
+  --g-shadow-lift: 0 4px 12px rgb(0 0 0 / 60%), 0 50px 100px -30px rgb(0 0 0 / 90%);
+}
+
+/* The material itself. */
+.glass {
+  background: rgb(var(--g-fill) / var(--g-fill-a));
+  border: 1px solid rgb(var(--g-edge) / var(--g-edge-a));
+  border-radius: var(--radius-glass);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / var(--g-sheen-a)),
+    var(--g-shadow);
+  backdrop-filter: blur(var(--g-blur)) saturate(170%);
+  -webkit-backdrop-filter: blur(var(--g-blur)) saturate(170%);
+  background-clip: padding-box;
+}
+.glass::after { border-color: rgb(var(--g-ring) / var(--g-ring-a)); }
+
+.glass-card:hover,
+.glass-card:focus-within {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / var(--g-sheen-a)), var(--g-shadow-lift);
+  border-color: rgb(var(--g-edge) / calc(var(--g-edge-a) + 0.1));
+}
+
+/* Panels that sit over the stage get a heavier blur and a brighter edge —
+   this is the card in the reference. */
+.glass-panel {
+  background: rgb(var(--g-fill) / calc(var(--g-fill-a) + 0.06));
+  border: 1px solid rgb(var(--g-edge) / calc(var(--g-edge-a) + 0.06));
+  border-radius: var(--radius-glass-xl);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / var(--g-sheen-a)),
+    var(--g-shadow-lift);
+  backdrop-filter: blur(44px) saturate(180%);
+  -webkit-backdrop-filter: blur(44px) saturate(180%);
+}
+
+/* --- The stage ---------------------------------------------------------
+   A band of real content — saved posts, client cards, screenshots — that
+   sits behind the opening panel so the blur has something to chew on. */
+.stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--page);
+}
+.stage-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.stage-card {
+  position: absolute;
+  border-radius: var(--radius-glass);
+  border: 1px solid rgb(var(--g-edge) / calc(var(--g-edge-a) * 0.5));
+  background: rgb(var(--g-fill) / calc(var(--g-fill-a) * 0.7));
+  box-shadow: var(--g-shadow);
+  padding: 1rem 1.15rem;
+  width: clamp(13rem, 20vw, 17rem);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+html.dark .stage-card { background: rgb(255 255 255 / 0.04); }
+
+/* Depth: the further back a card sits, the softer it reads. */
+.stage-card[data-depth="far"]  { filter: blur(3px); opacity: 0.55; }
+.stage-card[data-depth="mid"]  { filter: blur(1px); opacity: 0.78; }
+.stage-card[data-depth="near"] { opacity: 1; }
+
+.stage-content { position: relative; z-index: 1; }
+
+/* A vignette pulls focus to the middle without introducing a hue. */
+.stage-fade {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 50%, transparent 30%, rgb(var(--page-rgb) / 55%) 72%, rgb(var(--page-rgb) / 92%) 100%);
+}
+:root { --page-rgb: 255 255 255; }
+html.dark { --page-rgb: 0 0 0; }
+
+@media (max-width: 899px) {
+  .stage-layer { display: none; }
+}
+
+/* Fall back to a readable solid where blur is unsupported. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass, .glass-panel { background: rgb(var(--g-fill) / 0.95); }
+  html.dark .glass, html.dark .glass-panel { background: rgb(22 22 22 / 0.96); }
+}
+
+/* The reference panel has a clearly drawn edge — without it the surface
+   reads as fog rather than as glass. */
+html.dark {
+  --g-fill-a: 0.075;
+  --g-edge-a: 0.17;
+}
+.glass-panel {
+  border-width: 1px;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / calc(var(--g-sheen-a) + 0.12)),
+    inset 0 0 0 1px rgb(255 255 255 / 0.03),
+    var(--g-shadow-lift);
+}
+
+/* =====================================================================
+   STAGE v2 — a full-height opening
+   ---------------------------------------------------------------------
+   The previous version was a short band, so pages began with a strip of
+   dead space and a breadcrumb floating in it. This fills the viewport,
+   centres the panel, and carries the breadcrumb and scroll cue itself.
+   ===================================================================== */
+
+.stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100svh;
+  padding-block: clamp(6rem, 14vh, 9rem) clamp(4rem, 10vh, 6rem);
+  background: var(--page);
+}
+
+.stage-crumbs {
+  position: absolute;
+  top: clamp(5.5rem, 11vh, 7rem);
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
+.stage-content { position: relative; z-index: 1; }
+
+.stage-panel {
+  margin-inline: auto;
+  max-width: 48rem;
+  padding: clamp(2.25rem, 5vw, 4rem) clamp(1.75rem, 5vw, 3.75rem);
+}
+
+/* --- Cards behind the panel ------------------------------------------ */
+.stage-card {
+  position: absolute;
+  border-radius: var(--radius-glass);
+  border: 1px solid rgb(var(--g-edge) / calc(var(--g-edge-a) * 0.55));
+  background: rgb(var(--g-fill) / calc(var(--g-fill-a) * 0.8));
+  box-shadow: var(--g-shadow);
+  padding: 1.05rem 1.25rem;
+  width: clamp(13rem, 19vw, 16.5rem);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+html.dark .stage-card { background: rgb(255 255 255 / 0.045); }
+
+.stage-card-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--foreground) 55%, transparent);
+}
+.stage-dot { height: 0.375rem; width: 0.375rem; border-radius: 9999px; background: var(--brand); }
+.stage-card-line { margin-top: 0.55rem; font-size: 0.8125rem; line-height: 1.45; }
+.stage-card-meta {
+  margin-top: 0.5rem;
+  font-size: 0.6875rem;
+  color: color-mix(in oklab, var(--foreground) 50%, transparent);
+}
+
+.stage-card[data-depth="far"]  { filter: blur(3.5px); opacity: 0.5; }
+.stage-card[data-depth="mid"]  { filter: blur(1.2px); opacity: 0.75; }
+.stage-card[data-depth="near"] { opacity: 1; }
+
+/* --- Scroll cue ------------------------------------------------------- */
+.stage-cue {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--foreground) 45%, transparent);
+  pointer-events: none;
+}
+.stage-cue-line {
+  width: 1px;
+  height: 2.5rem;
+  background: linear-gradient(to bottom, transparent, var(--rule-strong));
+  overflow: hidden;
+  position: relative;
+}
+.stage-cue-line::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 40%;
+  background: var(--brand);
+  animation: stage-cue-run 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes stage-cue-run {
+  0%   { transform: translateY(-100%); }
+  60%  { transform: translateY(250%); }
+  100% { transform: translateY(250%); }
+}
+
+@media (max-width: 1023px) {
+  .stage { min-height: auto; padding-block: clamp(7rem, 18vh, 9rem) 3.5rem; }
+  .stage-layer { display: none; }
+  .stage-cue { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-cue-line::after { animation: none; }
+}

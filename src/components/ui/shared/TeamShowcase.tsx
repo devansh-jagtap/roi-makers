@@ -22,8 +22,7 @@ export type TeamShowcaseProps = {
   title?: string;
 };
 
-const dev
-TeamShowcase: React.FC<TeamShowcaseProps> = ({
+const TeamShowcase: React.FC<TeamShowcaseProps> = ({
   teamNames,
   teamImages,
   teamInfo,

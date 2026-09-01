@@ -1,330 +1,269 @@
-'use client';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import SiteFooter from '@/components/layout/SiteFooter';
-import { CountUp } from '@/components/ui/count-up';
+"use client";
 
-const stats = [
-	{ label: 'Campaigns Executed', value: 1200 },
-	{ label: 'Active Clients', value: 250 },
-	{ label: 'Leads Generated', value: 626000 },
-	{ label: 'Businesses Scaled', value: 500 },
+import Image from "next/image";
+import Link from "next/link";
+import GlassPage from "@/components/ui/glass/GlassPage";
+import { HeroStage } from "@/components/ui/glass/HeroStage";
+import { aboutStage } from "@/data/stage";
+import { CTABand, SectionHeading, StatGrid } from "@/components/ui/glass/Sections";
+import { Reveal, RevealGroup, RevealItem } from "@/components/ui/glass/Reveal";
+import {
+  capabilitiesList,
+  company,
+  founderQuote,
+  headlineStats,
+  leadership,
+  missionVision,
+  timeline,
+  trustSignals,
+  values,
+} from "@/data/site";
+
+/* Swap these two for real studio photography when it exists — the poster
+   art in /public/images/stack is placeholder work, not ROI Makers. */
+const stackShots = [
+  "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1200&q=80",
 ];
 
-const milestones = [
-	{
-		year: '2019',
-		title: 'Born from necessity',
-		desc: 'Started in a cramped Indore office with one mission: prove that creative agencies could actually drive P&L, not just win awards.',
-	},
-	{
-		year: '2021',
-		title: 'The lab expands',
-		desc: 'Built our creative-tech hybrid model. Brought motion designers, developers, and media buyers under one roof to kill the handoff delays.',
-	},
-	{
-		year: '2023',
-		title: 'Cross-border domination',
-		desc: 'Scaled beyond Indian borders. Now running synchronized campaigns across time zones with local creators who understand cultural nuance.',
-	},
-	{
-		year: 'Now',
-		title: 'Growth infrastructure partners',
-		desc: "We're the internal growth team that scales with you. Embedded deep in consumer tech, D2C, B2B SaaS, and emerging crypto brands hitting hockey-stick growth.",
-	},
-];
+export default function AboutPage() {
+  return (
+    <GlassPage>
+      <HeroStage
+        eyebrow="Get to know us"
+        title={
+          <>
+            Nine years deep.
+            <br />
+            <span className="display-accent">Still obsessed.</span>
+          </>
+        }
+        lede="We started with one belief: creative work should drive revenue, not just win awards. Today, 250+ brands trust us with their growth because we trade in results, not reports. Indore-born. Globally proven."
+        actions={
+          <>
+            <Link href="/contact#contact-form" className="btn-brand">
+              <span>Work with us</span>
+              <span aria-hidden>→</span>
+            </Link>
+            <Link href="/projects" className="btn-glass">
+              <span>Explore our work</span>
+            </Link>
+          </>
+        }
+        cards={aboutStage}
+        crumbs={[{ label: "About" }]}
+      />
 
-const leaders = [
-	{
-		name: 'Amit Sharma',
-		title: 'FOUNDER & CEO',
-		image: '/team/1.webp',
-		bio: `I've spent years in the digital trenches, working with everyone from bootstrapped startups to blockchain unicorns. My obsession? Building marketing machines that generate predictable revenue. At ROI Makers, we've cracked the code on blending scroll-stopping creative with performance engineering. I believe great marketing isn't about vanity metrics or pretty decks. It's about understanding human psychology, mapping customer journeys, and architecting systems that convert cold traffic into raving fans. If you're done with agencies that promise the moon and deliver PowerPoints, let's build something that actually moves your revenue needle.`,
-	},
-	{
-		name: 'Vishal Yogi',
-		title: 'CO-FOUNDER',
-		image: '/team/2.webp',
-		bio: "I'm the operator who makes our creative chaos actually work. While everyone else is chasing shiny objects, I'm building the infrastructure that lets us scale fast without breaking things. My background in systems thinking and tech implementation means I see gaps before they become problems. I translate between creative dreamers and technical builders, making sure our wild ideas actually ship on time and on budget. My philosophy is simple: brilliant strategy executed poorly is just expensive education. I make sure we execute brilliantly, every single time, so your growth compounds instead of stalling.",
-	},
-];
+      {/* ---------------------------------------------------------- */}
+      <section className="section-tight">
+        <div className="shell grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
+          <div className="grid gap-6">
+            <Reveal>
+              <div className="glass glass-card p-7 sm:p-10">
+                <p className="eyebrow">Why we exist</p>
+                <h2 className="display-3 mt-4 text-balance">
+                  We design conversion machines disguised as beautiful campaigns.
+                </h2>
+                <p className="body-copy archivo-font mt-5">
+                  Every pixel, every line of copy, every targeting parameter exists for one reason: turning your
+                  marketing budget into a revenue multiplier. Our cross-functional squads blend art with algorithms,
+                  creating experiences that captivate audiences while feeding your bottom line.
+                </p>
+                <ul className="mt-7 grid gap-3 sm:grid-cols-2">
+                  {capabilitiesList.map((item) => (
+                    <li key={item} className="clash-display-font flex items-center gap-3 text-[0.68rem] uppercase tracking-[0.18em] text-soft">
+                      <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--brand)]" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
 
-const stackShots = ['/images/stack/1.webp', '/images/stack/4.webp'];
+            <div className="grid gap-6 sm:grid-cols-2">
+              <Reveal delay={0.08}>
+                <div className="glass glass-card h-full p-6">
+                  <p className="eyebrow">Headquarters</p>
+                  <p className="display-4 mt-3">Indore · Madhya Pradesh</p>
+                  <p className="body-copy archivo-font mt-2 text-sm">{company.address}</p>
+                </div>
+              </Reveal>
+              <Reveal delay={0.16}>
+                <div className="glass-ink h-full p-6">
+                  <p className="eyebrow">Focus</p>
+                  <p className="display-4 mt-3">Revenue-obsessed squads</p>
+                  <p className="archivo-font mt-2 text-sm leading-relaxed text-white/70">
+                    Growth · Brand · Analytics · Tech
+                  </p>
+                </div>
+              </Reveal>
+            </div>
+          </div>
 
-const values = [
-	{
-		title: 'Radical Experimentation',
-		description: "We don't just test ideas. We break them, rebuild them, and 10x them until they scale.",
-	},
-	{
-		title: 'Aesthetic Precision',
-		description: 'Stunning creative delivery yesterday. We marry beauty with brutal efficiency.',
-	},
-	{
-		title: 'No-Filter Collaboration',
-		description: 'Real talk, real numbers, real accountability. We succeed or fail together, period.',
-	},
-	{
-		title: 'Infinite Optimization',
-		description: "Last month's winning formula is this month's baseline. We never stop pushing metrics higher.",
-	},
-];
+          <div className="grid gap-6">
+            {stackShots.map((src, index) => (
+              <Reveal key={src} delay={0.1 + index * 0.1} from="left">
+                <div className="frame frame-lg media-zoom group relative aspect-[4/3]">
+                  <Image
+                    src={src}
+                    alt="Inside the studio"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 40vw"
+                    priority={index === 0}
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
 
-export default function About() {
-	return (
-		<main className="min-h-screen w-full boska-font" style={{ backgroundColor: '#FFFFFF' }}>
-			{/* Hero Section */}
-			<section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
-				<motion.div
-					initial={{ opacity: 0, y: 30 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.8 }}
-					className="text-center mb-16"
-				>
-					<p className="uppercase tracking-[0.5em] text-lg font-semibold text-[#8c7b62] clash-display-font">ABOUT ROI MAKERS</p>
-					<h1 className="mt-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-[#060010]">
-						We Engineer Revenue<br />Acceleration
-					</h1>
-					<p className="mt-8 text-lg sm:text-xl md:text-2xl text-[#312619]/80 max-w-3xl mx-auto archivo-font leading-relaxed">
-						A collective of mad scientists, pixel perfectionists, data nerds, and brand architects who build marketing systems that don't just look good but print money.
-					</p>
-				</motion.div>
+      {/* ---------------------------------------------------------- */}
+      <section className="section-tight">
+        <div className="shell">
+          <SectionHeading
+            eyebrow="Stats"
+            title="Experts in the business."
+            description="No vanity metrics. Every number here represents a business that grew because of decisions we made together."
+            align="center"
+          />
+          <div className="mt-12 grid gap-4">
+            <StatGrid stats={headlineStats} />
+            <StatGrid stats={trustSignals} />
+          </div>
+        </div>
+      </section>
 
-				<motion.div
-					initial={{ opacity: 0, y: 40 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.8, delay: 0.2 }}
-					className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] items-start"
-				>
-					<div className="space-y-8">
-						<div className="bg-white/70 rounded-[32px] border border-[#060010]/10 p-8 md:p-10 shadow-[0_25px_80px_-50px_rgba(6,0,16,0.3)]">
-							<h2 className="text-3xl md:text-4xl font-bold text-[#060010] mb-6">
-								Crafting brands that sell while the competition sleeps
-							</h2>
-							<p className="text-base md:text-lg text-[#312619]/80 archivo-font leading-relaxed">
-								We design conversion machines disguised as beautiful campaigns. Every pixel, every line of copy, every targeting parameter exists for one reason: turning your marketing budget into a revenue multiplier. Our cross-functional squads blend art with algorithms, creating experiences that captivate audiences while feeding your bottom line.
-							</p>
-						</div>
-						<div className="grid gap-6 sm:grid-cols-2">
-							<div className="rounded-[28px] border border-[#060010]/10 bg-white/70 p-6 shadow-[0_20px_60px_-40px_rgba(6,0,16,0.25)]">
-								<p className="text-xs uppercase tracking-[0.35em] text-[#8c7b62] clash-display-font">Headquarters</p>
-								<p className="mt-3 text-2xl font-bold text-[#060010]">Indore · MP</p>
-								<p className="text-sm text-[#312619]/70 archivo-font mt-1">218-B Trade Center, South Tukoganj</p>
-							</div>
-							<div className="rounded-[28px] border border-[#060010]/10 bg-[#060010] text-[#E9E4D7] p-6">
-								<p className="text-xs uppercase tracking-[0.35em] text-[#ff9933] clash-display-font">FOCUS</p>
-								<p className="mt-3 text-2xl font-bold">Revenue-obsessed squads</p>
-								<p className="text-sm text-[#E9E4D7]/80 archivo-font mt-1">Growth · Brand · Analytics · Tech</p>
-							</div>
-						</div>
-					</div>
-					<div className="grid gap-6">
-						{stackShots.map((src, idx) => (
-							<motion.div
-								key={src}
-								initial={{ opacity: 0, x: 20 }}
-								animate={{ opacity: 1, x: 0 }}
-								transition={{ duration: 0.6, delay: 0.3 + idx * 0.1 }}
-								className={`relative aspect-[4/3] rounded-[32px] overflow-hidden border border-[#060010]/10 bg-white shadow-[0_25px_80px_-50px_rgba(6,0,16,0.3)] ${
-									idx === 1 ? 'translate-x-6 sm:translate-x-10' : ''
-								}`}
-							>
-								<Image src={src} alt="Studio documentation" fill priority={idx === 0} className="object-cover" />
-								<div className="absolute inset-0 bg-gradient-to-t from-[#060010]/60 via-transparent to-transparent" />
-							</motion.div>
-						))}
-					</div>
-				</motion.div>
-			</section>
+      {/* ---------------------------------------------------------- */}
+      <section className="section-tight">
+        <div className="shell">
+          <SectionHeading eyebrow="Our story" title="Mission and vision." />
 
-			{/* Stats Section */}
-			<section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-				<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-					{stats.map((stat, idx) => (
-						<motion.div
-							key={stat.label}
-							initial={{ opacity: 0, y: 30 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.6, delay: idx * 0.1 }}
-							viewport={{ once: true }}
-							className="rounded-[28px] border border-[#060010]/10 bg-white/80 p-8 text-center shadow-[0_20px_60px_-40px_rgba(6,0,16,0.25)]"
-						>
-						<p className="text-5xl font-black text-[#060010]">
-							<CountUp value={stat.value} duration={2} />
-							+
-						</p>
-							<p className="mt-3 text-xs uppercase tracking-[0.3em] text-[#8c7b62] clash-display-font">{stat.label}</p>
-						</motion.div>
-					))}
-				</div>
-			</section>
+          <div className="mt-10 grid gap-6 md:grid-cols-2">
+            {[missionVision.mission, missionVision.vision].map((block, index) => (
+              <Reveal key={block.title} delay={index * 0.1}>
+                <div className="glass glass-card h-full p-7 sm:p-9">
+                  <p className="eyebrow">{index === 0 ? "Mission" : "Vision"}</p>
+                  <h3 className="display-3 mt-4 text-balance">{block.title}</h3>
+                  <p className="body-copy archivo-font mt-4">{block.body}</p>
+                  <div className="hairline my-6" />
+                  <ul className="grid gap-3">
+                    {block.points.map((point) => (
+                      <li key={point} className="body-copy archivo-font flex gap-3 text-sm">
+                        <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--brand)]" />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
 
-			{/* Values Section */}
-			<section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-				<motion.div
-					initial={{ opacity: 0, y: 30 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.8 }}
-					viewport={{ once: true }}
-					className="text-center mb-12"
-				>
-					<p className="uppercase tracking-[0.5em] text-xs font-semibold text-[#8c7b62] clash-display-font">OUR VALUES</p>
-					<h2 className="mt-4 text-4xl md:text-5xl font-bold text-[#060010]">What Moves Us Forward</h2>
-				</motion.div>
-				<div className="grid gap-6 md:grid-cols-2">
-					{values.map((value, idx) => (
-						<motion.div
-							key={value.title}
-							initial={{ opacity: 0, y: 30 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.6, delay: idx * 0.1 }}
-							viewport={{ once: true }}
-							className="rounded-[28px] border border-[#060010]/10 bg-white/70 p-8 shadow-[0_20px_60px_-40px_rgba(6,0,16,0.25)] hover:shadow-[0_30px_90px_-40px_rgba(6,0,16,0.4)] transition-shadow duration-300"
-						>
-							<h3 className="text-2xl font-bold text-[#060010] mb-3">{value.title}</h3>
-							<p className="text-base text-[#312619]/80 archivo-font leading-relaxed">{value.description}</p>
-						</motion.div>
-					))}
-				</div>
-			</section>
+      {/* ---------------------------------------------------------- */}
+      <section className="section-tight">
+        <div className="shell grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+          <Reveal>
+            <p className="eyebrow">The ROI Makers story</p>
+            <h2 className="display-2 mt-4 text-balance">A journey built on grit, growth and results.</h2>
+            <p className="body-copy archivo-font mt-5">
+              From a laptop in a home office to one of Indore&rsquo;s most recognised digital marketing agencies. The
+              journey is proof that when strategy meets passion, results are inevitable.
+            </p>
+            <figure className="glass glass-card mt-8 p-6">
+              <blockquote className="display-4 text-balance">&ldquo;{founderQuote.quote}&rdquo;</blockquote>
+              <figcaption className="clash-display-font mt-4 text-[0.65rem] uppercase tracking-[0.22em] text-soft">
+                {founderQuote.attribution}
+              </figcaption>
+            </figure>
+          </Reveal>
 
-			{/* Timeline Section */}
-			<section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 grid gap-10 lg:grid-cols-[0.85fr_1fr] items-start">
-				<motion.div
-					initial={{ opacity: 0, x: -30 }}
-					whileInView={{ opacity: 1, x: 0 }}
-					transition={{ duration: 0.8 }}
-					viewport={{ once: true }}
-				>
-					<p className="uppercase tracking-[0.5em] text-xs font-semibold text-[#8c7b62] clash-display-font">How We Work</p>
-					<h2 className="mt-4 text-3xl sm:text-4xl font-bold text-[#060010]">
-						Revenue frameworks engineered for infinite scale.
-					</h2>
-					<p className="mt-6 text-[#312619]/80 archivo-font leading-relaxed">
-						We don't just join your team. We become your growth operating system. Our integrated squads work inside your business, building feedback loops that turn every campaign into institutional knowledge and every dollar spent into predictable returns.
-					</p>
-					<ul className="mt-8 space-y-3 text-sm uppercase tracking-[0.25em] text-[#8c7b62] clash-display-font">
-						<li className="flex items-center gap-3">
-							<span className="w-1.5 h-1.5 bg-[#8c7b62] rounded-full" />
-							Behavioral Data Architecture
-						</li>
-						<li className="flex items-center gap-3">
-							<span className="w-1.5 h-1.5 bg-[#8c7b62] rounded-full" />
-							Performance Creative Systems
-						</li>
-						<li className="flex items-center gap-3">
-							<span className="w-1.5 h-1.5 bg-[#8c7b62] rounded-full" />
-							Omnichannel Orchestration
-						</li>
-						<li className="flex items-center gap-3">
-							<span className="w-1.5 h-1.5 bg-[#8c7b62] rounded-full" />
-							Conversion Psychology Frameworks
-						</li>
-					</ul>
-				</motion.div>
-				<motion.div
-					initial={{ opacity: 0, x: 30 }}
-					whileInView={{ opacity: 1, x: 0 }}
-					transition={{ duration: 0.8 }}
-					viewport={{ once: true }}
-					className="rounded-[32px] border border-[#060010]/10 bg-white/80 p-8 shadow-[0_25px_80px_-50px_rgba(6,0,16,0.3)]"
-				>
-					<div className="space-y-8">
-						{milestones.map((item, idx) => (
-							<motion.div
-								key={item.year}
-								initial={{ opacity: 0, y: 20 }}
-								whileInView={{ opacity: 1, y: 0 }}
-								transition={{ duration: 0.5, delay: idx * 0.1 }}
-								viewport={{ once: true }}
-								className="flex gap-6"
-							>
-								<div className="text-[#8c7b62] font-black text-2xl min-w-[4rem] clash-display-font">{item.year}</div>
-								<div>
-									<p className="text-xl font-bold text-[#060010]">{item.title}</p>
-									<p className="text-sm text-[#312619]/80 archivo-font mt-2 leading-relaxed">{item.desc}</p>
-								</div>
-							</motion.div>
-						))}
-					</div>
-				</motion.div>
-			</section>
+          <RevealGroup className="relative grid gap-4">
+            {timeline.map((item) => (
+              <RevealItem key={item.year}>
+                <div className="glass glass-card flex flex-col gap-4 p-6 sm:flex-row sm:gap-7 sm:p-7">
+                  <p className="clash-display-font shrink-0 text-sm uppercase tracking-[0.18em] text-[var(--brand)] sm:w-24">
+                    {item.year}
+                  </p>
+                  <div>
+                    <h3 className="display-4">{item.title}</h3>
+                    <p className="body-copy archivo-font mt-2 text-sm">{item.body}</p>
+                  </div>
+                </div>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+        </div>
+      </section>
 
-			{/* Leadership Section */}
-			<section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-				<motion.div
-					initial={{ opacity: 0, y: 30 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.8 }}
-					viewport={{ once: true }}
-					className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between mb-12"
-				>
-					<div>
-						<p className="uppercase tracking-[0.5em] text-xs font-semibold text-[#8c7b62] clash-display-font">Leadership</p>
-						<h2 className="mt-3 text-4xl sm:text-5xl font-bold text-[#060010]">
-							The architects behind<br />your next breakthrough
-						</h2>
-					</div>
-					<p className="text-sm text-[#312619]/80 archivo-font max-w-xl leading-relaxed">
-						Our leadership doesn't just talk strategy from corner offices. They're in the trenches daily, optimizing campaigns, reviewing creative, and obsessing over conversion rates alongside our squads.
-					</p>
-				</motion.div>
-				<div className="grid gap-8 md:grid-cols-2">
-					{leaders.map((leader, idx) => (
-						<motion.div
-							key={leader.name}
-							initial={{ opacity: 0, y: 40 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.6, delay: idx * 0.1 }}
-							viewport={{ once: true }}
-							className="group rounded-[32px] border border-[#060010]/10 bg-white overflow-hidden shadow-[0_25px_80px_-50px_rgba(6,0,16,0.3)] hover:shadow-[0_30px_90px_-40px_rgba(6,0,16,0.5)] transition-all duration-300"
-						>
-							<div className="relative h-80 overflow-hidden">
-								<Image
-									src={leader.image}
-									alt={leader.name}
-									fill
-									className="object-cover transition-transform duration-700 group-hover:scale-110"
-								/>
-								<div className="absolute inset-0 bg-gradient-to-t from-[#060010]/80 via-[#060010]/20 to-transparent" />
-							</div>
-							<div className="p-6">
-								<p className="text-xl font-bold text-[#060010]">{leader.name}</p>
-								<p className="text-xs uppercase tracking-[0.3em] text-[#8c7b62] clash-display-font mt-1">
-									{leader.title}
-								</p>
-								<p className="text-sm text-[#312619]/80 archivo-font mt-4 leading-relaxed">{leader.bio}</p>
-							</div>
-						</motion.div>
-					))}
-				</div>
-			</section>
+      {/* ---------------------------------------------------------- */}
+      <section className="section-tight">
+        <div className="shell">
+          <SectionHeading
+            eyebrow="Leadership"
+            title="The architects behind your next breakthrough."
+            description="Our leadership doesn't talk strategy from corner offices. They're in the work daily — optimising campaigns, reviewing creative and obsessing over conversion rates alongside the squads."
+          />
 
-			{/* CTA Section */}
-			<section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-				<motion.div
-					initial={{ opacity: 0, y: 30 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.8 }}
-					viewport={{ once: true }}
-					className="bg-[#060010] text-[#E9E4D7] rounded-[40px] p-12 md:p-16 text-center shadow-2xl"
-				>
-					<h2 className="text-3xl md:text-5xl font-bold mb-6">Ready to Scale?</h2>
-					<p className="text-lg md:text-xl mb-8 text-[#E9E4D7]/80 archivo-font max-w-2xl mx-auto">
-						Stop settling for marketing that looks good in reports but doesn't move revenue. Let's build your growth engine.
-					</p>
-					<div className="flex flex-wrap justify-center gap-4">
-						<a
-							href="/contact"
-							className="inline-flex items-center gap-3 rounded-full bg-primary px-8 py-4 text-sm font-semibold uppercase tracking-wider text-primary-foreground shadow-lg transition-all duration-300 hover:scale-105 hover:bg-primary/90 clash-display-font"
-						>
-							Explore Opportunities <span aria-hidden>→</span>
-						</a>
-					</div>
-				</motion.div>
-			</section>
+          <RevealGroup className="mt-12 grid gap-6 md:grid-cols-3">
+            {leadership.map((person) => (
+              <RevealItem key={person.name} className="h-full">
+                <article className="glass glass-card group flex h-full flex-col">
+                  <div className="media-zoom relative aspect-[4/5] overflow-hidden rounded-t-[inherit]">
+                    <Image
+                      src={person.image}
+                      alt={person.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 p-6">
+                      <p className="display-3 text-white">{person.name}</p>
+                      <p className="clash-display-font mt-1 text-[0.65rem] uppercase tracking-[0.22em] text-[var(--brand-bright)]">
+                        {person.role}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="body-copy archivo-font p-6 text-sm">{person.bio}</p>
+                </article>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+        </div>
+      </section>
 
-			<SiteFooter />
-		</main>
-	);
+      {/* ---------------------------------------------------------- */}
+      <section className="section-tight">
+        <div className="shell">
+          <SectionHeading eyebrow="Our values" title="What moves us forward." align="center" />
+
+          <RevealGroup className="mt-12 grid gap-5 md:grid-cols-2">
+            {values.map((value) => (
+              <RevealItem key={value.title} className="h-full">
+                <div className="glass glass-card h-full p-7">
+                  <h3 className="display-3">{value.title}</h3>
+                  <p className="body-copy archivo-font mt-3">{value.description}</p>
+                </div>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+        </div>
+      </section>
+
+      <CTABand
+        eyebrow="Ready to scale"
+        title="Stop settling for marketing that looks good in reports."
+        body="Tell us where you are. We'll tell you exactly where you can go and how we get there — no fluff, no filler."
+        actions={[
+          { label: "Start a project", href: "/contact#contact-form" },
+          { label: "See our services", href: "/services", variant: "glass" },
+        ]}
+      />
+    </GlassPage>
+  );
 }

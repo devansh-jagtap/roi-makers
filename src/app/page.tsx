@@ -74,19 +74,20 @@ const MenuPage = () => {
             ref={outroRef}
           >
             <ImageWall
-              heroText="See how we transform brands"
+              heroText="ROI first. Always."
               heroTextClassName="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl px-2 sm:px-4 md:px-[2.5em] flex justify-center items-center font-medium text-foreground text-center w-full"
-              buttonText="Start Your Growth Story"
-              lines= {[
-                "Razor-sharp strategy. Addictive design.",
-                "Campaigns that make CFOs smile and competitors nervous.",
-                "Ready To 10x Your Digital Game? Let's Build.",
+              buttonText="Let's make it count"
+              lines={[
+                'Performance marketing built for brands that refuse to be average.',
+                'Nine years in. 1,200+ campaigns. 250+ active clients.',
+                'Tell us where you are. We will tell you exactly where you can go.',
               ]}
               footerContent={
                 <section className="hero mb-20 sm:mb-30 md:mb-40 lg:mb-60 flex justify-center items-center w-screen bg-background">
                   <p className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl px-2 sm:px-4 md:px-[2.5em] flex justify-center items-center font-medium text-foreground text-center w-full">
                     See how we transform brands
                   </p>
+
                 </section>
               }
               stackImageCount={6}
