@@ -1858,3 +1858,159 @@ html.dark .stage-card { background: rgb(255 255 255 / 0.045); }
 @media (prefers-reduced-motion: reduce) {
   .stage-cue-line::after { animation: none; }
 }
+
+/* =====================================================================
+   LAYOUT v5 — big-type opening, sticky split bodies, image-led bands
+   ---------------------------------------------------------------------
+   Three structures, chosen by the user, that compose every page:
+     .type-hero   an opening where the headline is the whole design
+     .split       a pinned left column beside a scrolling right column
+     .band        full-bleed media with a glass panel over it
+   Grounds stay white / black; orange stays an accent.
+   ===================================================================== */
+
+/* --- 1. Big-type opening ---------------------------------------------- */
+.type-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100svh;
+  padding-block: clamp(6rem, 13vh, 8.5rem) clamp(2.5rem, 6vh, 4rem);
+  background: var(--page);
+  overflow: hidden;
+}
+
+/* The headline is the design here, so it is allowed to be large — but it
+   is capped well below viewport width so long words never overflow. */
+.type-hero-title {
+  font-family: var(--font-stack-display);
+  font-weight: 400;
+  font-size: clamp(2.6rem, 7.4vw, 6.25rem);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  max-width: 15ch;
+}
+.type-hero-title .display-accent { font-style: italic; color: var(--brand); }
+
+.type-hero-foot {
+  display: grid;
+  gap: 2rem;
+  align-items: end;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.75rem;
+}
+@media (min-width: 900px) {
+  .type-hero-foot { grid-template-columns: minmax(0, 30rem) 1fr auto; gap: 3rem; }
+}
+
+.type-hero-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--foreground) 45%, transparent);
+}
+.type-hero-cue span:first-child {
+  display: block;
+  width: 2.5rem;
+  height: 1px;
+  background: var(--rule-strong);
+  position: relative;
+  overflow: hidden;
+}
+.type-hero-cue span:first-child::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  width: 40%;
+  background: var(--brand);
+  animation: cue-run 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes cue-run {
+  0%   { transform: translateX(-100%); }
+  60%  { transform: translateX(250%); }
+  100% { transform: translateX(250%); }
+}
+
+/* --- 2. Sticky split -------------------------------------------------- */
+.split { display: grid; gap: 2.5rem; }
+@media (min-width: 1024px) {
+  .split { grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr); gap: 4rem; align-items: start; }
+  .split-aside { position: sticky; top: 7rem; align-self: start; }
+}
+
+.split-rows { border-top: 1px solid var(--rule); }
+.split-row {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 1.25rem;
+  padding-block: 1.75rem;
+  border-bottom: 1px solid var(--rule);
+  align-items: start;
+}
+@media (min-width: 768px) {
+  .split-row { grid-template-columns: 3rem 1fr auto; gap: 1.75rem; padding-block: 2rem; }
+}
+.split-row-index {
+  font-family: var(--font-stack-ui);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8125rem;
+  color: var(--brand);
+  padding-top: 0.2rem;
+}
+.split-row-thumb {
+  width: 5.5rem;
+  height: 3.75rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  position: relative;
+  opacity: 0;
+  transform: translateX(-0.5rem);
+  transition: opacity 420ms var(--ease-glass), transform 420ms var(--ease-glass);
+}
+.split-row:hover .split-row-thumb,
+.split-row:focus-within .split-row-thumb { opacity: 1; transform: translateX(0); }
+
+/* --- 3. Image-led band ------------------------------------------------ */
+.band {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-glass-lg);
+  min-height: clamp(22rem, 52vh, 34rem);
+  display: flex;
+  align-items: flex-end;
+  isolation: isolate;
+}
+.band-media { position: absolute; inset: 0; z-index: 0; }
+.band-media img { object-fit: cover; }
+.band-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to top, rgb(0 0 0 / 82%) 0%, rgb(0 0 0 / 35%) 45%, rgb(0 0 0 / 8%) 100%);
+}
+.band-panel {
+  position: relative;
+  z-index: 2;
+  margin: clamp(1.25rem, 3vw, 2.5rem);
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  max-width: 34rem;
+  border-radius: var(--radius-glass);
+  background: rgb(255 255 255 / 10%);
+  border: 1px solid rgb(255 255 255 / 18%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 22%), 0 30px 70px -30px rgb(0 0 0 / 80%);
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  color: #fff;
+}
+.band-panel .body-copy { color: rgb(255 255 255 / 72%); }
+.band-panel .eyebrow { color: var(--brand-bright); }
+
+@media (prefers-reduced-motion: reduce) {
+  .type-hero-cue span:first-child::after { animation: none; }
+  .split-row-thumb { transition: none; }
+}

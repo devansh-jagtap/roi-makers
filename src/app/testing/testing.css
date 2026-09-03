@@ -1,0 +1,539 @@
+/* =====================================================================
+   /testing — concept sandbox
+   ---------------------------------------------------------------------
+   Scoped to this route only. Every selector is prefixed `tst-`, the file
+   is imported by the route rather than by globals.css, and deleting the
+   folder removes the experiment completely.
+
+   Theming: the page reads the site's own `html.dark` class and flips a
+   small set of local tokens. The hero is the one exception — its type
+   sits on video, so it stays light in both themes and only the scrim
+   changes weight.
+   ===================================================================== */
+
+.tst-page {
+  --tst-bg: #ffffff;
+  --tst-fg: #0b0b0b;
+  --tst-muted: rgb(11 11 11 / 62%);
+  --tst-rule: rgb(11 11 11 / 12%);
+  --tst-card: #ffffff;
+  --tst-card-rule: rgb(11 11 11 / 10%);
+  --tst-logo-filter: brightness(0);
+  --tst-scrim-top: 34%;
+  --tst-scrim-bottom: 42%;
+
+  width: min(100% - 2rem, 120rem);
+  margin: 1rem auto;
+  border: 1px solid var(--tst-rule);
+  border-radius: 2rem;
+  overflow: hidden;
+  box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 12%);
+  background: var(--tst-bg);
+  color: var(--tst-fg);
+}
+
+html.dark .tst-page {
+  --tst-bg: #000000;
+  --tst-fg: #ffffff;
+  --tst-muted: rgb(255 255 255 / 62%);
+  --tst-rule: rgb(255 255 255 / 14%);
+  --tst-card: #0d0d0d;
+  --tst-card-rule: rgb(255 255 255 / 12%);
+  --tst-logo-filter: brightness(0) invert(1);
+  --tst-scrim-top: 48%;
+  --tst-scrim-bottom: 58%;
+}
+
+/* The site's floating chrome — hamburger, theme toggle, chat bubble — sits
+   in the exact corners this layout uses, and the reference has none of it.
+   Hidden here only; `:has()` keeps the rule from leaking to any other
+   route, and removing this folder restores everything. */
+body:has(.tst-page) .sm-scope,
+body:has(.tst-page) div.fixed.bottom-6.right-6,
+body:has(.tst-page) div.fixed.bottom-24.right-6 {
+  display: none !important;
+}
+
+/* The theme toggle stays — this page is meant to be viewed both ways —
+   but it moves out of the footer copy's corner. */
+body:has(.tst-page) button.fixed.bottom-6.left-6 {
+  bottom: auto !important;
+  top: 4.25rem !important;
+  left: auto !important;
+  right: 1.25rem !important;
+  z-index: 60 !important;
+}
+
+/* Announcement strip. Brand orange rather than the reference's mint, to
+   stay inside orange / white / black. */
+.tst-announce {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #1a0d06;
+  background: var(--brand);
+}
+
+/* =====================================================================
+   Hero
+   ===================================================================== */
+.tst-hero {
+  position: relative;
+  height: calc(100svh - 2.5rem);
+  min-height: 38rem;
+  overflow: hidden;
+  border-radius: 1.5rem 1.5rem 0 0;
+  margin-inline: 0.5rem;
+  isolation: isolate;
+  color: #fff;
+}
+
+/* Defocused backdrop: the same footage, blurred and enlarged. */
+.tst-bg {
+  position: absolute;
+  inset: -10%;
+  z-index: 0;
+  width: 120%;
+  height: 120%;
+  object-fit: cover;
+  filter: blur(46px) saturate(125%) brightness(1.02);
+  transform: scale(1.06);
+}
+.tst-bg-wash {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgb(0 0 0 / var(--tst-scrim-top)) 0%,
+    rgb(0 0 0 / 8%) 32%,
+    rgb(0 0 0 / 12%) 62%,
+    rgb(0 0 0 / var(--tst-scrim-bottom)) 100%
+  );
+}
+
+.tst-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  /* JS overwrites this from the slot's measured rect on first layout. */
+  clip-path: inset(42% 46% 42% 46% round 18px);
+  will-change: clip-path;
+}
+.tst-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tst-stage-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(2rem, 8vh, 5rem);
+  text-align: center;
+  padding-inline: 1.5rem;
+  opacity: 0;
+  color: #fff;
+}
+.tst-stage-caption-kicker {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brand-bright);
+}
+.tst-stage-caption-title {
+  margin-top: 0.75rem;
+  font-family: var(--font-stack-ui);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3.4vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  text-shadow: 0 2px 30px rgb(0 0 0 / 55%);
+}
+
+/* --- Nav -------------------------------------------------------------- */
+.tst-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: clamp(1rem, 2.4vw, 1.75rem) clamp(1.25rem, 3vw, 2.5rem);
+  color: #fff;
+}
+.tst-logo {
+  font-family: var(--font-stack-ui);
+  font-weight: 600;
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  text-shadow: 0 1px 12px rgb(0 0 0 / 40%);
+}
+.tst-logo sup { font-size: 0.5em; vertical-align: super; opacity: 0.8; }
+
+.tst-nav-links {
+  display: none;
+  align-items: center;
+  gap: clamp(1rem, 2.2vw, 2rem);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-shadow: 0 1px 12px rgb(0 0 0 / 40%);
+}
+.tst-nav-links li { display: flex; align-items: center; gap: 0.3rem; cursor: default; }
+.tst-nav-links em { font-style: normal; opacity: 0.7; }
+@media (min-width: 1100px) { .tst-nav-links { display: flex; } }
+
+.tst-nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+  padding: 0.75rem 1.4rem;
+  border-radius: 9999px;
+  background: #fff;
+  color: #111;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), background-color 240ms, color 240ms;
+}
+.tst-nav-cta:hover { transform: translateY(-2px); background: var(--brand); color: #fff; }
+
+/* --- Hero copy --------------------------------------------------------- */
+.tst-content {
+  position: relative;
+  z-index: 3;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  padding: clamp(5rem, 10vh, 6.5rem) clamp(1.25rem, 3vw, 2.5rem) clamp(1.25rem, 3vh, 2rem);
+  pointer-events: none;
+}
+.tst-content a { pointer-events: auto; }
+
+.tst-awards-lead {
+  font-size: clamp(0.72rem, 1vw, 0.8125rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.55;
+  text-shadow: 0 1px 14px rgb(0 0 0 / 45%);
+}
+.tst-awards-row {
+  margin-top: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.5rem, 1.4vw, 1.25rem);
+}
+.tst-awards-row ul {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 1.8vw, 1.75rem);
+  font-size: clamp(0.55rem, 0.75vw, 0.66rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0.92;
+}
+.tst-laurel { width: clamp(1.4rem, 2vw, 2rem); height: auto; color: #fff; opacity: 0.85; }
+
+.tst-title {
+  font-family: var(--font-stack-ui);
+  font-weight: 700;
+  font-size: clamp(2.6rem, 10.5vw, 9.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  text-shadow: 0 2px 44px rgb(0 0 0 / 35%);
+}
+.tst-title-line { display: block; }
+
+/* Reserves the capsule's space in the line box. Paints nothing itself. */
+.tst-slot {
+  display: inline-block;
+  vertical-align: middle;
+  width: 0.62em;
+  height: 0.76em;
+  margin-inline: 0.1em;
+  margin-top: -0.1em;
+  border-radius: 18px;
+}
+
+.tst-sub {
+  margin-top: clamp(0.75rem, 2vh, 1.5rem);
+  font-family: var(--font-stack-ui);
+  font-weight: 500;
+  font-size: clamp(1rem, 2.1vw, 1.85rem);
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 22px rgb(0 0 0 / 45%);
+}
+
+.tst-platforms {
+  margin-top: clamp(1.5rem, 4vh, 3rem);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem clamp(1.25rem, 3.4vw, 3rem);
+  font-size: clamp(0.85rem, 1.35vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 16px rgb(0 0 0 / 45%);
+}
+
+.tst-foot {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-size: clamp(0.78rem, 1.05vw, 0.95rem);
+  line-height: 1.5;
+  text-align: center;
+  text-shadow: 0 1px 14px rgb(0 0 0 / 50%);
+}
+.tst-foot strong { font-weight: 700; }
+@media (min-width: 900px) {
+  .tst-foot { flex-direction: row; justify-content: space-between; align-items: flex-end; text-align: left; }
+  .tst-foot-right { text-align: right; }
+}
+
+/* =====================================================================
+   Body sections — these follow the theme
+   ===================================================================== */
+.tst-shell {
+  width: 100%;
+  max-width: 82rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+}
+.tst-section { padding-block: clamp(3.5rem, 9vh, 7rem); }
+
+.tst-kicker {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+
+.tst-statement {
+  font-family: var(--font-stack-ui);
+  font-weight: 600;
+  font-size: clamp(1.6rem, 4.2vw, 3.5rem);
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  max-width: 22ch;
+}
+.tst-statement em { font-style: normal; color: var(--brand); }
+
+.tst-lead {
+  margin-top: 1.5rem;
+  max-width: 34rem;
+  font-size: clamp(0.95rem, 1.2vw, 1.0625rem);
+  line-height: 1.65;
+  color: var(--tst-muted);
+}
+
+/* --- Client logo row --------------------------------------------------- */
+.tst-clients {
+  border-block: 1px solid var(--tst-rule);
+  padding-block: clamp(2rem, 5vh, 3.25rem);
+}
+.tst-clients-head {
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin-bottom: 2rem;
+}
+.tst-clients-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: center;
+}
+@media (min-width: 640px) { .tst-clients-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .tst-clients-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
+.tst-client-logo {
+  position: relative;
+  height: 2.25rem;
+  filter: var(--tst-logo-filter);
+  opacity: 0.62;
+  transition: opacity 260ms ease;
+}
+.tst-client-logo:hover { opacity: 1; }
+.tst-client-logo img { object-fit: contain; }
+
+/* --- Featured work grid ------------------------------------------------ */
+.tst-work-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: clamp(2rem, 5vh, 3rem);
+}
+.tst-work-grid {
+  display: grid;
+  gap: clamp(1.25rem, 2.5vw, 2rem);
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+@media (min-width: 640px) { .tst-work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .tst-work-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.tst-work-card { display: flex; flex-direction: column; height: 100%; }
+.tst-work-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: var(--tst-card);
+  border: 1px solid var(--tst-card-rule);
+}
+.tst-work-media img { object-fit: cover; transition: transform 800ms cubic-bezier(0.22, 1, 0.36, 1); }
+.tst-work-card:hover .tst-work-media img { transform: scale(1.05); }
+
+.tst-work-meta {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--tst-muted);
+}
+.tst-work-client {
+  margin-top: 0.5rem;
+  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.tst-work-result {
+  margin-top: 0.4rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--tst-muted);
+}
+.tst-work-tag {
+  margin-top: 0.9rem;
+  align-self: flex-start;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid var(--tst-card-rule);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--tst-muted);
+}
+
+/* --- Stat strip -------------------------------------------------------- */
+.tst-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-block: 1px solid var(--tst-rule);
+}
+@media (min-width: 1024px) { .tst-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.tst-stat { padding: clamp(1.5rem, 3vw, 2.25rem) clamp(0.5rem, 2vw, 1.75rem); }
+.tst-stat + .tst-stat { border-left: 1px solid var(--tst-rule); }
+@media (max-width: 1023px) {
+  .tst-stat:nth-child(odd) { border-left: 0; }
+  .tst-stat:nth-child(-n + 2) { border-bottom: 1px solid var(--tst-rule); }
+}
+.tst-stat-value {
+  font-size: clamp(1.75rem, 3.2vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.tst-stat-label { margin-top: 0.5rem; font-size: 0.8125rem; color: var(--tst-muted); }
+
+/* --- CTA --------------------------------------------------------------- */
+.tst-cta {
+  border-radius: 1.5rem;
+  padding: clamp(2rem, 6vw, 4.5rem);
+  background: var(--tst-fg);
+  color: var(--tst-bg);
+  display: grid;
+  gap: 2rem;
+}
+@media (min-width: 900px) { .tst-cta { grid-template-columns: 1.25fr 0.75fr; align-items: end; } }
+.tst-cta-title {
+  font-size: clamp(1.75rem, 4vw, 3.25rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+.tst-cta-copy { font-size: 0.95rem; line-height: 1.65; opacity: 0.7; }
+.tst-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding: 0.9rem 1.6rem;
+  border-radius: 9999px;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tst-cta-btn:hover { transform: translateY(-2px); }
+
+/* --- Concept note ------------------------------------------------------ */
+.tst-note {
+  border-top: 1px solid var(--tst-rule);
+  padding-block: clamp(2.5rem, 6vh, 4rem);
+  font-size: 0.875rem;
+  color: var(--tst-muted);
+}
+.tst-note h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--tst-fg);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+.tst-note p { max-width: 46rem; line-height: 1.7; }
+.tst-note code {
+  font-family: var(--font-stack-mono);
+  font-size: 0.85em;
+  padding: 0.1em 0.35em;
+  border-radius: 0.35rem;
+  background: color-mix(in oklab, var(--tst-fg) 10%, transparent);
+}
+.tst-note ul { margin-top: 1.25rem; }
+.tst-note li { padding-block: 0.6rem; border-top: 1px solid var(--tst-rule); }
+.tst-note strong { color: var(--tst-fg); }
+
+/* --- Small screens ----------------------------------------------------- */
+@media (max-width: 767px) {
+  .tst-page {
+    width: calc(100% - 0.75rem);
+    margin-block: 0.375rem;
+    border-radius: 1.25rem;
+  }
+
+  .tst-awards-row ul { display: none; }
+  .tst-title { font-size: clamp(2.25rem, 13vw, 3.75rem); }
+  .tst-slot { width: 0.58em; height: 0.7em; }
+  .tst-hero { margin-inline: 0; border-radius: 1rem 1rem 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tst-stage { clip-path: inset(0px round 0px) !important; }
+  .tst-nav-cta,
+  .tst-cta-btn,
+  .tst-work-media img { transition: none; }
+}
