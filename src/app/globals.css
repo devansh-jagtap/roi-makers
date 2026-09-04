@@ -2014,3 +2014,236 @@ html.dark .stage-card { background: rgb(255 255 255 / 0.045); }
   .type-hero-cue span:first-child::after { animation: none; }
   .split-row-thumb { transition: none; }
 }
+
+/* =====================================================================
+   HOME EXPANDING HERO (hx-)
+   ---------------------------------------------------------------------
+   The landing-page hero: a centred headline with the showreel living
+   inside it as a capsule that opens to fullscreen on scroll. The type
+   sits on video, so it stays light in both themes; only the scrim weight
+   changes. Appended (not edited in) so a revert is a clean checkout.
+   ===================================================================== */
+
+.hx-hero {
+  position: relative;
+  /* Exactly the /testing frame: flush to the top, small side inset, top
+     corners rounded, bottom flush to the content that follows. No top
+     margin — that stray strip was what read as unfinished. */
+  height: 100svh;
+  min-height: 40rem;
+  margin-inline: 0.5rem;
+  border-radius: 1.5rem 1.5rem 0 0;
+  overflow: hidden;
+  isolation: isolate;
+  color: #fff;
+  /* Warm fallback shown only for the instant before the video paints. */
+  background: linear-gradient(140deg, #b9713f 0%, #8a4a2a 55%, #5c2f1c 100%);
+}
+@media (max-width: 640px) {
+  .hx-hero { margin-inline: 0.35rem; border-radius: 1rem 1rem 0 0; min-height: 34rem; }
+}
+
+/* Blurred, enlarged copy of the footage = the bright glassy ground. */
+.hx-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.hx-bg-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(140%, calc((100svh) * 16 / 9 * 1.4));
+  height: max(140%, calc(100vw * 9 / 16 * 1.4));
+  transform: translate(-50%, -50%) scale(1.5);
+  border: 0;
+  pointer-events: none;
+  filter: blur(44px) saturate(150%) brightness(1.08);
+}
+
+/* A light, refreshing wash — just enough at the top and bottom to keep the
+   white type legible, leaving the middle bright. Nothing like the old dark
+   plate. */
+.hx-bg-wash {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgb(0 0 0 / 30%) 0%, transparent 26%, transparent 66%, rgb(0 0 0 / 34%) 100%),
+    radial-gradient(120% 85% at 50% 44%, transparent 52%, rgb(0 0 0 / 20%) 100%);
+}
+/* A whisper of brand warmth over the whole thing to tie it to the palette. */
+.hx-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  background: radial-gradient(120% 90% at 50% 10%, rgb(var(--brand-rgb) / 45%) 0%, transparent 60%);
+}
+
+.hx-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  clip-path: inset(44% 46% 44% 46% round 18px);
+  will-change: clip-path;
+}
+
+/* The YouTube embed sized to cover the stage, cropped so its UI bars fall
+   outside the frame, and click-blocked so the player chrome never shows. */
+.hx-video-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.hx-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, calc((100svh) * 16 / 9));
+  height: max(100%, calc(100vw * 9 / 16));
+  transform: translate(-50%, -50%) scale(1.35);
+  border: 0;
+  pointer-events: none;
+}
+.hx-video-guard {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.hx-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(2rem, 8vh, 5rem);
+  text-align: center;
+  padding-inline: 1.5rem;
+  opacity: 0;
+  color: #fff;
+}
+.hx-caption-kicker {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--brand-bright);
+}
+.hx-caption-title {
+  margin-top: 0.75rem;
+  font-family: var(--font-stack-ui);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3.4vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  text-shadow: 0 2px 30px rgb(0 0 0 / 55%);
+}
+
+.hx-content {
+  position: relative;
+  z-index: 3;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(5rem, 10vh, 7rem) clamp(1.25rem, 4vw, 2.5rem) clamp(3rem, 8vh, 5rem);
+  pointer-events: none;
+}
+
+.hx-eyebrow {
+  font-size: clamp(0.65rem, 1vw, 0.78rem);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 82%);
+  text-shadow: 0 1px 12px rgb(0 0 0 / 45%);
+  margin-bottom: clamp(1.25rem, 3vh, 2rem);
+}
+
+.hx-title {
+  font-family: var(--font-stack-ui);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 9vw, 8rem);
+  line-height: 0.94;
+  letter-spacing: -0.04em;
+  text-shadow: 0 2px 44px rgb(0 0 0 / 40%);
+}
+.hx-line { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.hx-line > span { display: inline-block; will-change: transform; }
+
+/* Reserves the capsule's slot in the line box; paints nothing itself. */
+.hx-slot {
+  display: inline-block;
+  vertical-align: middle;
+  width: 0.72em;
+  height: 0.82em;
+  margin-inline: 0.12em;
+  margin-top: -0.1em;
+  border-radius: 18px;
+}
+
+.hx-sub {
+  margin-top: clamp(1rem, 2.5vh, 1.75rem);
+  font-family: var(--font-stack-ui);
+  font-weight: 500;
+  font-size: clamp(1rem, 2vw, 1.6rem);
+  letter-spacing: -0.02em;
+  color: rgb(255 255 255 / 90%);
+  text-shadow: 0 2px 22px rgb(0 0 0 / 45%);
+}
+
+.hx-actions {
+  margin-top: clamp(1.75rem, 5vh, 3rem);
+  display: flex;
+  justify-content: center;
+  pointer-events: auto;
+}
+/* White pill on the video, flipping to brand orange on hover. */
+.hx-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.95rem 1.8rem;
+  border-radius: 9999px;
+  background: #fff;
+  color: #111;
+  font-family: var(--font-stack-ui);
+  font-weight: 600;
+  font-size: clamp(0.9rem, 1.2vw, 1rem);
+  letter-spacing: -0.01em;
+  box-shadow: 0 12px 34px -14px rgb(0 0 0 / 55%);
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), background-color 260ms, color 260ms;
+}
+.hx-cta:hover { transform: translateY(-3px); background: var(--brand); color: #fff; }
+.hx-cta span:last-child { transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1); }
+.hx-cta:hover span:last-child { transform: translate(0.2rem, -0.2rem); }
+
+@media (max-width: 767px) {
+  .hx-title { font-size: clamp(2.25rem, 12vw, 3.5rem); }
+  .hx-slot { width: 0.66em; height: 0.76em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hx-cta { transition: none; }
+}
+
+/* --- Header contrast over the dark hero -------------------------------
+   While the hero holds the top of the screen (`body.hx-hero-chrome`,
+   toggled by HomeExpandingHero on scroll), force the site logo and menu
+   button to render light so they read on the dark video. In light theme
+   the logo is the dark variant and the menu inherits dark text, both of
+   which vanish otherwise. `!important` beats the GSAP-set inline colour on
+   the toggle. Reverts the moment you scroll past the hero. */
+body.hx-hero-chrome .sm-scope .sm-logo-img {
+  filter: brightness(0) invert(1);
+}
+body.hx-hero-chrome .sm-scope .sm-toggle,
+body.hx-hero-chrome .sm-scope .sm-toggle * {
+  color: #fff !important;
+}

@@ -152,7 +152,7 @@ export default function ExpandingHero() {
       </div>
 
       {/* Nav bar, matching the reference. */}
-      <nav ref={navRef} className="tst-nav" aria-label="Concept navigation">
+      {/* <nav ref={navRef} className="tst-nav" aria-label="Concept navigation">
         <span className="tst-logo">
           ROI Makers<sup>®</sup>
         </span>
@@ -167,7 +167,7 @@ export default function ExpandingHero() {
         <Link href="/contact#contact-form" className="tst-nav-cta">
           Get In Touch <span aria-hidden>↗</span>
         </Link>
-      </nav>
+      </nav> */}
 
       {/* Foreground copy. */}
       <div ref={contentRef} className="tst-content">
@@ -177,7 +177,7 @@ export default function ExpandingHero() {
             <br />
             PERFORMANCE MARKETING AGENCY
           </p>
-          <div className="tst-awards-row">
+          {/* <div className="tst-awards-row">
             <Laurel />
             <ul>
               {AWARDS.map((award) => (
@@ -185,7 +185,7 @@ export default function ExpandingHero() {
               ))}
             </ul>
             <Laurel flip />
-          </div>
+          </div> */}
         </div>
 
         <div className="tst-headline-block">

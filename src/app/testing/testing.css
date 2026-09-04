@@ -54,16 +54,6 @@ body:has(.tst-page) div.fixed.bottom-24.right-6 {
   display: none !important;
 }
 
-/* The theme toggle stays — this page is meant to be viewed both ways —
-   but it moves out of the footer copy's corner. */
-body:has(.tst-page) button.fixed.bottom-6.left-6 {
-  bottom: auto !important;
-  top: 4.25rem !important;
-  left: auto !important;
-  right: 1.25rem !important;
-  z-index: 60 !important;
-}
-
 /* Announcement strip. Brand orange rather than the reference's mint, to
    stay inside orange / white / black. */
 .tst-announce {

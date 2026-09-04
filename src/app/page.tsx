@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, lazy, Suspense } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import HomeHero from "@/components/sections/home/HomeHero";
+import HomeHero from "@/components/sections/home/HomeExpandingHero";
 import LoadingOverlay from "@/components/ui/feedback/LoadingOverlay";
 
 // Lazy load components that aren't immediately visible
