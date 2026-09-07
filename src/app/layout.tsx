@@ -5,7 +5,6 @@ import ClientPathWrapper from "@/components/global/ClientPathWrapper";
 import { ThemeProvider } from "@/app/providers/ThemeProvider";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { ToastProvider } from "@/components/ui/toast";
-import { ChatWidget } from '@/components/chat/ChatWidget';
 
 /* Editorial pairing: a high-contrast serif carries the big statements,
    a calm geometric sans carries everything you actually read. Exposed as
@@ -52,7 +51,6 @@ export default function RootLayout({
           <ToastProvider>
           <ClientPathWrapper>
             {children}
-            <ChatWidget />
             <ThemeToggle />
           </ClientPathWrapper>
           </ToastProvider>
