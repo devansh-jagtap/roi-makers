@@ -14,8 +14,10 @@ import {
   Shield, 
   Menu, 
   X, 
-  LogOut 
+  LogOut,
+  Sparkles
 } from 'lucide-react';
+import { AssistantPanel } from './AssistantPanel';
 
 type Profile = {
   id: string;
@@ -34,6 +36,7 @@ export function DashboardShell({
   children: React.ReactNode;
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const pathname = usePathname();
 
   const navItems = [
@@ -100,6 +103,20 @@ export function DashboardShell({
               </Link>
             );
           })}
+          <button
+            onClick={() => {
+              setIsAssistantOpen(true);
+              setIsMobileMenuOpen(false);
+            }}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group text-sm font-medium ${
+              isAssistantOpen
+                ? 'bg-white/10 text-white'
+                : 'text-stone-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <Sparkles size={18} className={isAssistantOpen ? 'text-[#f26b38]' : 'group-hover:text-stone-300'} />
+            Assistant
+          </button>
         </nav>
 
         <div className="p-4 border-t border-white/10">
@@ -136,6 +153,13 @@ export function DashboardShell({
           {children}
         </div>
       </main>
+
+      <AssistantPanel
+        open={isAssistantOpen}
+        onClose={() => setIsAssistantOpen(false)}
+        role={profile.role}
+        name={profile.name}
+      />
     </div>
   );
 }
