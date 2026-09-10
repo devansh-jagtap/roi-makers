@@ -2026,13 +2026,14 @@ html.dark .stage-card { background: rgb(255 255 255 / 0.045); }
 
 .hx-hero {
   position: relative;
-  /* Exactly the /testing frame: flush to the top, small side inset, top
-     corners rounded, bottom flush to the content that follows. No top
-     margin — that stray strip was what read as unfinished. */
-  height: 100svh;
-  min-height: 40rem;
-  margin-inline: 0.5rem;
-  border-radius: 1.5rem 1.5rem 0 0;
+  /* An inset card, not a full-bleed panel: the same gap on all four sides so
+     it never runs into the edge of the page. The height subtracts the top and
+     bottom gap so the whole card — including its lower corners — is on screen
+     while ScrollTrigger holds it pinned. */
+  --hx-gap: clamp(0.5rem, 1.4vw, 1.25rem);
+  height: calc(100svh - var(--hx-gap) * 2);
+  margin: var(--hx-gap);
+  border-radius: clamp(1rem, 1.8vw, 1.75rem);
   overflow: hidden;
   isolation: isolate;
   color: #fff;
@@ -2040,7 +2041,7 @@ html.dark .stage-card { background: rgb(255 255 255 / 0.045); }
   background: linear-gradient(140deg, #b9713f 0%, #8a4a2a 55%, #5c2f1c 100%);
 }
 @media (max-width: 640px) {
-  .hx-hero { margin-inline: 0.35rem; border-radius: 1rem 1rem 0 0; min-height: 34rem; }
+  .hx-hero { --hx-gap: 0.5rem; }
 }
 
 /* Blurred, enlarged copy of the footage = the bright glassy ground. */
@@ -2050,16 +2051,22 @@ html.dark .stage-card { background: rgb(255 255 255 / 0.045); }
   z-index: 0;
   overflow: hidden;
 }
+/* A still frame, not a second live player: at this blur radius the two are
+   indistinguishable, but a static source is blurred once and cached by the
+   compositor instead of re-blurred on every scrubbed frame. */
 .hx-bg-video {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: max(140%, calc((100svh) * 16 / 9 * 1.4));
-  height: max(140%, calc(100vw * 9 / 16 * 1.4));
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Blur first, scale after: the raster is a quarter of the pixels of a
+     full-bleed 44px blur, and scaling magnifies it back to the same look. */
   transform: translate(-50%, -50%) scale(1.5);
   border: 0;
   pointer-events: none;
-  filter: blur(44px) saturate(150%) brightness(1.08);
+  filter: blur(30px) saturate(150%) brightness(1.08);
 }
 
 /* A light, refreshing wash — just enough at the top and bottom to keep the
@@ -2081,8 +2088,7 @@ html.dark .stage-card { background: rgb(255 255 255 / 0.045); }
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  mix-blend-mode: soft-light;
-  background: radial-gradient(120% 90% at 50% 10%, rgb(var(--brand-rgb) / 45%) 0%, transparent 60%);
+  background: radial-gradient(120% 90% at 50% 10%, rgb(var(--brand-rgb) / 22%) 0%, transparent 60%);
 }
 
 .hx-stage {
@@ -2152,9 +2158,10 @@ html.dark .stage-card { background: rgb(255 255 255 / 0.045); }
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: clamp(5rem, 10vh, 7rem) clamp(1.25rem, 4vw, 2.5rem) clamp(3rem, 8vh, 5rem);
+  padding: clamp(4.5rem, 9vh, 6rem) clamp(1.25rem, 4vw, 2.5rem) clamp(4rem, 8vh, 5.5rem);
   pointer-events: none;
 }
+.hx-content > * { max-width: min(72rem, 100%); }
 
 .hx-eyebrow {
   font-size: clamp(0.65rem, 1vw, 0.78rem);
@@ -2169,23 +2176,26 @@ html.dark .stage-card { background: rgb(255 255 255 / 0.045); }
 .hx-title {
   font-family: var(--font-stack-ui);
   font-weight: 700;
-  font-size: clamp(2.5rem, 9vw, 8rem);
-  line-height: 0.94;
+  font-size: clamp(2.25rem, 7.6vw, 6.75rem);
+  line-height: 0.98;
   letter-spacing: -0.04em;
   text-shadow: 0 2px 44px rgb(0 0 0 / 40%);
 }
 .hx-line { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
 .hx-line > span { display: inline-block; will-change: transform; }
 
-/* Reserves the capsule's slot in the line box; paints nothing itself. */
+/* Reserves the capsule's slot in the line box and paints nothing itself — it
+   is a window onto the footage behind, sitting inline between the two words
+   and optically centred on them. Landscape, so what shows through reads as a
+   frame of the reel rather than a sliver. */
 .hx-slot {
   display: inline-block;
   vertical-align: middle;
-  width: 0.72em;
-  height: 0.82em;
-  margin-inline: 0.12em;
-  margin-top: -0.1em;
-  border-radius: 18px;
+  width: 1.35em;
+  height: 0.8em;
+  margin-inline: 0.14em;
+  margin-top: -0.07em;
+  border-radius: 16px;
 }
 
 .hx-sub {
@@ -2225,8 +2235,8 @@ html.dark .stage-card { background: rgb(255 255 255 / 0.045); }
 .hx-cta:hover span:last-child { transform: translate(0.2rem, -0.2rem); }
 
 @media (max-width: 767px) {
-  .hx-title { font-size: clamp(2.25rem, 12vw, 3.5rem); }
-  .hx-slot { width: 0.66em; height: 0.76em; }
+  .hx-title { font-size: clamp(1.9rem, 9.4vw, 3.5rem); }
+  .hx-slot { width: 1.2em; height: 0.74em; border-radius: 11px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2239,11 +2249,16 @@ html.dark .stage-card { background: rgb(255 255 255 / 0.045); }
    button to render light so they read on the dark video. In light theme
    the logo is the dark variant and the menu inherits dark text, both of
    which vanish otherwise. `!important` beats the GSAP-set inline colour on
-   the toggle. Reverts the moment you scroll past the hero. */
-body.hx-hero-chrome .sm-scope .sm-logo-img {
+   the toggle. Reverts the moment you scroll past the hero.
+
+   Scoped to `:not([data-open])`: once the menu opens, the toggle and logo sit
+   on the panel, not on the video, and the panel is white in light theme —
+   forcing them white there is what made "Close" invisible. Open state falls
+   back to the theme colour, which reads on the panel in both themes. */
+body.hx-hero-chrome .sm-scope .staggered-menu-wrapper:not([data-open]) .sm-logo-img {
   filter: brightness(0) invert(1);
 }
-body.hx-hero-chrome .sm-scope .sm-toggle,
-body.hx-hero-chrome .sm-scope .sm-toggle * {
+body.hx-hero-chrome .sm-scope .staggered-menu-wrapper:not([data-open]) .sm-toggle,
+body.hx-hero-chrome .sm-scope .staggered-menu-wrapper:not([data-open]) .sm-toggle * {
   color: #fff !important;
 }

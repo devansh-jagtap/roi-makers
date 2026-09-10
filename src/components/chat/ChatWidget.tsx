@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, type UIMessage } from 'ai';
+import { Maximize2, Minimize2 } from 'lucide-react';
 
 type Props = {
   /** Rendered only on the public site; the dashboard has its own assistant. */
@@ -61,9 +62,10 @@ function activeToolLabel(message: UIMessage): string | null {
 
 export function ChatWidget({ enabled = true }: Props) {
   const [open, setOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [input, setInput] = useState('');
   const [hasUnread, setHasUnread] = useState(true);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   // A ref, not state: StrictMode double-invokes effects in development, and a
   // state flag plus an abort-on-cleanup would cancel the only fetch that ran.
   const restoredRef = useRef(false);
@@ -101,13 +103,33 @@ export function ChatWidget({ enabled = true }: Props) {
       });
   }, [open, setMessages]);
 
+  // Drive the container's own scrollTop rather than scrollIntoView: Lenis
+  // hijacks scrollIntoView, which would scroll the page behind the widget
+  // instead of the thread inside it.
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, busy]);
+    const node = scrollRef.current;
+    if (!node) return;
+    node.scrollTo({ top: node.scrollHeight, behavior: 'smooth' });
+  }, [messages, busy, expanded]);
 
   useEffect(() => {
     if (open) setHasUnread(false);
+    // Reopening should give the visitor the small card back, not whatever size
+    // they happened to leave it at.
+    else setExpanded(false);
   }, [open]);
+
+  // Escape steps back one level: expanded → card → closed.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      if (expanded) setExpanded(false);
+      else setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, expanded]);
 
   function submit(text: string) {
     const message = text.trim();
@@ -122,9 +144,24 @@ export function ChatWidget({ enabled = true }: Props) {
 
   return (
     <>
+      {/* Backdrop, expanded only — clicking away drops back to the small card. */}
+      {open && expanded && (
+        <div
+          className="fixed inset-0 z-40 bg-black/30"
+          onClick={() => setExpanded(false)}
+          aria-hidden
+        />
+      )}
+
       {/* ── Chat Panel ── */}
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 flex h-[520px] w-[380px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl border border-white/10 bg-white shadow-2xl dark:bg-zinc-900">
+        <div
+          className={
+            expanded
+              ? 'fixed inset-y-0 right-0 z-50 flex h-full w-full max-w-[520px] flex-col overflow-hidden border-l border-black/10 bg-white shadow-2xl dark:bg-zinc-900'
+              : 'fixed bottom-24 right-6 z-50 flex h-[520px] w-[380px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl border border-white/10 bg-white shadow-2xl dark:bg-zinc-900'
+          }
+        >
           {/* Header */}
           <div className="flex items-center justify-between bg-black px-5 py-4 text-white dark:bg-zinc-800">
             <div className="flex items-center gap-3">
@@ -139,17 +176,36 @@ export function ChatWidget({ enabled = true }: Props) {
               </div>
             </div>
 
-            <button
-              onClick={() => setOpen(false)}
-              className="text-2xl opacity-70 transition-opacity hover:opacity-100"
-              aria-label="Close chat"
-            >
-              ×
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setExpanded((value) => !value)}
+                className="rounded-lg p-1.5 opacity-70 transition-opacity hover:bg-white/10 hover:opacity-100"
+                aria-label={expanded ? 'Collapse chat' : 'Expand chat'}
+                title={expanded ? 'Collapse' : 'Expand'}
+              >
+                {expanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+              </button>
+
+              <button
+                onClick={() => setOpen(false)}
+                className="px-1 text-2xl leading-none opacity-70 transition-opacity hover:opacity-100"
+                aria-label="Close chat"
+              >
+                ×
+              </button>
+            </div>
           </div>
 
-          {/* Messages */}
-          <div className="flex-1 space-y-3 overflow-y-auto p-4">
+          {/* Messages.
+              data-lenis-prevent is load-bearing, not decoration: LenisProvider
+              runs with smoothWheel, which preventDefaults wheel events across
+              the document, so without this opt-out the thread cannot scroll at
+              all once it overflows. */}
+          <div
+            ref={scrollRef}
+            data-lenis-prevent
+            className="flex-1 space-y-3 overflow-y-auto overscroll-contain p-4"
+          >
             {messages.map((message) => {
               const text = messageText(message);
               const tool = message.role === 'assistant' ? activeToolLabel(message) : null;
@@ -212,8 +268,6 @@ export function ChatWidget({ enabled = true }: Props) {
                 ))}
               </div>
             )}
-
-            <div ref={bottomRef} />
           </div>
 
           {/* Input */}
@@ -241,8 +295,10 @@ export function ChatWidget({ enabled = true }: Props) {
         </div>
       )}
 
-      {/* ── FAB Toggle Button with pulse rings ── */}
-      <div className="fixed bottom-6 right-6 z-50">
+      {/* ── FAB Toggle Button with pulse rings ──
+          Hidden while expanded: the drawer runs to the bottom-right corner, so
+          the FAB would sit on top of its own panel. */}
+      <div className={`fixed bottom-6 right-6 z-50 ${open && expanded ? 'hidden' : ''}`}>
         {/* Pulse ring animations (only when chat is closed) */}
         {!open && (
           <>
