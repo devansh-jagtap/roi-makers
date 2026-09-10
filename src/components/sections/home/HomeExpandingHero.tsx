@@ -48,6 +48,20 @@ function toBackgroundEmbed(src: string): string {
   }
 }
 
+/** The video's own thumbnail. Blurred as heavily as the ground is, a still is
+ *  indistinguishable from the live footage — and unlike a second player it is
+ *  rasterised once rather than on every scrubbed frame. */
+function posterFor(embed: string): string {
+  try {
+    const url = new URL(embed);
+    if (!/youtube|youtu\.be/.test(url.hostname)) return "";
+    const id = url.pathname.split("/").pop();
+    return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : "";
+  } catch {
+    return "";
+  }
+}
+
 const FALLBACK_EMBED =
   "https://www.youtube-nocookie.com/embed/aYSp5qUTC54?autoplay=1&mute=1&loop=1&playlist=aYSp5qUTC54&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1";
 
@@ -86,6 +100,7 @@ const marqueeItems = [
  */
 export default function HomeExpandingHero({ showLoading, showHero, showContent, onLoadingFinish, videoSrc }: HeroProps) {
   const embed = toBackgroundEmbed(videoSrc || FALLBACK_EMBED);
+  const poster = posterFor(embed);
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const slotRef = useRef<HTMLSpanElement>(null);
@@ -152,9 +167,10 @@ export default function HomeExpandingHero({ showLoading, showHero, showContent, 
       const state = { p: 0 };
       const paint = () => {
         const e = 1 - state.p;
-        stage.style.clipPath = `inset(${from.top * e}px ${from.right * e}px ${from.bottom * e}px ${
-          from.left * e
-        }px round ${18 * e}px)`;
+        const r = Math.round;
+        stage.style.clipPath = `inset(${r(from.top * e)}px ${r(from.right * e)}px ${r(
+          from.bottom * e
+        )}px ${r(from.left * e)}px round ${r(16 * e)}px)`;
       };
       paint();
 
@@ -165,7 +181,7 @@ export default function HomeExpandingHero({ showLoading, showHero, showContent, 
             start: "top top",
             end: "+=140%",
             pin: true,
-            scrub: 0.4,
+            scrub: true,
             anticipatePin: 1,
             invalidateOnRefresh: true,
             onRefresh: () => {
@@ -208,20 +224,15 @@ export default function HomeExpandingHero({ showLoading, showHero, showContent, 
   return (
     <>
       <section ref={sectionRef} className="hx-hero">
-        {/* The same footage, blurred and enlarged, as a bright ambient
-            ground — this is what gives the hero its refreshing, glassy feel
-            instead of a flat dark plate. */}
+        {/* A still of the same footage, blurred and enlarged, as a bright
+            ambient ground — this is what gives the hero its refreshing, glassy
+            feel instead of a flat dark plate. If the poster is unavailable the
+            hero falls back to its own warm gradient. */}
         <div className="hx-bg" aria-hidden>
-          <iframe
-            className="hx-bg-video"
-            src={embed}
-            title=""
-            aria-hidden
-            tabIndex={-1}
-            allow="autoplay; encrypted-media"
-            loading="eager"
-            frameBorder={0}
-          />
+          {/* Deliberately a plain <img>: an external host with no next/image
+              config, and it is decorative blur, not content. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {poster && <img className="hx-bg-video" src={poster} alt="" decoding="async" />}
         </div>
         <div className="hx-bg-wash" aria-hidden />
 
