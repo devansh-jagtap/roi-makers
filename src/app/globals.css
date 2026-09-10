@@ -1936,9 +1936,9 @@ html.dark .stage-card { background: rgb(255 255 255 / 0.045); }
 }
 
 /* --- 2. Sticky split -------------------------------------------------- */
-.split { display: grid; gap: 2.5rem; }
+.split-layout { display: grid; gap: 2.5rem; }
 @media (min-width: 1024px) {
-  .split { grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr); gap: 4rem; align-items: start; }
+  .split-layout { grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr); gap: 4rem; align-items: start; }
   .split-aside { position: sticky; top: 7rem; align-self: start; }
 }
 

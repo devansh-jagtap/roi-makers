@@ -143,7 +143,7 @@ export function SplitSection({
 }) {
   return (
     <section id={id} className="section-tight">
-      <div className="shell split">
+      <div className="shell split-layout">
         <div className="split-aside">
           <Reveal>
             <p className="eyebrow">{eyebrow}</p>
