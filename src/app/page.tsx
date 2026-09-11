@@ -10,6 +10,8 @@ const ImageWall = lazy(() => import("@/components/ui/shared/ImageWall"));
 const ServicesShowcase = lazy(() => import("@/components/sections/home/ServicesShowcase")); 
 const HomeServicesGrid = lazy(() => import("@/components/sections/home/HomeServicesGrid"));
 const HomeTeamGallery = lazy(() => import("@/components/sections/home/HomeTeamGallery"));
+const HomeInfluencers = lazy(() => import("@/components/sections/home/HomeInfluencers"));
+const HomeBlog = lazy(() => import("@/components/sections/home/HomeBlog"));
 const HomeAbout = lazy(() => import("@/components/sections/home/HomeAbout"));
 const ClientsStats = lazy(() => import("@/components/sections/home/ClientsStats"));
 const HomeFAQ = lazy(() => import("@/components/sections/home/HomeFAQ"));
@@ -98,6 +100,8 @@ const MenuPage = () => {
           <ClientsStats />
           <HomeAbout />
           <HomeTeamGallery />
+          <HomeInfluencers />
+          <HomeBlog />
           <HomeFAQ />
           <SiteFooter />
         </Suspense>

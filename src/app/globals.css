@@ -2262,3 +2262,25 @@ body.hx-hero-chrome .sm-scope .staggered-menu-wrapper:not([data-open]) .sm-toggl
 body.hx-hero-chrome .sm-scope .staggered-menu-wrapper:not([data-open]) .sm-toggle * {
   color: #fff !important;
 }
+
+/* =====================================================================
+   HX HERO — framed inset + wider capsule (appended override)
+   ---------------------------------------------------------------------
+   The gap around the hero card moves from the section's margin to a
+   wrapper's padding: ScrollTrigger zeroes a pinned element's margins and
+   re-sizes it, which ran the card flush into the right edge. The capsule
+   slot is also widened so more of the reel shows through.
+   ===================================================================== */
+.hx-hero-frame {
+  --hx-gap: clamp(0.5rem, 1.4vw, 1.25rem);
+  padding: var(--hx-gap);
+}
+@media (max-width: 640px) {
+  .hx-hero-frame { --hx-gap: 0.5rem; }
+}
+.hx-hero { margin: 0; }
+
+.hx-slot { width: 1.9em; }
+@media (max-width: 767px) {
+  .hx-slot { width: 1.45em; }
+}
