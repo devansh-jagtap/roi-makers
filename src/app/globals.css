@@ -2264,6 +2264,151 @@ body.hx-hero-chrome .sm-scope .staggered-menu-wrapper:not([data-open]) .sm-toggl
 }
 
 /* =====================================================================
+   DASHBOARD SIDEBAR — follows the site theme.
+   ---------------------------------------------------------------------
+   DashboardShell hard-codes the sidebar and mobile topbar as #060010 with
+   white text, and the "dashboard light lock" block above pins that same
+   look under html.dark. Result: the sidebar never changed with the theme
+   toggle. This block gives it a light skin whenever the html element is
+   NOT .dark, using the same selector shapes as the dark lock so the two
+   can never both apply. Dark theme keeps the existing dark sidebar.
+   Appended last, on purpose, so `git checkout -- src/app/globals.css`
+   is an exact revert.
+   ===================================================================== */
+
+/* Panel */
+html:not(.dark) [data-theme="dashboard"] aside {
+  background-color: #ffffff;
+  color: #060010;
+  border-right: 1px solid rgb(6 0 16 / 0.08);
+}
+
+/* Logo wordmark (the orange dot keeps its own colour) */
+html:not(.dark) [data-theme="dashboard"] aside > div:first-child span {
+  color: #060010;
+}
+
+/* Nav links + the Assistant button */
+html:not(.dark) [data-theme="dashboard"] aside nav a,
+html:not(.dark) [data-theme="dashboard"] aside nav button {
+  color: rgb(6 0 16 / 0.62);
+  background-color: transparent;
+}
+
+html:not(.dark) [data-theme="dashboard"] aside nav a:hover,
+html:not(.dark) [data-theme="dashboard"] aside nav button:hover {
+  color: #060010;
+  background-color: rgb(6 0 16 / 0.04);
+}
+
+/* Active item — the markup marks it with bg-white/10 */
+html:not(.dark) [data-theme="dashboard"] aside nav a[class*="bg-white/10"],
+html:not(.dark) [data-theme="dashboard"] aside nav button[class*="bg-white/10"] {
+  color: #060010;
+  background-color: rgb(6 0 16 / 0.06);
+}
+
+/* Icons follow the label; the active icon keeps its brand orange */
+html:not(.dark) [data-theme="dashboard"] aside nav a:hover svg:not([class*="#f26b38"]),
+html:not(.dark) [data-theme="dashboard"] aside nav button:hover svg:not([class*="#f26b38"]) {
+  color: inherit;
+}
+
+/* Bottom profile row */
+html:not(.dark) [data-theme="dashboard"] aside [class*="border-t"] {
+  border-color: rgb(6 0 16 / 0.08);
+}
+
+html:not(.dark) [data-theme="dashboard"] aside p {
+  color: #060010;
+}
+
+html:not(.dark) [data-theme="dashboard"] aside p[class*="text-stone-400"] {
+  color: rgb(6 0 16 / 0.55);
+}
+
+/* MEMBER role badge (ADMIN badge is already orange-on-orange-tint) */
+html:not(.dark) [data-theme="dashboard"] aside span[class*="bg-stone-800"] {
+  background-color: rgb(6 0 16 / 0.06);
+  color: #44403c;
+}
+
+/* Logout */
+html:not(.dark) [data-theme="dashboard"] aside form button {
+  color: rgb(6 0 16 / 0.62);
+}
+
+html:not(.dark) [data-theme="dashboard"] aside form button:hover {
+  color: #060010;
+  background-color: rgb(6 0 16 / 0.04);
+}
+
+/* Mobile topbar (the sidebar's header on small screens) */
+html:not(.dark) [data-theme="dashboard"] > div[class*="lg:hidden"][class*="h-16"] {
+  background-color: #ffffff;
+  color: #060010;
+  border-bottom: 1px solid rgb(6 0 16 / 0.08);
+}
+
+html:not(.dark) [data-theme="dashboard"] > div[class*="lg:hidden"][class*="h-16"] button {
+  color: rgb(6 0 16 / 0.62);
+}
+
+html:not(.dark) [data-theme="dashboard"] > div[class*="lg:hidden"][class*="h-16"] button:hover {
+  color: #060010;
+}
+
+/* Dark-theme fix-ups for the same chrome.
+   1. The dark lock's `> div[class*="lg:hidden"]` rule also matched the
+      mobile scrim (fixed inset-0 bg-black/50 lg:hidden), painting it solid
+      #060010 whenever the menu opened. Restore the translucent scrim.
+   2. The Assistant control is a <button>, not an <a>, so its open state
+      (bg-white/10) was caught by the generic `[class*="bg-white"]` white
+      background rule instead of the nav-link rule.
+   3. Same trap for every idle nav link and the Logout button: their
+      `hover:bg-white/5` class contains "bg-white", so the generic rule
+      (specificity 0,3,1) beat the nav-link reset (0,2,4) and painted each
+      one as a solid white pill. Re-assert transparent at 0,3,4+. */
+html.dark [data-theme="dashboard"] aside nav a:not([class*="bg-white/10"]),
+html.dark [data-theme="dashboard"] aside nav button:not([class*="bg-white/10"]) {
+  background-color: transparent !important;
+}
+
+html.dark [data-theme="dashboard"] aside nav a:not([class*="bg-white/10"]):hover,
+html.dark [data-theme="dashboard"] aside nav button:not([class*="bg-white/10"]):hover {
+  background-color: rgb(255 255 255 / 0.05) !important;
+}
+
+html.dark [data-theme="dashboard"] aside form button[type="submit"] {
+  color: #a8a29e !important;
+  background-color: transparent !important;
+}
+
+html.dark [data-theme="dashboard"] aside form button[type="submit"]:hover {
+  color: #ffffff !important;
+  background-color: rgb(255 255 255 / 0.05) !important;
+}
+
+html.dark [data-theme="dashboard"] > div[class*="bg-black/50"] {
+  background-color: rgb(0 0 0 / 0.5) !important;
+}
+
+html.dark [data-theme="dashboard"] aside nav button {
+  color: #a8a29e !important;
+  background-color: transparent !important;
+}
+
+html.dark [data-theme="dashboard"] aside nav button:hover {
+  color: #ffffff !important;
+  background-color: rgb(255 255 255 / 0.05) !important;
+}
+
+html.dark [data-theme="dashboard"] aside nav button[class*="bg-white/10"] {
+  background-color: rgb(255 255 255 / 0.1) !important;
+  color: #ffffff !important;
+}
+
+/* =====================================================================
    HX HERO — framed inset + wider capsule (appended override)
    ---------------------------------------------------------------------
    The gap around the hero card moves from the section's margin to a
@@ -2284,3 +2429,4 @@ body.hx-hero-chrome .sm-scope .staggered-menu-wrapper:not([data-open]) .sm-toggl
 @media (max-width: 767px) {
   .hx-slot { width: 1.45em; }
 }
+
