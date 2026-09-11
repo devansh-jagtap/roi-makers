@@ -62,6 +62,28 @@ function posterFor(embed: string): string {
   }
 }
 
+/** Where the inline slot sits inside the hero, as clip-path insets. Read
+ *  from layout offsets rather than getBoundingClientRect so the headline's
+ *  reveal transform (the line slides up into place) doesn't skew it — the
+ *  capsule must be on its words from the very first frame, not after the
+ *  scroll effect has had a chance to re-measure. */
+function slotInsetOf(slot: HTMLElement, host: HTMLElement) {
+  let top = 0;
+  let left = 0;
+  let el: HTMLElement | null = slot;
+  while (el && el !== host && host.contains(el)) {
+    top += el.offsetTop;
+    left += el.offsetLeft;
+    el = el.offsetParent as HTMLElement | null;
+  }
+  return {
+    top,
+    left,
+    right: host.clientWidth - (left + slot.offsetWidth),
+    bottom: host.clientHeight - (top + slot.offsetHeight),
+  };
+}
+
 const FALLBACK_EMBED =
   "https://www.youtube-nocookie.com/embed/aYSp5qUTC54?autoplay=1&mute=1&loop=1&playlist=aYSp5qUTC54&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1";
 
@@ -139,6 +161,36 @@ export default function HomeExpandingHero({ showLoading, showHero, showContent, 
     };
   }, [showLoading, onLoadingFinish]);
 
+  /* Fit the capsule to its slot from first paint. The scroll effect below
+     owns the mask once the page is ready, but until then (loading overlay,
+     headline reveal, web fonts settling) this keeps it glued to the words. */
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    const stage = stageRef.current;
+    const slot = slotRef.current;
+    if (showContent || reduced || !section || !stage || !slot) return;
+
+    const paint = () => {
+      const i = slotInsetOf(slot, section);
+      stage.style.clipPath = `inset(${i.top}px ${i.right}px ${i.bottom}px ${i.left}px round 16px)`;
+    };
+    paint();
+    /* A late web-font swap shifts the words without changing the slot's own
+       size, so watch the headline (its width follows the text) and the font
+       set itself, not just the slot. */
+    const fonts = document.fonts;
+    fonts?.ready.then(paint).catch(() => {});
+    fonts?.addEventListener("loadingdone", paint);
+    const observer = new ResizeObserver(paint);
+    observer.observe(section);
+    observer.observe(slot);
+    if (titleRef.current) observer.observe(titleRef.current);
+    return () => {
+      observer.disconnect();
+      fonts?.removeEventListener("loadingdone", paint);
+    };
+  }, [showContent, reduced]);
+
   /* Scroll-driven expansion, wired once the rest of the page exists. */
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -152,16 +204,10 @@ export default function HomeExpandingHero({ showLoading, showHero, showContent, 
     }
 
     const context = gsap.context(() => {
-      const slotInset = () => {
-        const r = slot.getBoundingClientRect();
-        const host = stage.getBoundingClientRect();
-        return {
-          top: r.top - host.top,
-          right: host.right - r.right,
-          bottom: host.bottom - r.bottom,
-          left: r.left - host.left,
-        };
-      };
+      const slotInset = () => slotInsetOf(slot, section);
+      /* The gap the frame keeps around the card; the pin holds the card that
+         far from the top so the spacing stays even while it is held. */
+      const frameGap = () => parseFloat(getComputedStyle(section.parentElement as Element).paddingTop) || 0;
 
       let from = slotInset();
       const state = { p: 0 };
@@ -178,7 +224,7 @@ export default function HomeExpandingHero({ showLoading, showHero, showContent, 
         .timeline({
           scrollTrigger: {
             trigger: section,
-            start: "top top",
+            start: () => `top ${frameGap()}px`,
             end: "+=140%",
             pin: true,
             scrub: true,
@@ -223,6 +269,10 @@ export default function HomeExpandingHero({ showLoading, showHero, showContent, 
 
   return (
     <>
+      {/* The frame carries the gap around the card. It can't live as margin
+          on the section itself: ScrollTrigger zeroes a pinned element's
+          margins and re-sizes it, which ran the card into the right edge. */}
+      <div className="hx-hero-frame">
       <section ref={sectionRef} className="hx-hero">
         {/* A still of the same footage, blurred and enlarged, as a bright
             ambient ground — this is what gives the hero its refreshing, glassy
@@ -283,6 +333,7 @@ export default function HomeExpandingHero({ showLoading, showHero, showContent, 
           </div>
         </div>
       </section>
+      </div>
 
       {showContent && (
         <div className="relative z-20 w-full overflow-hidden bg-background px-2 py-5 sm:px-4 sm:py-7">
