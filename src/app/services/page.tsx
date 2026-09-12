@@ -163,7 +163,7 @@ export default function ServicesPage() {
         <div className="shell">
           <Reveal className="mb-10">
             <p className="eyebrow">Client wins</p>
-            <AnimatedHeading as="h2" text="Straight from the brands." className="display-2 mt-3" />
+            <AnimatedHeading as="h2" text="Straight from the brand Owners." className="display-2 mt-3" />
           </Reveal>
 
           <div className="grid border-t border-[var(--rule)] md:grid-cols-3">

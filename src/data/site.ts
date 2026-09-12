@@ -909,31 +909,51 @@ export const missionVision = {
   },
 };
 
-export const timeline = [
+export type TimelineEntry = {
+  year: string;
+  title: string;
+  body: string;
+  /** Photo shown beside the milestone on the About page timeline. */
+  image: string;
+  /** One-line fact that sits on the photo. */
+  fact: string;
+};
+
+export const timeline: TimelineEntry[] = [
   {
     year: "2014–22",
     title: "The foundation years",
     body: "Before ROI Makers existed there was Amit — nine years across graphic design, video production, performance marketing and brand strategy, managing large teams and high-pressure campaigns inside other people's companies.",
+    image: "/amit.webp",
+    fact: "9 years inside other people's companies",
   },
   {
     year: "2023",
     title: "The leap of faith",
     body: "A laptop, a small home office, and no investor backing. Design, video, campaigns, websites and strategy all handled solo. The first major client came from construction, and the results built the trust that funded everything after.",
+    image: "/about/amit-square.webp",
+    fact: "One laptop. Zero investors.",
   },
   {
     year: "2024",
     title: "The first office, the first team",
     body: "A barter deal for desk space — digital marketing traded for a place to build. Within six months, clients across multiple industries and the first real hires turned a one-person operation into an agency.",
+    image: "/about/team-desk.webp",
+    fact: "First desk, first hires",
   },
   {
     year: "2025",
     title: "The real office. The real agency.",
     body: "A dedicated Indore office and a core team of four, planting a flag in real estate, nutraceuticals, education and fashion — with AI-powered tooling wired into everyday workflows from content to analytics.",
+    image: "/about/amit-desk-square.webp",
+    fact: "Dedicated Indore office · core team of four",
   },
   {
     year: "Now",
     title: "Indore's name to watch",
     body: "One of the city's most recognised digital marketing agencies: a full-service team handling brands from local businesses to scaling startups, with 250+ active partners and 1,200+ campaigns behind us.",
+    image: "/about/team-desk.webp",
+    fact: "250+ partners · 1,200+ campaigns",
   },
 ];
 

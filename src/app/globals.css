@@ -2430,3 +2430,195 @@ html.dark [data-theme="dashboard"] aside nav button[class*="bg-white/10"] {
   .hx-slot { width: 1.45em; }
 }
 
+
+/* =====================================================================
+   ABOUT PAGE — stepped timeline, founder band, motion primitives
+   ---------------------------------------------------------------------
+   Appended for the About page redesign. Everything below is scoped to
+   new class names (tl3-*, founder-*, value-*, and the motion helpers
+   in components/ui/motion) so nothing above changes behaviour.
+   ===================================================================== */
+
+/* --- Motion helpers ---------------------------------------------------- */
+.word-reveal { display: block; }
+.word-reveal .wr-line { display: block; overflow: hidden; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+.word-reveal .wr-word { display: inline-block; will-change: transform; }
+
+.parallax { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; }
+.parallax-inner { position: absolute; inset: 0; will-change: transform; }
+.parallax-overscan { inset: -14% 0; }
+
+.tilt-card { position: relative; border-radius: var(--radius-glass); transform-style: preserve-3d; will-change: transform; }
+.tilt-card-light {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 320ms var(--ease-glass);
+}
+.tilt-card:hover .tilt-card-light { opacity: 1; }
+
+.clip-reveal { will-change: clip-path; }
+
+/* --- Stepped timeline (tl3) -------------------------------------------- */
+.tl3 { position: relative; }
+.tl3-stage {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 100svh;
+  padding-top: 6.5rem;
+  padding-bottom: 2.5rem;
+}
+.tl3-grid { display: grid; gap: 2rem; width: 100%; }
+
+.tl3-panels { position: relative; min-height: 0; display: grid; gap: 3.5rem; }
+.tl3-panel { display: flex; flex-direction: column; gap: 1.1rem; }
+.tl3-head { display: grid; gap: 1rem; justify-items: start; }
+.tl3-badge { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.42rem 0.85rem; }
+.tl3-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand); }
+.tl3-title { display: grid; gap: 0.12em; }
+.tl3-title-year { display: block; font-size: 0.52em; line-height: 1; }
+.tl3-title-text { display: block; }
+.tl3-copy { max-width: 46ch; }
+
+.tl3-media { position: relative; overflow: hidden; border-radius: var(--radius-glass); aspect-ratio: 16 / 10; }
+.tl3-media-shade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgb(0 0 0 / 58%), transparent 55%); }
+.tl3-fact {
+  position: absolute;
+  left: 1.1rem;
+  right: 1.1rem;
+  bottom: 1rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #fff;
+  font-family: var(--font-stack-ui);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.tl3-fact-index { font-family: var(--font-stack-display); font-style: italic; font-size: 1.2rem; line-height: 1; color: var(--brand-bright); }
+
+/* Circle bento. One unit drives every size so the cluster scales with
+   the viewport and never outgrows the pinned stage. */
+.tl3-bento {
+  --b: clamp(12px, 3.4vw, 22px);
+  --g: calc(var(--b) * 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--g);
+  width: 100%;
+}
+.tl3-bento-row { display: flex; align-items: flex-end; justify-content: center; gap: var(--g); width: 100%; }
+.tl3-bento-row.is-top { justify-content: flex-end; padding-right: calc(var(--b) * 2.2); }
+.tl3-bento-row.is-bottom { align-items: flex-start; }
+.tl3-bento-col { display: flex; flex-direction: column; align-items: center; gap: var(--g); }
+.tl3-bento-col.is-right { align-items: flex-end; }
+.tl3-bubble {
+  position: relative;
+  flex: none;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgb(var(--glass-tint) / var(--glass-alpha-strong));
+  border: 1px solid rgb(var(--glass-edge) / var(--glass-edge-alpha));
+  box-shadow: var(--glass-shadow);
+  will-change: transform;
+}
+.tl3-bubble.is-xs   { width: calc(var(--b) * 3.2); height: calc(var(--b) * 3.2); }
+.tl3-bubble.is-sm   { width: calc(var(--b) * 2.7); height: calc(var(--b) * 2.7); }
+.tl3-bubble.is-base { width: calc(var(--b) * 3.8); height: calc(var(--b) * 3.8); }
+.tl3-bubble.is-md   { width: calc(var(--b) * 5.2); height: calc(var(--b) * 5.2); }
+.tl3-bubble.is-lg   { width: calc(var(--b) * 6.8); height: calc(var(--b) * 6.8); }
+.tl3-bubble.is-xl   { width: calc(var(--b) * 7.4); height: calc(var(--b) * 7.4); }
+
+/* Year rail */
+.tl3-rail { position: relative; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.tl3-rail-marker { display: none; }
+.tl3-pill {
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.5rem 0.95rem;
+}
+
+/* Mobile order: years, photos, then the story. */
+.tl3-rail { order: -2; }
+.tl3-bento { order: -1; }
+@media (max-width: 1023px) {
+  .tl3-bento { --b: clamp(12px, 4.2vw, 24px); }
+  /* The badge is the section's eyebrow; once is enough when panels stack. */
+  .tl3-panel:not(:first-child) .tl3-badge { display: none; }
+}
+
+@media (min-width: 1024px) {
+  .tl3-stage { height: 100svh; max-height: 100svh; overflow: hidden; padding-bottom: 2rem; }
+  .tl3-grid {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr) auto;
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: center;
+    height: 100%;
+  }
+  .tl3-panels { display: block; height: min(76svh, 680px); }
+  .tl3-panel { position: absolute; inset: 0; }
+  .tl3-media { flex: 1 1 auto; min-height: 160px; aspect-ratio: auto; }
+  .tl3-copy { font-size: 0.9375rem; }
+
+  .tl3-bento { --b: clamp(14px, min(2.2vw, 2.7svh), 29px); order: 0; }
+
+  .tl3-rail { order: 0; flex-direction: column; flex-wrap: nowrap; gap: 0.6rem; padding-left: 1.1rem; align-self: center; }
+  .tl3-rail::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: var(--rule); }
+  .tl3-rail-marker {
+    display: block;
+    position: absolute;
+    left: -1px;
+    top: 0;
+    width: 3px;
+    height: 2.2rem;
+    border-radius: 3px;
+    background: var(--brand);
+    box-shadow: 0 0 0 3px rgb(var(--brand-rgb) / 18%);
+  }
+  .tl3-pill { min-width: 6.4rem; }
+}
+
+@media (min-width: 1024px) and (max-height: 760px) {
+  .tl3-stage { padding-top: 5.5rem; }
+  .tl3-title { font-size: clamp(2rem, 3.6vw, 2.8rem); }
+  .tl3-copy { font-size: 0.875rem; }
+}
+
+/* --- Founder band -------------------------------------------------------- */
+.founder-band { position: relative; display: grid; gap: 2rem; padding: 2.25rem; overflow: hidden; }
+.founder-band-copy { position: relative; z-index: 1; }
+.founder-band-figure { position: relative; align-self: end; margin: 0 -2.25rem -2.25rem; }
+.founder-band-figure img { display: block; width: 100%; height: auto; }
+.founder-band-figure::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 30%;
+  background: linear-gradient(to top, rgb(0 0 0 / 45%), transparent);
+  pointer-events: none;
+}
+@media (min-width: 900px) {
+  .founder-band { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); align-items: end; padding: 3.25rem 0 0 3.25rem; gap: 3rem; }
+  .founder-band-copy { padding-bottom: 3.25rem; }
+  .founder-band-figure { margin: 0; }
+}
+
+/* --- Values -------------------------------------------------------------- */
+.value-index {
+  font-family: var(--font-stack-display);
+  font-style: italic;
+  font-size: 2.1rem;
+  line-height: 1;
+  color: var(--brand);
+}

@@ -5,13 +5,63 @@ import { CountUp } from '../../ui/count-up';
 import LogoMarquee from '@/components/ui/media/LogoMarquee';
 import { headlineStats, testimonials } from '@/data/site';
 
-/* One list, two marquee directions — the array used to be pasted twice. */
-const clientLogos = [2, 3, 6, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 21, 22, 25, 26, 28, 31, 32].map(
-  (n) => ({ src: `/clients/${n}.webp`, alt: `Client ${n}` })
-);
+/* Every logo in /public/clients, split across the two marquee rows so
+   the second row is not a mirror of the first. Order within each row
+   mixes sectors so no two construction or healthcare marks sit together. */
+const logo = (file: string, alt: string) => ({ src: `/clients/${file}.webp`, alt });
+
+const clientLogosTop = [
+  logo("2", "Life Care Logistic"),
+  logo("cult-fit", "cult.fit"),
+  logo("9", "Star Build Construction & Solution"),
+  logo("26", "HealthVeda Organics"),
+  logo("omaxe", "Omaxe"),
+  logo("3", "Bandhan Event"),
+  logo("golds-gym", "Gold's Gym"),
+  logo("18", "Reddito Capital"),
+  logo("evokhomes", "Evokhomes"),
+  logo("12", "Agri Bhawishya"),
+  logo("m3-aligners", "M3 Aligners"),
+  logo("32", "SSC Group"),
+  logo("kv11-events", "KV-11 Events"),
+  logo("15", "H&H Healthcare and Cosmetics"),
+  logo("roger-realty", "Roger Realty"),
+  logo("8", "Global Focus Today"),
+  logo("magic-amrit", "Magic Amrit"),
+  logo("22", "ADGS & Associates"),
+  logo("vistara", "Vistara Mangalam Lifestyle"),
+  logo("10", "Shibh"),
+  logo("dreams-india", "Dreams India Entertainment"),
+  logo("28", "DAMAC"),
+  logo("fdm", "FDM"),
+];
+
+const clientLogosBottom = [
+  logo("6", "Advanced Academy"),
+  logo("malwa-county", "Malwa County"),
+  logo("17", "Fun O'Farm"),
+  logo("vedaantam", "Vedaantam"),
+  logo("mmo", "MMO Construction & Solution"),
+  logo("11", "Trisha's Enterprise"),
+  logo("redsmoke-tattoo", "Redsmoke Tattoo"),
+  logo("14", "Maa Ginni Vihar"),
+  logo("adhyaveda", "Adhyaveda Organic"),
+  logo("25", "Business Bazaar"),
+  logo("nexel-architects", "Nexel Architects"),
+  logo("31", "Yuva Udaan"),
+  logo("dbr", "DBR — Dipali Biswas Realcon"),
+  logo("13", "Siddharth Garments"),
+  logo("m20-resort", "M20 Garden & Resort"),
+  logo("21", "Life Care Group"),
+  logo("hi-link", "Hi-Link Group"),
+  logo("bharat-agritech", "Bharat AgriTech"),
+  logo("star-build-realty", "Star Build Realty"),
+  logo("gau-mahakumbh", "Gau Mahakumbh Jaipur"),
+  logo("creative-column", "Creative Column Designs"),
+  logo("ads-infra", "ADS Infra by Yadav Group"),
+];
 
 const marqueeProps = {
-  logos: clientLogos,
   speed: 150,
   logoHeight: 100,
   gap: 50,
@@ -79,9 +129,9 @@ export default function ClientsStats() {
           <h3 className="display-3 mt-3">Brands that chose results.</h3>
         </motion.div>
 
-        <LogoMarquee {...marqueeProps} direction="left" />
+        <LogoMarquee {...marqueeProps} logos={clientLogosTop} direction="left" />
         <div className="h-6" />
-        <LogoMarquee {...marqueeProps} direction="right" />
+        <LogoMarquee {...marqueeProps} logos={clientLogosBottom} direction="right" />
 
         {/* Client wins — the words brands actually used. */}
         <div className="mx-auto mt-20 max-w-6xl px-2">
@@ -93,7 +143,7 @@ export default function ClientsStats() {
             className="mb-10 text-center"
           >
             <p className="eyebrow">Client wins</p>
-            <h3 className="display-2 mt-4">Straight from the brands.</h3>
+            <h3 className="display-2 mt-4">Straight from the brand Owners.</h3>
           </motion.div>
 
           <div className="grid gap-5 md:grid-cols-3">

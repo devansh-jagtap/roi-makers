@@ -7,6 +7,12 @@ import { HeroStage } from "@/components/ui/glass/HeroStage";
 import { aboutStage } from "@/data/stage";
 import { CTABand, SectionHeading, StatGrid } from "@/components/ui/glass/Sections";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/glass/Reveal";
+import { Magnetic } from "@/components/ui/glass/Motion";
+import { WordReveal } from "@/components/ui/motion/WordReveal";
+import { Parallax } from "@/components/ui/motion/Parallax";
+import { TiltCard } from "@/components/ui/motion/TiltCard";
+import { ClipReveal } from "@/components/ui/motion/ClipReveal";
+import { StoryTimeline, type GalleryImage } from "@/components/sections/about/StoryTimeline";
 import {
   capabilitiesList,
   company,
@@ -19,11 +25,22 @@ import {
   values,
 } from "@/data/site";
 
-/* Swap these two for real studio photography when it exists — the poster
-   art in /public/images/stack is placeholder work, not ROI Makers. */
-const stackShots = [
-  "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1200&q=80",
+/* Studio photography beside the "why we exist" copy. */
+const studioShots = [
+  { src: "/about/team-desk.webp", alt: "Amit Sharma reviewing a plan with the ROI Makers team" },
+  { src: "/amit.webp", alt: "Amit Sharma, founder of ROI Makers, at his desk" },
+];
+
+/* The circle bento beside the timeline — eight photos, founder-heavy. */
+const storyGallery: GalleryImage[] = [
+  { src: "/team_picture/4.webp", alt: "Amit Sharma", size: "xs" },
+  { src: "/about/amit-square.webp", alt: "Amit Sharma at his desk", size: "md" },
+  { src: "/about/team-desk.webp", alt: "The team around the founder's desk", size: "lg" },
+  { src: "/team_picture/2.webp", alt: "Tripti Ray", size: "sm" },
+  { src: "/about/amit-desk-square.webp", alt: "Amit Sharma signing off a plan", size: "xl" },
+  { src: "/team_picture/3.webp", alt: "Harshita Sharma", size: "base" },
+  { src: "/team_picture/5.webp", alt: "Vijay Vishwakarma", size: "sm" },
+  { src: "/amit.webp", alt: "Amit Sharma", size: "lg" },
 ];
 
 export default function AboutPage() {
@@ -41,13 +58,17 @@ export default function AboutPage() {
         lede="We started with one belief: creative work should drive revenue, not just win awards. Today, 250+ brands trust us with their growth because we trade in results, not reports. Indore-born. Globally proven."
         actions={
           <>
-            <Link href="/contact#contact-form" className="btn-brand">
-              <span>Work with us</span>
-              <span aria-hidden>→</span>
-            </Link>
-            <Link href="/projects" className="btn-glass">
-              <span>Explore our work</span>
-            </Link>
+            <Magnetic>
+              <Link href="/contact#contact-form" className="btn-brand">
+                <span>Work with us</span>
+                <span aria-hidden>→</span>
+              </Link>
+            </Magnetic>
+            <Magnetic>
+              <Link href="/projects" className="btn-glass">
+                <span>Explore our work</span>
+              </Link>
+            </Magnetic>
           </>
         }
         cards={aboutStage}
@@ -62,7 +83,7 @@ export default function AboutPage() {
               <div className="glass glass-card p-7 sm:p-10">
                 <p className="eyebrow">Why we exist</p>
                 <h2 className="display-3 mt-4 text-balance">
-                  We design conversion machines disguised as beautiful campaigns.
+                  <WordReveal>We design conversion machines disguised as beautiful campaigns.</WordReveal>
                 </h2>
                 <p className="body-copy archivo-font mt-5">
                   Every pixel, every line of copy, every targeting parameter exists for one reason: turning your
@@ -101,18 +122,20 @@ export default function AboutPage() {
           </div>
 
           <div className="grid gap-6">
-            {stackShots.map((src, index) => (
-              <Reveal key={src} delay={0.1 + index * 0.1} from="left">
-                <div className="frame frame-lg media-zoom group relative aspect-[4/3]">
-                  <Image
-                    src={src}
-                    alt="Inside the studio"
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 40vw"
-                    priority={index === 0}
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+            {studioShots.map((shot, index) => (
+              <Reveal key={shot.src} delay={0.1 + index * 0.1} from="left">
+                <div className="frame frame-lg group relative aspect-[4/3]">
+                  <Parallax distance={index === 0 ? 44 : -36}>
+                    <Image
+                      src={shot.src}
+                      alt={shot.alt}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 40vw"
+                      priority={index === 0}
+                      className="object-cover"
+                    />
+                  </Parallax>
+                  <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-black/45 via-transparent to-transparent" />
                 </div>
               </Reveal>
             ))}
@@ -125,7 +148,7 @@ export default function AboutPage() {
         <div className="shell">
           <SectionHeading
             eyebrow="Stats"
-            title="Experts in the business."
+            title={<WordReveal>Experts in the business.</WordReveal>}
             description="No vanity metrics. Every number here represents a business that grew because of decisions we made together."
             align="center"
           />
@@ -139,7 +162,7 @@ export default function AboutPage() {
       {/* ---------------------------------------------------------- */}
       <section className="section-tight">
         <div className="shell">
-          <SectionHeading eyebrow="Our story" title="Mission and vision." />
+          <SectionHeading eyebrow="Our story" title={<WordReveal>Mission and vision.</WordReveal>} />
 
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             {[missionVision.mission, missionVision.vision].map((block, index) => (
@@ -165,38 +188,37 @@ export default function AboutPage() {
       </section>
 
       {/* ---------------------------------------------------------- */}
-      <section className="section-tight">
-        <div className="shell grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-          <Reveal>
-            <p className="eyebrow">The ROI Makers story</p>
-            <h2 className="display-2 mt-4 text-balance">A journey built on grit, growth and results.</h2>
-            <p className="body-copy archivo-font mt-5">
-              From a laptop in a home office to one of Indore&rsquo;s most recognised digital marketing agencies. The
-              journey is proof that when strategy meets passion, results are inevitable.
-            </p>
-            <figure className="glass glass-card mt-8 p-6">
-              <blockquote className="display-4 text-balance">&ldquo;{founderQuote.quote}&rdquo;</blockquote>
-              <figcaption className="clash-display-font mt-4 text-[0.65rem] uppercase tracking-[0.22em] text-soft">
-                {founderQuote.attribution}
-              </figcaption>
-            </figure>
-          </Reveal>
+      <StoryTimeline eyebrow="The ROI Makers story" milestones={timeline} gallery={storyGallery} />
 
-          <RevealGroup className="relative grid gap-4">
-            {timeline.map((item) => (
-              <RevealItem key={item.year}>
-                <div className="glass glass-card flex flex-col gap-4 p-6 sm:flex-row sm:gap-7 sm:p-7">
-                  <p className="clash-display-font shrink-0 text-sm uppercase tracking-[0.18em] text-[var(--brand)] sm:w-24">
-                    {item.year}
-                  </p>
-                  <div>
-                    <h3 className="display-4">{item.title}</h3>
-                    <p className="body-copy archivo-font mt-2 text-sm">{item.body}</p>
-                  </div>
-                </div>
-              </RevealItem>
-            ))}
-          </RevealGroup>
+      {/* ---------------------------------------------------------- */}
+      <section className="section-tight">
+        <div className="shell">
+          <Reveal>
+            <div className="glass-ink founder-band">
+              <div className="founder-band-copy">
+                <p className="eyebrow">From the founder</p>
+                <blockquote className="display-2 mt-4 max-w-xl text-balance">
+                  <WordReveal>{`“${founderQuote.quote}”`}</WordReveal>
+                </blockquote>
+                <p className="archivo-font mt-5 max-w-lg text-base leading-relaxed text-white/70">
+                  From a laptop in a home office to one of Indore&rsquo;s most recognised digital marketing agencies.
+                  The journey is proof that when strategy meets passion, results are inevitable.
+                </p>
+                <p className="clash-display-font mt-6 text-[0.65rem] uppercase tracking-[0.22em] text-[var(--brand-bright)]">
+                  {founderQuote.attribution}
+                </p>
+              </div>
+              <ClipReveal from="bottom" className="founder-band-figure">
+                <Image
+                  src="/amit-masked.webp"
+                  alt="Amit Sharma, Founder & CEO of ROI Makers"
+                  width={750}
+                  height={332}
+                  sizes="(max-width: 900px) 100vw, 45vw"
+                />
+              </ClipReveal>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -205,15 +227,15 @@ export default function AboutPage() {
         <div className="shell">
           <SectionHeading
             eyebrow="Leadership"
-            title="The architects behind your next breakthrough."
+            title={<WordReveal>The architects behind your next breakthrough.</WordReveal>}
             description="Our leadership doesn't talk strategy from corner offices. They're in the work daily — optimising campaigns, reviewing creative and obsessing over conversion rates alongside the squads."
           />
 
           <RevealGroup className="mt-12 grid gap-6 md:grid-cols-3">
-            {leadership.map((person) => (
+            {leadership.map((person, index) => (
               <RevealItem key={person.name} className="h-full">
                 <article className="glass glass-card group flex h-full flex-col">
-                  <div className="media-zoom relative aspect-[4/5] overflow-hidden rounded-t-[inherit]">
+                  <ClipReveal from="bottom" delay={index * 0.12} className="media-zoom relative aspect-[4/5] overflow-hidden rounded-t-[inherit]">
                     <Image
                       src={person.image}
                       alt={person.name}
@@ -228,7 +250,7 @@ export default function AboutPage() {
                         {person.role}
                       </p>
                     </div>
-                  </div>
+                  </ClipReveal>
                   <p className="body-copy archivo-font p-6 text-sm">{person.bio}</p>
                 </article>
               </RevealItem>
@@ -240,15 +262,20 @@ export default function AboutPage() {
       {/* ---------------------------------------------------------- */}
       <section className="section-tight">
         <div className="shell">
-          <SectionHeading eyebrow="Our values" title="What moves us forward." align="center" />
+          <SectionHeading eyebrow="Our values" title={<WordReveal>What moves us forward.</WordReveal>} align="center" />
 
-          <RevealGroup className="mt-12 grid gap-5 md:grid-cols-2">
-            {values.map((value) => (
+          <RevealGroup className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {values.map((value, index) => (
               <RevealItem key={value.title} className="h-full">
-                <div className="glass glass-card h-full p-7">
-                  <h3 className="display-3">{value.title}</h3>
-                  <p className="body-copy archivo-font mt-3">{value.description}</p>
-                </div>
+                <TiltCard className="h-full">
+                  <div className="glass glass-card flex h-full flex-col p-7">
+                    <span className="value-index" aria-hidden>
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <h3 className="display-3 mt-5">{value.title}</h3>
+                    <p className="body-copy archivo-font mt-3">{value.description}</p>
+                  </div>
+                </TiltCard>
               </RevealItem>
             ))}
           </RevealGroup>

@@ -7,11 +7,12 @@ export default function TeamGallery() {
   const images = [
     {
       src: "/team_picture/1.webp",
-      alt: "Rajat Gupta",
-      code: "# 01",
-      title: "Rajat Gupta",
-      subtitle: "Performance Marketing Manager ",
+      alt: "Sankesh Pate",
+      code: "# 05",
+      title: "Sankesh Pate",
+      subtitle: "Senior Graphic Designer",
     },
+   
     {
       src: "/team_picture/2.webp",
       alt: "Tripti Ray",
@@ -27,18 +28,18 @@ export default function TeamGallery() {
       subtitle: "Social Media Strategist",
     },
     {
+      src: "/team_picture/4.webp",
+      alt: "Amit Sharma",
+      code: "# 01",
+      title: "Amit Sharma",
+      subtitle: "Founder & CEO",
+    },
+    {
       src: "/team_picture/5.webp",
       alt: "Vijay Vishwakarma",
       code: "# 04",
       title: "Vijay Vishwakarma",
       subtitle: "Senior Motion Graphic Designer",
-    },
-    {
-      src: "/team_picture/4.webp",
-      alt: "Sankesh Pate",
-      code: "# 05",
-      title: "Sankesh Pate",
-      subtitle: "Senior Graphic Designer",
     },
     {
       src: "/team_picture/6.webp",
