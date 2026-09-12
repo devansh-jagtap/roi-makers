@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, type UIMessage } from 'ai';
 import { Maximize2, Minimize2 } from 'lucide-react';
+import { ChatMarkdown } from './ChatMarkdown';
 
 type Props = {
   /** Rendered only on the public site; the dashboard has its own assistant. */
@@ -217,13 +218,13 @@ export function ChatWidget({ enabled = true }: Props) {
                   className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[80%] whitespace-pre-wrap rounded-2xl px-4 py-2 text-sm leading-relaxed ${
+                    className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm leading-relaxed ${
                       message.role === 'user'
-                        ? 'bg-black text-white'
+                        ? 'whitespace-pre-wrap bg-black text-white'
                         : 'bg-gray-100 text-gray-900'
                     }`}
                   >
-                    {text}
+                    {message.role === 'user' ? text : <ChatMarkdown text={text} />}
                     {tool && (
                       <span className={`block text-xs italic opacity-60 ${text ? 'mt-1' : ''}`}>
                         {tool}

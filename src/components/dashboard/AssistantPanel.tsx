@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, type UIMessage } from 'ai';
 import { Sparkles, X } from 'lucide-react';
+import { ChatMarkdown } from '@/components/chat/ChatMarkdown';
 
 /**
  * The internal assistant, docked to the right of the dashboard.
@@ -218,13 +219,13 @@ export function AssistantPanel({ open, onClose, role, name }: Props) {
 
                   {text && (
                     <div
-                      className={`whitespace-pre-wrap rounded-xl px-3.5 py-2.5 text-sm leading-relaxed ${
+                      className={`rounded-xl px-3.5 py-2.5 text-sm leading-relaxed ${
                         message.role === 'user'
-                          ? 'bg-[#060010] text-white'
+                          ? 'whitespace-pre-wrap bg-[#060010] text-white'
                           : 'border border-black/5 bg-white text-[#060010]'
                       }`}
                     >
-                      {text}
+                      {message.role === 'user' ? text : <ChatMarkdown text={text} />}
                     </div>
                   )}
                 </div>

@@ -510,7 +510,7 @@ export const services: Service[] = [
     summary:
       "Custom interactive tours built with 360° imaging, AR integration, and multimedia layering — so your space sells itself, around the clock.",
     cardCopy: "Immersive virtual experiences that showcase spaces with depth and clarity.",
-    image: "https://images.unsplash.com/photo-1592478411213-6153e4ebc696?auto=format&fit=crop&w=1600&q=80",
+    image: "/services/virtual-tours.webp",
     approach: {
       title: "A picture shows your space. A virtual tour sells it.",
       body: "Static images tell buyers what a space looks like. A well-built interactive tour makes them feel like they are already inside it. That shift — from viewing to experiencing — is what shortens decision cycles, reduces site-visit drop-offs, and puts your brand ahead of every competitor still relying on a photo gallery.",
@@ -797,7 +797,7 @@ export const caseStudies: CaseStudy[] = [
     year: "2025",
     summary:
       "Multi-node interactive tours with AR layers, clickable floor plans and Street View publishing — so buyers shortlisted properties without a sales team in the room.",
-    image: "https://images.unsplash.com/photo-1592478411213-6153e4ebc696?auto=format&fit=crop&w=1600&q=80",
+    image: "/services/virtual-tours.webp",
     results: [
       { label: "Engagement Time", value: "3.5X" },
       { label: "Tours Produced", value: "320+" },
@@ -989,13 +989,13 @@ export const leadership = [
   {
     name: "Vishal Yogi",
     role: "Co-Founder",
-    image: "/team/2.webp",
+    image: "/team/vishal-yogi.webp",
     bio: "Vishal brings the operational depth that keeps ROI Makers structured, scalable and focused. With hands-on experience building and managing multiple businesses across retail, consumer and service industries, he carries a ground-level understanding of what growth actually demands beyond strategy and planning. He oversees business operations, client partnerships and the internal systems that ensure the agency runs as well as it delivers.",
   },
   {
     name: "Abhishek Sharma",
     role: "Chief Technology Officer",
-    image: "/team/3.webp",
+    image: "/team/abhishek-sharma.webp",
     bio: "Abhishek is the technical foundation the agency is built on. With deep expertise in full-stack development, system architecture and emerging technology, he shapes the digital infrastructure that powers operations and scale. As CTO he oversees platform integrations, internal tooling and the data frameworks that keep every campaign running with precision.",
   },
 ];
