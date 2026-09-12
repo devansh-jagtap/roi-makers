@@ -3,6 +3,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell } from 'recharts';
 
+type ChartDatum = { name: string; value: number };
+
 const COLORS = ['#f26b38', '#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#64748b'];
 
 export function AnalyticsCharts({ 
@@ -10,9 +12,9 @@ export function AnalyticsCharts({
   serviceData, 
   sourceData 
 }: { 
-  statusData: any[]; 
-  serviceData: any[]; 
-  sourceData: any[]; 
+  statusData: ChartDatum[]; 
+  serviceData: ChartDatum[]; 
+  sourceData: ChartDatum[]; 
 }) {
   return (
     <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">

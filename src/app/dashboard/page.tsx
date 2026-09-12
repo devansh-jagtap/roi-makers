@@ -1,4 +1,3 @@
-import { LeadStatus } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { requireProfile } from '@/lib/auth';
 import Link from 'next/link';
@@ -7,7 +6,7 @@ import {
   Trophy, UserPlus, ShieldAlert, Clock,
   ArrowRight, Briefcase, FileCheck
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default async function DashboardPage() {
   const profile = await requireProfile();

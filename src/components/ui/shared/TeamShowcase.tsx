@@ -373,7 +373,7 @@ const TeamShowcase: React.FC<TeamShowcaseProps> = ({
               <div className="flex-1 text-left md:pl-6 md:border-l-4 border-orange-500 flex flex-col justify-center w-full">
                 <div className="flex items-start gap-2">
                   <span className="text-2xl sm:text-3xl select-none leading-none text-orange-500">
-                    "
+                    &quot;
                   </span>
                   <span className="text-base sm:text-lg md:text-xl font-medium leading-snug text-foreground">
                     {teamInfo[activeIndex].bio}

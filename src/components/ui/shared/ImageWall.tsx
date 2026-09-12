@@ -206,7 +206,7 @@ const ImageWall: React.FC<ImageWallProps> = ({
             >
              Engineering digital ecosystems where
               <br className="hidden sm:block" />
-              brands don't just exist they dominate,
+              brands don&apos;t just exist they dominate,
               <br className="hidden sm:block" />
               disrupt, and redefine their categories
             </h2>
@@ -224,14 +224,14 @@ const ImageWall: React.FC<ImageWallProps> = ({
                 </div>
                 <div className="text-muted-foreground text-xs sm:text-sm md:text-base leading-relaxed space-y-3 sm:space-y-4">
                   <p>
-                  Today's winning brands understand one truth: visibility without velocity is vanity. In an attention economy where consumers swipe past your best work in 0.3 seconds, you need more than pretty graphics you need psychological triggers wrapped in strategic precision.
+                  Today&apos;s winning brands understand one truth: visibility without velocity is vanity. In an attention economy where consumers swipe past your best work in 0.3 seconds, you need more than pretty graphics you need psychological triggers wrapped in strategic precision.
                   </p>
 
                   <p>
-                  We architect brand experiences that hijack scroll patterns and rewire buying behavior. Every pixel serves a purpose. Every campaign carries intent. We're not making content we're engineering conversion machines disguised as creative brilliance.
+                  We architect brand experiences that hijack scroll patterns and rewire buying behavior. Every pixel serves a purpose. Every campaign carries intent. We&apos;re not making content we&apos;re engineering conversion machines disguised as creative brilliance.
                   </p>
                   <p>
-                  Think less "marketing agency," more "growth laboratory." Where hypotheses become campaigns, data becomes direction, and your competitors become case studies.
+                  Think less &quot;marketing agency,&quot; more &quot;growth laboratory.&quot; Where hypotheses become campaigns, data becomes direction, and your competitors become case studies.
                   </p>
                 </div>
               </div>

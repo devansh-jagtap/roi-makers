@@ -23,22 +23,22 @@ export default function TermsConditions() {
 
           <div className="prose prose-lg max-w-none space-y-8 archivo-font">
             <p className="text-[#312619]">
-              Let's keep it simple – by using our site, you're agreeing to a few basic rules
-              that help keep everything above board and running smoothly. If you're browsing,
+              Let&apos;s keep it simple – by using our site, you&apos;re agreeing to a few basic rules
+              that help keep everything above board and running smoothly. If you&apos;re browsing,
               scrolling, reading, watching or clicking on anything at ROI Makers, these terms apply.
             </p>
 
             <p className="text-[#312619]/70">
-              If you're not into legal stuff, we totally get it – maybe check out our work or careers page instead.
+              If you&apos;re not into legal stuff, we totally get it – maybe check out our work or careers page instead.
             </p>
 
             <section className="space-y-4">
               <h2 className="text-3xl font-bold text-[#060010] boska-font">Who We Are</h2>
               <p className="text-[#312619]">
-                This website is run by ROI Makers. When we say "we", "us" or "our", that's
+                This website is run by ROI Makers. When we say &quot;we&quot;, &quot;us&quot; or &quot;our&quot;, that&apos;s
                 who we mean. If you have any questions, hit us up at{" "}
-                <a href="mailto:hello@makers.com" className="text-[#FF9933] hover:underline">
-                  info@imakers.com
+                <a href="mailto:info@roimakers.in" className="text-[#FF9933] hover:underline">
+                  info@roimakers.in
                 </a>
                 .
               </p>
@@ -53,7 +53,7 @@ export default function TermsConditions() {
                 <li>Not try to hack, copy, or mess with our code or content</li>
               </ul>
               <p className="text-[#312619]">
-                Basically, be cool. Don't do anything dodgy.
+                Basically, be cool. Don&apos;t do anything dodgy.
               </p>
             </section>
 
@@ -61,8 +61,8 @@ export default function TermsConditions() {
               <h2 className="text-3xl font-bold text-[#060010] boska-font">Our Content</h2>
               <p className="text-[#312619]">
                 All the content on this site – including words, videos, graphics, case studies,
-                ideas and more – belongs to ROI Makers (unless we've said otherwise). Please
-                don't steal it, screenshot it for your pitch deck, or pass it off as your own.
+                ideas and more – belongs to ROI Makers (unless we&apos;ve said otherwise). Please
+                don&apos;t steal it, screenshot it for your pitch deck, or pass it off as your own.
               </p>
               <p className="text-[#312619]">
                 Want to share something? Great. Just credit us and link back.
@@ -72,12 +72,12 @@ export default function TermsConditions() {
             <section className="space-y-4">
               <h2 className="text-3xl font-bold text-[#060010] boska-font">No Promises, No Guarantees</h2>
               <p className="text-[#312619]">
-                We do our best to keep everything up to date and accurate – but we can't promise
+                We do our best to keep everything up to date and accurate – but we can&apos;t promise
                 the site will always be 100% error-free or uninterrupted. If something breaks,
-                disappears or goes out of date, we're not liable.
+                disappears or goes out of date, we&apos;re not liable.
               </p>
               <p className="text-[#312619]">
-                The website is provided "as is". That's the legal way of saying we're not making
+                The website is provided &quot;as is&quot;. That&apos;s the legal way of saying we&apos;re not making
                 any guarantees about its performance, and you use it at your own risk.
               </p>
             </section>
@@ -86,21 +86,21 @@ export default function TermsConditions() {
               <h2 className="text-3xl font-bold text-[#060010] boska-font">Third Party Links</h2>
               <p className="text-[#312619]">
                 We sometimes link out to other websites – maybe in a blog post or case study.
-                Just so you know, we're not responsible for the content or data policies on those
-                sites. Once you're off our domain, you're in their world.
+                Just so you know, we&apos;re not responsible for the content or data policies on those
+                sites. Once you&apos;re off our domain, you&apos;re in their world.
               </p>
             </section>
 
             <section className="space-y-4">
               <h2 className="text-3xl font-bold text-[#060010] boska-font">Liability Stuff</h2>
-              <p className="text-[#312619]">We're not liable for:</p>
+              <p className="text-[#312619]">We&apos;re not liable for:</p>
               <ul className="list-disc pl-6 space-y-2 text-[#312619]">
                 <li>Any damage to your device while using the site</li>
                 <li>Any loss of data, revenue, or business caused by using (or not being able to use) our site</li>
                 <li>Typos, bugs, or out-of-date info</li>
               </ul>
               <p className="text-[#312619]">
-                We'll always aim to fix issues quickly – but legally, we're covered.
+                We&apos;ll always aim to fix issues quickly – but legally, we&apos;re covered.
               </p>
             </section>
 
@@ -108,11 +108,11 @@ export default function TermsConditions() {
               <h2 className="text-3xl font-bold text-[#060010] boska-font">Changes To These Terms</h2>
               <p className="text-[#312619]">
                 We might update these terms from time to time – especially if laws change, or we
-                launch something new. We won't spam you about it, but you can always check this
+                launch something new. We won&apos;t spam you about it, but you can always check this
                 page to stay in the loop.
               </p>
               <p className="text-[#312619]">
-                By continuing to use the site, you're agreeing to any changes we've made.
+                By continuing to use the site, you&apos;re agreeing to any changes we&apos;ve made.
               </p>
             </section>
 
@@ -123,8 +123,8 @@ export default function TermsConditions() {
               </p>
               <p className="text-[#312619]">
                 Drop us a message at{" "}
-                <a href="mailto:hello@roimakers.com" className="text-[#FF9933] hover:underline">
-                  info@roimakers.com
+                <a href="mailto:info@roimakers.in" className="text-[#FF9933] hover:underline">
+                  info@roimakers.in
                 </a>
               </p>
             </section>

@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     const existing = await prisma.newsletterSubscriber.findUnique({ where: { email } });
 
     let type: SubscriptionType = requested;
-    let shouldSendWelcome = true;
+    const shouldSendWelcome = true;
 
     if (existing) {
       if (existing.status === SubscriberStatus.SUBSCRIBED) {

@@ -3,7 +3,7 @@ import { requireProfile } from '@/lib/auth';
 import { ChartAreaInteractive } from '@/components/dashboard/ChartAreaInteractive';
 import { ChartPieLabelList } from '@/components/dashboard/ChartPieLabelList';
 import { ChartBarInteractive } from '@/components/dashboard/ChartBarInteractive';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Trophy, TrendingUp, Users, Percent } from 'lucide-react';
 
 export default async function AnalyticsPage() {

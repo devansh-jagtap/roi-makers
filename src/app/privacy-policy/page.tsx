@@ -118,8 +118,8 @@ export default function PrivacyPolicy() {
               <p className="text-[#312619] text-xl">
                 If you have any questions about this privacy policy or how we handle your data,
                 please contact us at{" "}
-                <a href="mailto:hello@roimakers.com" className="text-[#FF9933] hover:underline text-xl">
-                  info@imakers.com
+                <a href="mailto:info@roimakers.in" className="text-[#FF9933] hover:underline text-xl">
+                  info@roimakers.in
                 </a>
               </p>
             </section>

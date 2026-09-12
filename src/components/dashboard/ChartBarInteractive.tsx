@@ -33,12 +33,6 @@ const chartConfig = {
 export function ChartBarInteractive({ data }: { data: StatusEntry[] }) {
   const [activeStatus, setActiveStatus] = React.useState<string>(data[0]?.status ?? "NEW")
 
-  const total = React.useMemo(
-    () =>
-      Object.fromEntries(data.map((d) => [d.status, d.count])),
-    [data]
-  )
-
   const chartData = data.map((d) => ({
     status: d.status,
     count: d.count,
