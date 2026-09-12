@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { creators } from "@/data/site";
 
@@ -19,24 +20,40 @@ export default function HomeInfluencers() {
             move the needle for brands.
           </p>
         </div>
+      </div>
 
-        <ul className="flex flex-wrap justify-center gap-2.5 sm:gap-3">
-          {creators.map((handle) => (
-            <li key={handle} className="glass-pill !normal-case !tracking-[0.06em]">
-              {handle}
-            </li>
+      {/* Portrait rail — the same CSS marquee the quote rail uses, so it
+          costs no animation frame. Duplicated once for the seamless loop. */}
+      <div className="creator-rail">
+        <div className="creator-track marquee-track">
+          {[0, 1].map((group) => (
+            <ul key={group} className="creator-group" aria-hidden={group === 1}>
+              {creators.map((creator) => (
+                <li key={creator.handle} className="creator-card frame">
+                  <Image
+                    src={creator.image}
+                    alt={creator.name}
+                    fill
+                    sizes="(max-width: 640px) 180px, 220px"
+                    className="object-cover"
+                  />
+                  <div className="creator-shade" aria-hidden />
+                  <p className="creator-handle glass-pill !normal-case !tracking-[0.06em]">{creator.handle}</p>
+                </li>
+              ))}
+            </ul>
           ))}
-        </ul>
-
-        <div className="mt-10 text-center sm:mt-12">
-          <Link
-            href="/projects"
-            className="link-arrow clash-display-font text-[0.66rem] uppercase tracking-[0.2em] text-[var(--brand)]"
-          >
-            <span>See the campaigns they powered</span>
-            <span aria-hidden>↗</span>
-          </Link>
         </div>
+      </div>
+
+      <div className="mt-10 text-center sm:mt-12">
+        <Link
+          href="/projects"
+          className="link-arrow clash-display-font text-[0.66rem] uppercase tracking-[0.2em] text-[var(--brand)]"
+        >
+          <span>See the campaigns they powered</span>
+          <span aria-hidden>↗</span>
+        </Link>
       </div>
     </section>
   );

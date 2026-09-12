@@ -5,12 +5,11 @@ import { CountUp } from '../../ui/count-up';
 import LogoMarquee from '@/components/ui/media/LogoMarquee';
 import { headlineStats, testimonials } from '@/data/site';
 
-/* Every logo in /public/clients, split across the two marquee rows so
-   the second row is not a mirror of the first. Order within each row
-   mixes sectors so no two construction or healthcare marks sit together. */
+/* Every logo in /public/clients. The order mixes sectors so no two
+   construction or healthcare marks sit together in a row. */
 const logo = (file: string, alt: string) => ({ src: `/clients/${file}.webp`, alt });
 
-const clientLogosTop = [
+const clientLogos = [
   logo("2", "Life Care Logistic"),
   logo("cult-fit", "cult.fit"),
   logo("9", "Star Build Construction & Solution"),
@@ -34,9 +33,6 @@ const clientLogosTop = [
   logo("dreams-india", "Dreams India Entertainment"),
   logo("28", "DAMAC"),
   logo("fdm", "FDM"),
-];
-
-const clientLogosBottom = [
   logo("6", "Advanced Academy"),
   logo("malwa-county", "Malwa County"),
   logo("17", "Fun O'Farm"),
@@ -61,9 +57,13 @@ const clientLogosBottom = [
   logo("ads-infra", "ADS Infra by Yadav Group"),
 ];
 
+/* Three rows of fifteen, so no row repeats another. */
+const rowSize = Math.ceil(clientLogos.length / 3);
+const logoRows = [0, 1, 2].map((row) => clientLogos.slice(row * rowSize, (row + 1) * rowSize));
+
 const marqueeProps = {
-  speed: 150,
-  logoHeight: 100,
+  speed: 200,
+  logoHeight: 80,
   gap: 50,
   pauseOnHover: true,
   fadeOut: true,
@@ -129,9 +129,11 @@ export default function ClientsStats() {
           <h3 className="display-3 mt-3">Brands that chose results.</h3>
         </motion.div>
 
-        <LogoMarquee {...marqueeProps} logos={clientLogosTop} direction="left" />
+        <LogoMarquee {...marqueeProps} logos={logoRows[0]} direction="left" />
         <div className="h-6" />
-        <LogoMarquee {...marqueeProps} logos={clientLogosBottom} direction="right" />
+        <LogoMarquee {...marqueeProps} logos={logoRows[1]} direction="right" />
+        <div className="h-6" />
+        <LogoMarquee {...marqueeProps} logos={logoRows[2]} direction="left" />
 
         {/* Client wins — the words brands actually used. */}
         <div className="mx-auto mt-20 max-w-6xl px-2">

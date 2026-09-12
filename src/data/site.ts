@@ -883,6 +883,23 @@ export const testimonials = [
 ];
 
 /* ------------------------------------------------------------------ */
+/* Partners                                                            */
+/* ------------------------------------------------------------------ */
+
+export type Partner = { name: string; logo: string; alt: string };
+
+/* Same seven, same order, as roimakers.in/our-partners. Logos live in /public/partners. */
+export const partners: Partner[] = [
+  { name: "Google", logo: "/partners/google.webp", alt: "Google" },
+  { name: "Click Effect", logo: "/partners/click-effect.webp", alt: "Click Effect" },
+  { name: "Auto Mark", logo: "/partners/auto-mark.webp", alt: "Auto Mark" },
+  { name: "Global Focus Today", logo: "/partners/global-focus-today.webp", alt: "Global Focus Today" },
+  { name: "Bot Sense", logo: "/partners/bot-sense.webp", alt: "Bot Sense" },
+  { name: "Meta", logo: "/partners/meta.webp", alt: "Meta" },
+  { name: "OBLIGR", logo: "/partners/obligr.webp", alt: "OBLIGR" },
+];
+
+/* ------------------------------------------------------------------ */
 /* Story                                                               */
 /* ------------------------------------------------------------------ */
 
@@ -1212,14 +1229,17 @@ export const blogCategories = ["All", ...Array.from(new Set(blogPosts.map((p) =>
 /* Creators                                                            */
 /* ------------------------------------------------------------------ */
 
-export const creators = [
-  "@charusolanki",
-  "@madeinindore",
-  "@kashishsitlani",
-  "@unofficialhimanshu",
-  "@iamazharshaikh",
-  "@chiragbarjatya",
-  "@meenaltanwani",
-  "@sonal2794",
-  "@mehakkushwahofficial",
+export type Creator = { handle: string; name: string; image: string };
+
+/* Portraits live in /public/influencers, named by handle. */
+export const creators: Creator[] = [
+  { handle: "@charusolanki", name: "Charu Solanki", image: "/influencers/charusolanki.webp" },
+  { handle: "@madeinindore", name: "Made in Indore", image: "/influencers/madeinindore.webp" },
+  { handle: "@kashishsitlani", name: "Kashish Sitlani", image: "/influencers/kashishsitlani.webp" },
+  { handle: "@unofficialhimanshu", name: "Himanshu", image: "/influencers/unofficialhimanshu.webp" },
+  { handle: "@iamazharshaikh", name: "Azhar Shaikh", image: "/influencers/iamazharshaikh.webp" },
+  { handle: "@chiragbarjatya", name: "Chirag Barjatya", image: "/influencers/chiragbarjatya.webp" },
+  { handle: "@meenaltanwani", name: "Meenal Tanwani", image: "/influencers/meenaltanwani.webp" },
+  { handle: "@sonal2794", name: "Sonal", image: "/influencers/sonal2794.webp" },
+  { handle: "@mehakkushwahofficial", name: "Mehak Kushwah", image: "/influencers/mehakkushwahofficial.webp" },
 ];
