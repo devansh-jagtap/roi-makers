@@ -7,7 +7,6 @@ import LoadingOverlay from "@/components/ui/feedback/LoadingOverlay";
 
 // Lazy load components that aren't immediately visible
 const ImageWall = lazy(() => import("@/components/ui/shared/ImageWall"));
-const ServicesShowcase = lazy(() => import("@/components/sections/home/ServicesShowcase")); 
 const HomeServicesGrid = lazy(() => import("@/components/sections/home/HomeServicesGrid"));
 const HomeTeamGallery = lazy(() => import("@/components/sections/home/HomeTeamGallery"));
 const HomeInfluencers = lazy(() => import("@/components/sections/home/HomeInfluencers"));

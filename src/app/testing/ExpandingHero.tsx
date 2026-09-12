@@ -1,49 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const NAV = ["Services", "Industries", "Work", "About", "Careers", "Blog"];
-
-const AWARDS = ["Global Search Awards", "The Drum", "UK Social Media Awards", "Content Awards"];
-
 const PLATFORMS = ["Google", "ChatGPT", "Gemini", "TikTok", "YouTube", "Instagram", "Amazon", "Flipkart"];
-
-/** A laurel branch, mirrored for the right-hand side. */
-function Laurel({ flip = false }: { flip?: boolean }) {
-  return (
-    <svg
-      className="tst-laurel"
-      style={flip ? { transform: "scaleX(-1)" } : undefined}
-      viewBox="0 0 40 64"
-      fill="none"
-      aria-hidden
-    >
-      <path
-        d="M30 62C14 54 6 40 8 22 9.5 12 15 5 22 2"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-      {[8, 17, 26, 35, 44, 52].map((y, i) => (
-        <ellipse
-          key={y}
-          cx={16 - i * 0.6}
-          cy={y}
-          rx="6.5"
-          ry="3"
-          transform={`rotate(${-52 + i * 6} ${16 - i * 0.6} ${y})`}
-          fill="currentColor"
-          opacity="0.9"
-        />
-      ))}
-    </svg>
-  );
-}
 
 /**
  * The concept test: a capsule sitting inline inside the headline that turns

@@ -1,7 +1,6 @@
-import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { requireProfile } from '@/lib/auth';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Mail, Download, CheckCircle2, XCircle } from 'lucide-react';
 
 export default async function SubscribersPage() {
@@ -24,12 +23,16 @@ export default async function SubscribersPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {/* Plain anchors on purpose: these are file downloads served by an API
+              route, not page navigations, so next/link would be wrong here. */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a
             href="/api/export/subscribers"
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#060010] hover:bg-black text-white text-xs font-semibold rounded-lg transition-colors shadow-sm"
           >
             <Download size={14} /> Export XLSX
           </a>
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a
             href="/api/export/subscribers?format=csv"
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-semibold rounded-lg transition-colors border border-stone-200"

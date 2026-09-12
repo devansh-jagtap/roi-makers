@@ -28,7 +28,7 @@ import {
         setStatus('success');
         setMessage('Subscribed successfully!');
         setEmail('');
-      } catch (err) {
+      } catch {
         setStatus('error');
         setMessage('Failed to subscribe. Please try again.');
       }
@@ -44,7 +44,7 @@ import {
         {/* Newsletter Signup & Socials */}
         <div className="flex-1 flex flex-col gap-3 sm:gap-4 items-start">
           <div className="text-xl sm:text-2xl lg:text-3xl font-semibold text-center lg:text-left w-full">
-            Stay updated with ROI™ Blog's
+            Stay updated with ROI™ Blog&apos;s
           </div>
           <form onSubmit={handleSubmit} className="w-full flex flex-col sm:flex-row gap-3 sm:gap-2 relative">
             <input 

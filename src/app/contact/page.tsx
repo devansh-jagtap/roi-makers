@@ -43,7 +43,7 @@ export default function ContactPage() {
   const contactInfo = [
     {
       label: 'Email',
-      value: 'info@rmakers.in',
+      value: 'info@roimakers.in',
       href: 'mailto:info@roimakers.in',
     },
     {
@@ -119,10 +119,10 @@ export default function ContactPage() {
               Connect With Us
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-[#312619]/80 max-w-3xl mx-auto archivo-font leading-relaxed mb-4">
-              Let's Grow Your Brand Together
+              Let&apos;s Grow Your Brand Together
             </p>
             <p className="text-base sm:text-lg text-[#312619]/70 max-w-2xl mx-auto archivo-font leading-relaxed">
-              Have a project in mind or just exploring ideas? Tell us what you're building—we'll help you take the next step.
+              Have a project in mind or just exploring ideas? Tell us what you&apos;re building—we&apos;ll help you take the next step.
             </p>
           </motion.div>
         </div>
@@ -172,7 +172,7 @@ export default function ContactPage() {
                   Work With ROI Makers
                 </h2>
                 <p className="text-base md:text-lg text-[#312619]/80 archivo-font leading-relaxed">
-                  Share a few details with us and our team will reach out shortly. We'll understand your needs, your goals, and see how we can help you grow.
+                  Share a few details with us and our team will reach out shortly. We&apos;ll understand your needs, your goals, and see how we can help you grow.
                 </p>
               </div>
               <div className="hidden" aria-hidden="true">
@@ -225,10 +225,10 @@ export default function ContactPage() {
               <div className="bg-[#060010] text-[#E9E4D7] rounded-[28px] p-6">
                 <p className="text-sm archivo-font">
                   <strong className="clash-display-font">Not sure where to start?</strong> Drop us a message anyway at{' '}
-                  <a href="mailto:info@rmakers.in" className="text-[#ff9933] hover:underline font-semibold">
+                  <a href="mailto:info@roimakers.in" className="text-[#ff9933] hover:underline font-semibold">
                     info@roimakers.in
                   </a>{' '}
-                  we'll guide you in the right direction.
+                  we&apos;ll guide you in the right direction.
                 </p>
               </div>
             </motion.div>

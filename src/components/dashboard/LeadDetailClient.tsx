@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import type { Lead, Profile } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { LeadStatusControl } from './LeadStatusControl';
 import { AlertDialog } from '@/components/ui/alert-dialog';
@@ -11,7 +12,17 @@ import {
   Clock, Trash2, ShieldAlert
 } from 'lucide-react';
 
-export function LeadDetailClient({ lead, profile, teamMembers }: any) {
+type TeamMember = { id: string; name: string | null; email: string };
+
+export function LeadDetailClient({
+  lead,
+  profile,
+  teamMembers,
+}: {
+  lead: Lead;
+  profile: Profile;
+  teamMembers: TeamMember[];
+}) {
   const router = useRouter();
   const [assigning, setAssigning] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -108,7 +119,7 @@ export function LeadDetailClient({ lead, profile, teamMembers }: any) {
                 className="bg-stone-50 border border-stone-200 text-sm rounded-lg px-3 py-2 focus:ring-[#f26b38] focus:border-[#f26b38] outline-none"
               >
                 <option value="">-- Unassigned --</option>
-                {teamMembers.map((m: any) => (
+                {teamMembers.map((m) => (
                   <option key={m.id} value={m.id}>{m.name || m.email}{m.id === profile.id ? ' (You)' : ''}</option>
                 ))}
               </select>
