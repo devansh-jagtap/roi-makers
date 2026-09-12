@@ -20,40 +20,34 @@ export default function HomeInfluencers() {
             move the needle for brands.
           </p>
         </div>
-      </div>
 
-      {/* Portrait rail — the same CSS marquee the quote rail uses, so it
-          costs no animation frame. Duplicated once for the seamless loop. */}
-      <div className="creator-rail">
-        <div className="creator-track marquee-track">
-          {[0, 1].map((group) => (
-            <ul key={group} className="creator-group" aria-hidden={group === 1}>
-              {creators.map((creator) => (
-                <li key={creator.handle} className="creator-card frame">
-                  <Image
-                    src={creator.image}
-                    alt={creator.name}
-                    fill
-                    sizes="(max-width: 640px) 180px, 220px"
-                    className="object-cover"
-                  />
-                  <div className="creator-shade" aria-hidden />
-                  <p className="creator-handle glass-pill !normal-case !tracking-[0.06em]">{creator.handle}</p>
-                </li>
-              ))}
-            </ul>
+        <ul className="mx-auto flex max-w-4xl flex-wrap justify-center gap-x-4 gap-y-6 sm:gap-x-6">
+          {creators.map((creator) => (
+            <li key={creator.handle}>
+              <a
+                href={`https://www.instagram.com/${creator.handle.replace(/^@/, "")}/`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="creator-tag"
+              >
+                <span className="creator-avatar">
+                  <Image src={creator.image} alt={creator.name} fill sizes="140px" className="object-cover" />
+                </span>
+                <span className="glass-pill creator-handle !normal-case !tracking-[0.06em]">{creator.handle}</span>
+              </a>
+            </li>
           ))}
-        </div>
-      </div>
+        </ul>
 
-      <div className="mt-10 text-center sm:mt-12">
-        <Link
-          href="/projects"
-          className="link-arrow clash-display-font text-[0.66rem] uppercase tracking-[0.2em] text-[var(--brand)]"
-        >
-          <span>See the campaigns they powered</span>
-          <span aria-hidden>↗</span>
-        </Link>
+        <div className="mt-10 text-center sm:mt-12">
+          <Link
+            href="/projects"
+            className="link-arrow clash-display-font text-[0.66rem] uppercase tracking-[0.2em] text-[var(--brand)]"
+          >
+            <span>See the campaigns they powered</span>
+            <span aria-hidden>↗</span>
+          </Link>
+        </div>
       </div>
     </section>
   );
