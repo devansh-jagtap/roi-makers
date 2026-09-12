@@ -20,6 +20,7 @@ import {
   headlineStats,
   leadership,
   missionVision,
+  partners,
   timeline,
   trustSignals,
   values,
@@ -156,6 +157,41 @@ export default function AboutPage() {
             <StatGrid stats={headlineStats} />
             <StatGrid stats={trustSignals} />
           </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------- */}
+      <section className="section-tight">
+        <div className="shell">
+          <SectionHeading
+            eyebrow="Our partners"
+            title={<WordReveal>The platforms and teams we build with.</WordReveal>}
+            description="Certified, connected, and in the room — the partners behind the campaigns, the tooling, and the reach we bring to every client."
+            align="center"
+          />
+          <RevealGroup className="mt-12 flex flex-wrap justify-center gap-4 sm:gap-5">
+            {partners.map((partner) => (
+              <RevealItem
+                key={partner.name}
+                className="w-[calc(50%-0.5rem)] sm:w-[calc(33.333%-0.84rem)] lg:w-[calc(25%-0.94rem)]"
+              >
+                <figure className="glass glass-card flex h-full flex-col items-center p-4 sm:p-5">
+                  <div className="relative aspect-[5/3] w-full overflow-hidden rounded-xl bg-white">
+                    <Image
+                      src={partner.logo}
+                      alt={partner.alt}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                      className="object-contain p-5 sm:p-6"
+                    />
+                  </div>
+                  <figcaption className="clash-display-font mt-4 text-[0.62rem] uppercase tracking-[0.2em] text-soft">
+                    {partner.name}
+                  </figcaption>
+                </figure>
+              </RevealItem>
+            ))}
+          </RevealGroup>
         </div>
       </section>
 

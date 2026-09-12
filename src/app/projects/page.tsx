@@ -204,9 +204,9 @@ export default function ProjectsPage() {
           />
           <Reveal delay={0.1}>
             <ul className="mt-10 flex flex-wrap gap-2.5">
-              {creators.map((handle) => (
-                <li key={handle} className="glass-pill !normal-case !tracking-[0.06em]">
-                  {handle}
+              {creators.map((creator) => (
+                <li key={creator.handle} className="glass-pill !normal-case !tracking-[0.06em]">
+                  {creator.handle}
                 </li>
               ))}
             </ul>
