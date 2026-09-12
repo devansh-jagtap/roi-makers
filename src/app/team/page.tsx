@@ -11,20 +11,20 @@ const teamImages = [
 
 const teamNames = [
   "Team",
-  "Rajat",
+  "Sankesh",
   "Tripti",
   "Harshita",
   "Vijay",
-  "Sankesh",
+  "Amit",
   "Pankaj",
 ];
 
 const teamInfo: TeamInfo[] = [
   {
-    fullName: "Rajat Gupta",
-    role: "Performance Marketing Manager",
-    bio: "Rajat drives performance marketing strategies and optimizes campaigns for maximum ROI.",
-    fun: "Passionate about data-driven marketing.",
+    fullName: "Sankesh Pate",
+    role: "Senior Graphic Designer",
+    bio: "Sankesh designs compelling visual identities that capture brand essence perfectly.",
+    fun: "Master of creative design solutions.",
   },
   {
     fullName: "Tripti Ray",
@@ -44,11 +44,11 @@ const teamInfo: TeamInfo[] = [
     bio: "Vijay brings brands to life through stunning motion graphics and visual storytelling.",
     fun: "Creates award-winning animations.",
   },
-  {
-    fullName: "Sankesh Pate",
-    role: "Senior Graphic Designer",
-    bio: "Sankesh designs compelling visual identities that capture brand essence perfectly.",
-    fun: "Master of creative design solutions.",
+   {
+    fullName: "Amit Sharma",
+    role: "Founder & CEO",
+    bio: "Amit leads the company with vision and innovation, driving growth and success.",
+    fun: "Amit is a passionate entrepreneur and a lifelong learner, always seeking new challenges and opportunities to grow.",
   },
   {
     fullName: "Pankaj Vishwakarma",
