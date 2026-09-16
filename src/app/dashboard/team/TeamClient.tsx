@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, UserPlus, Shield, ShieldAlert, CheckCircle2, XCircle } from 'lucide-react';
+import { Mail, UserPlus, Shield, ShieldAlert, CheckCircle2, XCircle, Trash2 } from 'lucide-react';
 import { AlertDialog } from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/toast';
 
@@ -55,6 +55,15 @@ export function TeamClient({ initialTeam }: { initialTeam: Profile[] }) {
     setError('');
     
     try {
+      if (action === 'delete') {
+        const res = await fetch(`/api/dashboard/team/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to delete user');
+        setTeam(team.filter(p => p.id !== id));
+        toast('Team member deleted permanently.', 'success');
+        return;
+      }
+
       const res = await fetch(`/api/dashboard/team/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -202,6 +211,15 @@ export function TeamClient({ initialTeam }: { initialTeam: Profile[] }) {
                           Enable
                         </button>
                       )}
+                      <span className="text-stone-300">|</span>
+                      <button 
+                        onClick={() => setPendingAction({ id: p.id, action: 'delete' })} 
+                        disabled={loading} 
+                        title="Delete permanently"
+                        className="inline-flex items-center gap-1 text-stone-500 hover:text-red-700 disabled:opacity-50 transition-colors"
+                      >
+                        <Trash2 size={14} /> Delete
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -210,7 +228,27 @@ export function TeamClient({ initialTeam }: { initialTeam: Profile[] }) {
           </table>
         </div>
       </div>
-      <AlertDialog open={!!pendingAction} title={pendingAction?.action === 'disable' ? 'Disable this team member?' : 'Update this team member?'} description={pendingAction?.action === 'disable' ? 'They will no longer be able to access the dashboard.' : 'This change will update this member’s dashboard access.'} confirmLabel={pendingAction?.action === 'disable' ? 'Disable Member' : 'Confirm Update'} loading={loading} onCancel={() => setPendingAction(null)} onConfirm={handleAction} />
+      <AlertDialog
+        open={!!pendingAction}
+        title={
+          pendingAction?.action === 'delete' ? 'Delete this team member permanently?'
+          : pendingAction?.action === 'disable' ? 'Disable this team member?'
+          : 'Update this team member?'
+        }
+        description={
+          pendingAction?.action === 'delete' ? 'Their login and profile will be removed permanently. Leads assigned to them will be kept and unassigned. This cannot be undone.'
+          : pendingAction?.action === 'disable' ? 'They will no longer be able to access the dashboard.'
+          : 'This change will update this member’s dashboard access.'
+        }
+        confirmLabel={
+          pendingAction?.action === 'delete' ? 'Delete Permanently'
+          : pendingAction?.action === 'disable' ? 'Disable Member'
+          : 'Confirm Update'
+        }
+        loading={loading}
+        onCancel={() => setPendingAction(null)}
+        onConfirm={handleAction}
+      />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { FormEvent, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { createSupabaseBrowserClient } from '@/lib/supabaseClient';
 import { ShieldAlert, ArrowRight, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -85,7 +86,12 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-stone-300">Password</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password" className="text-stone-300">Password</Label>
+                  <Link href="/forgot-password" className="text-xs text-stone-400 hover:text-[#f26b38] transition-colors">
+                    Forgot password?
+                  </Link>
+                </div>
                 <Input 
                   id="password"
                   className="bg-black/20 border-white/10 text-white placeholder-stone-500 focus-visible:ring-[#f26b38] focus-visible:border-[#f26b38]" 

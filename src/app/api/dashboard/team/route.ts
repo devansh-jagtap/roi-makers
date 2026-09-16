@@ -43,7 +43,22 @@ export async function POST(request: Request) {
       redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`
     });
     
-    if (authError || !authData.user) {
+    let authUserId = authData?.user?.id ?? null;
+    let createdAuthUser = Boolean(authUserId);
+    
+    // The auth user can already exist (e.g. a previous invite whose profile row was never created).
+    // Reuse it instead of failing, and resend the invite so they still get a link.
+    if (authError && authError.code === 'email_exists') {
+      const { data: list, error: listError } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+      const existingAuth = list?.users.find(u => (u.email ?? '').toLowerCase() === normalizedEmail);
+      if (listError || !existingAuth) {
+        console.error('Auth user exists but could not be looked up', listError);
+        return NextResponse.json({ error: 'Failed to invite user in authentication system.' }, { status: 500 });
+      }
+      authUserId = existingAuth.id;
+      createdAuthUser = false;
+      await supabaseAdmin.auth.admin.generateLink({ type: 'magiclink', email: normalizedEmail }).catch(() => null);
+    } else if (authError || !authUserId) {
       console.error('Failed to invite auth user', authError);
       return NextResponse.json({ error: 'Failed to invite user in authentication system.' }, { status: 500 });
     }
@@ -52,7 +67,7 @@ export async function POST(request: Request) {
     try {
       const profile = await prisma.profile.create({
         data: {
-          authUserId: authData.user.id,
+          authUserId,
           email: normalizedEmail,
           name: normalizedName,
           role: Role.MEMBER,
@@ -63,8 +78,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, profile }, { status: 201 });
     } catch (profileError) {
       console.error('Failed to create profile, rolling back auth user', profileError);
-      // Attempt to rollback auth user creation
-      await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+      // Only roll back an auth user this request created
+      if (createdAuthUser) await supabaseAdmin.auth.admin.deleteUser(authUserId);
       return NextResponse.json({ error: 'Failed to create user profile.' }, { status: 500 });
     }
     

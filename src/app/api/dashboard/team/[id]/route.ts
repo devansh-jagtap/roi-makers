@@ -83,3 +83,45 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return NextResponse.json({ error: 'An unexpected error occurred.' }, { status: 500 });
   }
 }
+
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const auth = await requireApiProfile(Role.ADMIN);
+  if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status });
+
+  const { id } = await params;
+
+  try {
+    const targetProfile = await prisma.profile.findUnique({ where: { id } });
+    if (!targetProfile) {
+      return NextResponse.json({ error: 'User not found.' }, { status: 404 });
+    }
+
+    if (targetProfile.id === auth.profile.id) {
+      return NextResponse.json({ error: 'You cannot delete your own account.' }, { status: 400 });
+    }
+
+    // Never remove the last active admin
+    if (targetProfile.role === Role.ADMIN && targetProfile.active) {
+      const activeAdmins = await prisma.profile.count({ where: { role: Role.ADMIN, active: true } });
+      if (activeAdmins <= 1) {
+        return NextResponse.json({ error: 'Cannot delete the last active admin.' }, { status: 400 });
+      }
+    }
+
+    // Remove the login first so a failed profile delete never leaves an orphan auth user
+    const supabaseAdmin = createSupabaseAdminClient();
+    const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(targetProfile.authUserId);
+    if (authError && authError.code !== 'user_not_found') {
+      console.error('Failed to delete auth user', authError);
+      return NextResponse.json({ error: 'Failed to delete user from authentication system.' }, { status: 500 });
+    }
+
+    // Leads assigned to this member are kept and unassigned (onDelete: SetNull)
+    await prisma.profile.delete({ where: { id } });
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error('Team member delete error', err);
+    return NextResponse.json({ error: 'An unexpected error occurred.' }, { status: 500 });
+  }
+}
