@@ -20,7 +20,8 @@ import {
   retentionCookieMaxAge,
   textFromUIMessage,
 } from '@/lib/ai/memory';
-import { withinRateLimit } from '@/lib/rate-limit';
+import { WINDOW, getClientIp, rateLimitAll, tooManyRequests } from '@/lib/rate-limit';
+import { BodyTooLargeError, readJson } from '@/lib/http';
 
 /**
  * Agent 1 — the public site assistant.
@@ -41,17 +42,39 @@ export async function POST(request: Request) {
     );
   }
 
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ?? 'unknown';
-  if (!withinRateLimit(`chat:${ip}`, 12, 60_000)) {
-    return Response.json(
-      { error: 'You are sending messages too quickly. Please wait a moment.' },
-      { status: 429 },
-    );
+  // Anonymous, httpOnly session id. This is the only thing tying a visitor to
+  // their thread — no login, no profiling, and it expires with the transcript.
+  const cookieStore = await cookies();
+  let sessionId = cookieStore.get(PUBLIC_SESSION_COOKIE)?.value;
+  const hadSession = Boolean(sessionId);
+
+  // Layered limits: a burst cap per minute, then hourly and daily ceilings so
+  // one visitor (or one IP) cannot run the model bill up over a long session.
+  // Keyed on both the IP and the session cookie — spoofing one still hits the other.
+  const ip = getClientIp(request);
+  const limited = rateLimitAll([
+    // Site-wide budget guard: even if every per-client key is defeated
+    // (spoofed headers, no cookie), total model spend stays bounded.
+    { key: 'chat:global:hour', limit: 600, windowMs: WINDOW.HOUR },
+    { key: 'chat:global:day', limit: 3000, windowMs: WINDOW.DAY },
+    { key: `chat:ip:min:${ip}`, limit: 12, windowMs: WINDOW.MINUTE },
+    { key: `chat:ip:hour:${ip}`, limit: 80, windowMs: WINDOW.HOUR },
+    { key: `chat:ip:day:${ip}`, limit: 250, windowMs: WINDOW.DAY },
+    ...(hadSession
+      ? [
+          { key: `chat:sid:min:${sessionId}`, limit: 10, windowMs: WINDOW.MINUTE },
+          { key: `chat:sid:day:${sessionId}`, limit: 150, windowMs: WINDOW.DAY },
+        ]
+      : []),
+  ]);
+  if (!limited.ok) {
+    return tooManyRequests(limited, 'You are sending messages too quickly. Please wait a moment.');
   }
 
   let incoming: UIMessage[];
   try {
-    const body = await request.json();
+    // 64 KB is generous for a chat turn; the widget only sends the thread text.
+    const body = await readJson<{ messages?: unknown; message?: unknown }>(request, 64 * 1024);
 
     // The widget sends `messages`; `message` is kept for older callers.
     if (Array.isArray(body?.messages)) {
@@ -63,7 +86,10 @@ export async function POST(request: Request) {
     } else {
       return Response.json({ error: 'Message is required.' }, { status: 400 });
     }
-  } catch {
+  } catch (error) {
+    if (error instanceof BodyTooLargeError) {
+      return Response.json({ error: 'Request body too large.' }, { status: 413 });
+    }
     return Response.json({ error: 'Invalid request body.' }, { status: 400 });
   }
 
@@ -82,10 +108,6 @@ export async function POST(request: Request) {
 
   void purgeExpired();
 
-  // Anonymous, httpOnly session id. This is the only thing tying a visitor to
-  // their thread — no login, no profiling, and it expires with the transcript.
-  const cookieStore = await cookies();
-  let sessionId = cookieStore.get(PUBLIC_SESSION_COOKIE)?.value;
   if (!sessionId) {
     sessionId = newSessionId();
     cookieStore.set(PUBLIC_SESSION_COOKIE, sessionId, {
@@ -104,7 +126,12 @@ export async function POST(request: Request) {
     });
 
     const history = await loadHistory(conversation);
-    const latestModelMessages = await convertToModelMessages([latest]);
+    // Only the visitor's text is forwarded. Rebuilding the message from
+    // `userText` drops any file/image/data parts a crafted client could attach,
+    // which would otherwise be passed straight to the model.
+    const latestModelMessages = await convertToModelMessages([
+      { role: 'user', parts: [{ type: 'text', text: userText }] },
+    ]);
 
     await appendMessage({
       conversationId: conversation.id,

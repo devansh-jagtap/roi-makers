@@ -7,6 +7,8 @@ import {
 } from 'ai';
 import { ChatAudience, ChatRole } from '@prisma/client';
 import { requireApiProfile } from '@/lib/auth';
+import { WINDOW, rateLimitAll, tooManyRequests } from '@/lib/rate-limit';
+import { BodyTooLargeError, readJson } from '@/lib/http';
 import { prisma } from '@/lib/prisma';
 import { chatModel, generationLimits, isAiConfigured } from '@/lib/ai/provider';
 import { dashboardSystemPrompt } from '@/lib/ai/prompts';
@@ -63,14 +65,29 @@ export async function POST(request: Request) {
 
   const { profile } = auth;
 
+  // Per-employee ceilings. Authenticated does not mean unlimited: a stuck
+  // client loop or a shared login could otherwise burn the model budget.
+  const limited = rateLimitAll([
+    { key: 'assistant:global:hour', limit: 400, windowMs: WINDOW.HOUR },
+    { key: `assistant:min:${profile.id}`, limit: 20, windowMs: WINDOW.MINUTE },
+    { key: `assistant:hour:${profile.id}`, limit: 150, windowMs: WINDOW.HOUR },
+    { key: `assistant:day:${profile.id}`, limit: 500, windowMs: WINDOW.DAY },
+  ]);
+  if (!limited.ok) {
+    return tooManyRequests(limited, 'You are sending messages too quickly. Please wait a moment.');
+  }
+
   let incoming: UIMessage[];
   try {
-    const body = await request.json();
+    const body = await readJson<{ messages?: unknown }>(request, 128 * 1024);
     if (!Array.isArray(body?.messages)) {
       return NextResponse.json({ error: 'Message is required.' }, { status: 400 });
     }
     incoming = body.messages as UIMessage[];
-  } catch {
+  } catch (error) {
+    if (error instanceof BodyTooLargeError) {
+      return NextResponse.json({ error: 'Request body too large.' }, { status: 413 });
+    }
     return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
   }
 
@@ -97,7 +114,11 @@ export async function POST(request: Request) {
     });
 
     const history = await loadHistory(conversation);
-    const latestModelMessages = await convertToModelMessages([latest]);
+    // Text only: any file/image parts a crafted client attaches are dropped
+    // rather than forwarded to the model.
+    const latestModelMessages = await convertToModelMessages([
+      { role: 'user', parts: [{ type: 'text', text: userText }] },
+    ]);
 
     await appendMessage({
       conversationId: conversation.id,

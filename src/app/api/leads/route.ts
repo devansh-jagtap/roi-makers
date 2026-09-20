@@ -1,13 +1,19 @@
 import { NextResponse } from 'next/server';
 import { createLead, text } from '@/lib/leads';
-import { withinRateLimit } from '@/lib/rate-limit';
+import { WINDOW, getClientIp, rateLimitAll, tooManyRequests } from '@/lib/rate-limit';
+import { BodyTooLargeError, readJson } from '@/lib/http';
 
 export async function POST(request: Request) {
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ?? 'unknown';
-  if (!withinRateLimit(`lead:${ip}`)) return NextResponse.json({ error: 'Too many requests. Please try again shortly.' }, { status: 429 });
+  const ip = getClientIp(request);
+  const limited = rateLimitAll([
+    { key: `lead:min:${ip}`, limit: 5, windowMs: WINDOW.MINUTE },
+    { key: `lead:day:${ip}`, limit: 30, windowMs: WINDOW.DAY },
+  ]);
+  if (!limited.ok) return tooManyRequests(limited);
 
   try {
-    const body = await request.json();
+    const body = await readJson<Record<string, unknown>>(request, 32 * 1024);
+    if (!body || typeof body !== 'object') return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
     if (text(body.website)) return NextResponse.json({ success: true }); // honeypot
 
     const result = await createLead(body);
@@ -15,6 +21,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, id: result.lead.id }, { status: 201 });
   } catch (error) {
+    if (error instanceof BodyTooLargeError) return NextResponse.json({ error: 'Request body too large.' }, { status: 413 });
+    if (error instanceof SyntaxError) return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
     console.error('Lead submission failed', error);
     return NextResponse.json({ error: 'Unable to save your enquiry. Please try again.' }, { status: 500 });
   }

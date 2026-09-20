@@ -21,7 +21,8 @@ export async function POST(request: Request) {
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status });
   
   try {
-    const { email, name } = await request.json();
+    const body = await request.json().catch(() => null);
+    const { email, name } = (body ?? {}) as { email?: unknown; name?: unknown };
     const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
     const normalizedName = typeof name === 'string' ? name.trim().slice(0, 150) : null;
     

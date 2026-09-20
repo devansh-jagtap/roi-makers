@@ -10,7 +10,9 @@ export async function GET(request: Request) {
   const supabaseError = searchParams.get('error_description');
   const rawNext = searchParams.get('next') ?? '/set-password';
   // Ensure no open redirects by forcing paths relative to the origin
-  const next = rawNext.startsWith('/') ? rawNext : '/set-password';
+  // Only a plain site-relative path is accepted: `//host` and `/\host` are
+  // treated as protocol-relative URLs by browsers, so they are rejected too.
+  const next = /^\/(?![\/\\])[^\r\n]*$/.test(rawNext) ? rawNext : '/set-password';
 
   // Supabase already rejected the link (expired, reused, etc.) and forwarded its reason
   if (supabaseError) {

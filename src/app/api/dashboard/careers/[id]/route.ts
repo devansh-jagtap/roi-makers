@@ -19,11 +19,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
   const { id } = await params;
-  const body = await request.json();
-  const { status } = body;
+  const body = await request.json().catch(() => null);
+  const status: unknown = body?.status;
 
   const validStatuses: CareerApplicationStatus[] = ['NEW', 'REVIEWING', 'SHORTLISTED', 'REJECTED', 'HIRED'];
-  if (!status || !validStatuses.includes(status)) {
+  if (typeof status !== 'string' || !validStatuses.includes(status as CareerApplicationStatus)) {
     return NextResponse.json({ error: 'Invalid application status.' }, { status: 400 });
   }
 
@@ -32,7 +32,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
   const updated = await prisma.careerApplication.update({
     where: { id },
-    data: { status },
+    data: { status: status as CareerApplicationStatus },
   });
 
   return NextResponse.json(updated);

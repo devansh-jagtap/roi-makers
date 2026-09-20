@@ -2,16 +2,22 @@ import { NextResponse } from 'next/server';
 import { SubscriptionType, SubscriberStatus } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { sendSubscriberWelcome } from '@/lib/email';
-import { withinRateLimit } from '@/lib/rate-limit';
+import { WINDOW, getClientIp, rateLimitAll, tooManyRequests } from '@/lib/rate-limit';
+import { BodyTooLargeError, readJson } from '@/lib/http';
 
 const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
 export async function POST(request: Request) {
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ?? 'unknown';
-  if (!withinRateLimit(`subscriber:${ip}`)) return NextResponse.json({ error: 'Too many requests.' }, { status: 429 });
+  const ip = getClientIp(request);
+  const limited = rateLimitAll([
+    { key: `subscriber:min:${ip}`, limit: 5, windowMs: WINDOW.MINUTE },
+    { key: `subscriber:day:${ip}`, limit: 20, windowMs: WINDOW.DAY },
+  ]);
+  if (!limited.ok) return tooManyRequests(limited);
 
   try {
-    const body = await request.json();
+    const body = await readJson<Record<string, unknown>>(request, 8 * 1024);
+    if (!body || typeof body !== 'object') return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
     const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
     if (!isEmail(email) || body.website) return NextResponse.json({ error: 'Please provide a valid email.' }, { status: 400 });
 
@@ -61,6 +67,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    if (error instanceof BodyTooLargeError) return NextResponse.json({ error: 'Request body too large.' }, { status: 413 });
+    if (error instanceof SyntaxError) return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
     console.error('Subscription failed', error);
     return NextResponse.json({ error: 'Unable to subscribe right now.' }, { status: 500 });
   }

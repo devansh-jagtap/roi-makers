@@ -2,7 +2,7 @@
 import { usePathname } from "next/navigation";
 import SiteHeader from "./SiteHeader";
 import LenisProvider from "@/app/providers/LenisProvider";
-import { ChatWidget } from "@/components/chat/ChatWidget";
+import { ChatLauncher } from "@/components/chat/ChatLauncher";
 
 export default function ClientPathWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,8 +16,9 @@ export default function ClientPathWrapper({ children }: { children: React.ReactN
     <LenisProvider>
       <SiteHeader />
       {children}
-      {/* Public-only: the dashboard has its own, separate assistant. */}
-      <ChatWidget />
+      {/* Public-only: the dashboard has its own, separate assistant.
+          The launcher defers the widget's bundle until the visitor opens it. */}
+      <ChatLauncher />
     </LenisProvider>
   );
 }

@@ -41,6 +41,9 @@ export default function CareersPage() {
       data.append("position", form.position);
       data.append("message", form.message);
       if (resume) data.append("resume", resume);
+      // Honeypot: hidden from people, filled in by bots. The API drops the submission silently.
+      const trap = document.getElementById("website") as HTMLInputElement | null;
+      if (trap?.value) data.append("website", trap.value);
 
       const response = await fetch("/api/careers", { method: "POST", body: data });
       if (!response.ok) {
@@ -263,6 +266,11 @@ export default function CareersPage() {
                     className="glass-field archivo-font cursor-pointer file:mr-4 file:rounded-full file:border-0 file:bg-[var(--brand)] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white"
                   />
                 </Field>
+
+                <div className="hidden" aria-hidden="true">
+                  <label htmlFor="website">Website</label>
+                  <input id="website" name="website" tabIndex={-1} autoComplete="off" defaultValue="" />
+                </div>
 
                 <Field label="Message" htmlFor="message" required>
                   <textarea

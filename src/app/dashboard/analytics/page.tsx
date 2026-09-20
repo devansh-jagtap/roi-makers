@@ -1,8 +1,22 @@
 import { prisma } from '@/lib/prisma';
 import { requireProfile } from '@/lib/auth';
-import { ChartAreaInteractive } from '@/components/dashboard/ChartAreaInteractive';
-import { ChartPieLabelList } from '@/components/dashboard/ChartPieLabelList';
-import { ChartBarInteractive } from '@/components/dashboard/ChartBarInteractive';
+import dynamic from 'next/dynamic';
+
+// Recharts is the heaviest client dependency in the dashboard; loading the
+// three charts as their own chunk keeps it off every other dashboard page.
+const chartFallback = <div className="h-[300px] w-full animate-pulse rounded-2xl bg-black/5" />;
+const ChartAreaInteractive = dynamic(
+  () => import('@/components/dashboard/ChartAreaInteractive').then((m) => m.ChartAreaInteractive),
+  { loading: () => chartFallback },
+);
+const ChartPieLabelList = dynamic(
+  () => import('@/components/dashboard/ChartPieLabelList').then((m) => m.ChartPieLabelList),
+  { loading: () => chartFallback },
+);
+const ChartBarInteractive = dynamic(
+  () => import('@/components/dashboard/ChartBarInteractive').then((m) => m.ChartBarInteractive),
+  { loading: () => chartFallback },
+);
 import { Card, CardContent } from '@/components/ui/card';
 import { Trophy, TrendingUp, Users, Percent } from 'lucide-react';
 

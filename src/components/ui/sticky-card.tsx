@@ -144,6 +144,8 @@ const StickyCard002 = ({
                     src={card.image}
                     alt={card.alt || ""}
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
                 

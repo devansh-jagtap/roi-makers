@@ -10,9 +10,9 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
   const { id } = await params;
-  const body = await request.json();
+  const body = await request.json().catch(() => null);
 
-  if (!statuses.includes(body.status)) {
+  if (!body || !statuses.includes(body.status)) {
     return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
   }
 

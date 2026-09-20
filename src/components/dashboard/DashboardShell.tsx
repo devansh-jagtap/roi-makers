@@ -17,7 +17,13 @@ import {
   LogOut,
   Sparkles
 } from 'lucide-react';
-import { AssistantPanel } from './AssistantPanel';
+import dynamic from 'next/dynamic';
+
+// Loaded on first open: the panel carries the AI SDK and markdown renderer,
+// which the rest of the dashboard never needs.
+const AssistantPanel = dynamic(() => import('./AssistantPanel').then((m) => m.AssistantPanel), {
+  ssr: false,
+});
 
 type Profile = {
   id: string;
@@ -37,6 +43,12 @@ export function DashboardShell({
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+  // Once opened it stays mounted (hidden by its own transform) so the thread survives close/reopen.
+  const [assistantMounted, setAssistantMounted] = useState(false);
+  const openAssistant = (next: boolean) => {
+    setAssistantMounted(true);
+    setIsAssistantOpen(next);
+  };
   const pathname = usePathname();
 
   const navItems = [
@@ -105,7 +117,7 @@ export function DashboardShell({
           })}
           <button
             onClick={() => {
-              setIsAssistantOpen(true);
+              openAssistant(true);
               setIsMobileMenuOpen(false);
             }}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group text-sm font-medium ${
@@ -154,12 +166,14 @@ export function DashboardShell({
         </div>
       </main>
 
-      <AssistantPanel
-        open={isAssistantOpen}
-        onClose={() => setIsAssistantOpen(false)}
-        role={profile.role}
-        name={profile.name}
-      />
+      {assistantMounted && (
+        <AssistantPanel
+          open={isAssistantOpen}
+          onClose={() => setIsAssistantOpen(false)}
+          role={profile.role}
+          name={profile.name}
+        />
+      )}
     </div>
   );
 }

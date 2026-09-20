@@ -9,6 +9,8 @@ import { ChatMarkdown } from './ChatMarkdown';
 type Props = {
   /** Rendered only on the public site; the dashboard has its own assistant. */
   enabled?: boolean;
+  /** Start with the panel open — set by `ChatLauncher`, which mounts this on first click. */
+  initialOpen?: boolean;
 };
 
 const BOT_NAME = 'Remy';
@@ -61,11 +63,11 @@ function activeToolLabel(message: UIMessage): string | null {
   return null;
 }
 
-export function ChatWidget({ enabled = true }: Props) {
-  const [open, setOpen] = useState(false);
+export function ChatWidget({ enabled = true, initialOpen = false }: Props) {
+  const [open, setOpen] = useState(initialOpen);
   const [expanded, setExpanded] = useState(false);
   const [input, setInput] = useState('');
-  const [hasUnread, setHasUnread] = useState(true);
+  const [hasUnread, setHasUnread] = useState(!initialOpen);
   const scrollRef = useRef<HTMLDivElement>(null);
   // A ref, not state: StrictMode double-invokes effects in development, and a
   // state flag plus an abort-on-cleanup would cancel the only fetch that ran.

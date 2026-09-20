@@ -1,7 +1,37 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
+const MUTATING = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
+
+/**
+ * Cross-site request check for state-changing API calls.
+ *
+ * Browsers attach `Sec-Fetch-Site` / `Origin` to every cross-site POST, so a
+ * request that carries one of them from a foreign origin is a CSRF attempt.
+ * Requests with neither header (curl, server-to-server) are let through — they
+ * cannot carry a victim's cookies. Public form routes are covered too: they
+ * cost money (emails, model calls) and should only be reachable from our pages.
+ */
+function isCrossSite(request: NextRequest): boolean {
+  const fetchSite = request.headers.get('sec-fetch-site');
+  if (fetchSite && fetchSite !== 'same-origin' && fetchSite !== 'none') return true;
+
+  const origin = request.headers.get('origin');
+  if (!origin) return false;
+
+  const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host');
+  try {
+    return new URL(origin).host !== host;
+  } catch {
+    return true;
+  }
+}
+
 export async function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith('/api/') && MUTATING.has(request.method) && isCrossSite(request)) {
+    return NextResponse.json({ error: 'Cross-site requests are not allowed.' }, { status: 403 });
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   });
@@ -31,7 +61,19 @@ export async function middleware(request: NextRequest) {
   // supabase.auth.getUser(). A simple mistake could make it very hard to debug
   // issues with users being randomly logged out.
 
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // Edge-level gate for the dashboard: the layout's `requireProfile` remains
+  // the real check (role + active flag), this just short-circuits anonymous
+  // hits before any server component or Prisma query runs.
+  if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
+    const login = request.nextUrl.clone();
+    login.pathname = '/login';
+    login.search = '';
+    return NextResponse.redirect(login);
+  }
 
   return supabaseResponse;
 }

@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 import { PUBLIC_SESSION_COOKIE, loadUIHistory } from '@/lib/ai/memory';
+import { WINDOW, getClientIp, rateLimit, tooManyRequests } from '@/lib/rate-limit';
 
 /**
  * Replays the visitor's thread after a page reload.
@@ -9,7 +10,10 @@ import { PUBLIC_SESSION_COOKIE, loadUIHistory } from '@/lib/ai/memory';
  * visitor can never fetch someone else's transcript. Returns an empty list when
  * there is no cookie, no conversation, or the conversation has expired.
  */
-export async function GET() {
+export async function GET(request: Request) {
+  const limited = rateLimit(`chat-history:${getClientIp(request)}`, 30, WINDOW.MINUTE);
+  if (!limited.ok) return tooManyRequests(limited);
+
   try {
     const sessionId = (await cookies()).get(PUBLIC_SESSION_COOKIE)?.value;
     if (!sessionId) return Response.json({ messages: [] });

@@ -8,7 +8,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
   const { id } = await params;
-  const { profileId } = await request.json();
+  const body = await request.json().catch(() => null);
+  const profileId: unknown = body?.profileId;
+  if (profileId !== null && typeof profileId !== 'string') {
+    return NextResponse.json({ error: 'Invalid team member.' }, { status: 400 });
+  }
 
   // Validate the lead exists
   const lead = await prisma.lead.findUnique({ where: { id } });

@@ -11,7 +11,9 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const { id } = await params;
   
   try {
-    const { action, role } = await request.json();
+    const body = await request.json().catch(() => null);
+    if (!body || typeof body !== 'object') return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
+    const { action, role } = body as { action?: unknown; role?: unknown };
     
     const targetProfile = await prisma.profile.findUnique({ where: { id } });
     if (!targetProfile) {

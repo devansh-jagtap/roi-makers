@@ -3,6 +3,23 @@ import * as XLSX from 'xlsx';
 import { prisma } from '@/lib/prisma';
 import { requireApiProfile } from '@/lib/auth';
 
+/**
+ * Neutralise spreadsheet formula injection. Every exported cell is visitor-
+ * supplied text (lead names, messages, subscriber emails); a value starting
+ * with `=`, `+`, `-`, `@` or a tab/CR would otherwise be evaluated as a formula
+ * when the staff member opens the file in Excel or Sheets.
+ */
+function safeCell(value: unknown): unknown {
+  if (typeof value !== 'string') return value;
+  return /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+}
+
+function safeRows(rows: Record<string, unknown>[]): Record<string, unknown>[] {
+  return rows.map((row) =>
+    Object.fromEntries(Object.entries(row).map(([key, value]) => [key, safeCell(value)])),
+  );
+}
+
 export async function GET(request: Request, { params }: { params: Promise<{ kind: string }> }) { 
   const auth = await requireApiProfile(); 
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status }); 
@@ -83,14 +100,16 @@ export async function GET(request: Request, { params }: { params: Promise<{ kind
     }));
   }
   
-  const sheet = XLSX.utils.json_to_sheet(rows); 
+  const sheet = XLSX.utils.json_to_sheet(safeRows(rows)); 
   const book = XLSX.utils.book_new(); 
   XLSX.utils.book_append_sheet(book, sheet, kind); 
   const data = format === 'csv' ? XLSX.utils.sheet_to_csv(sheet) : XLSX.write(book, { type: 'buffer', bookType: 'xlsx' }); 
   return new NextResponse(data, {
     headers: {
       'content-type': format === 'csv' ? 'text/csv; charset=utf-8' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'content-disposition': `attachment; filename="roi-makers-${kind}.${format}"`
+      'content-disposition': `attachment; filename="roi-makers-${kind}.${format}"`,
+      'cache-control': 'private, no-store',
+      'x-content-type-options': 'nosniff',
     }
   }); 
 }

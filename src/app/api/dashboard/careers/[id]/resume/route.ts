@@ -30,7 +30,10 @@ export async function GET(
 
   // Decode base64 to buffer
   const fileBuffer = Buffer.from(application.resumeData, 'base64');
-  const filename = application.resumeName || 'resume.pdf';
+  // The stored name came from the applicant: strip anything that could break
+  // out of the quoted Content-Disposition value or inject a header.
+  const filename =
+    (application.resumeName || 'resume.pdf').replace(/[\r\n"\\]/g, '_').slice(0, 120) || 'resume.pdf';
 
   const dispositionType = isDownload ? 'attachment' : 'inline';
   const encodedFilename = encodeURIComponent(filename);
@@ -40,7 +43,10 @@ export async function GET(
       'Content-Type': 'application/pdf',
       'Content-Disposition': `${dispositionType}; filename="${filename}"; filename*=UTF-8''${encodedFilename}`,
       'Content-Length': String(fileBuffer.length),
-      'Cache-Control': 'private, max-age=3600',
+      'Cache-Control': 'private, no-store',
+      'X-Content-Type-Options': 'nosniff',
+      // Uploaded PDFs are untrusted; a strict CSP stops any embedded script from running in our origin.
+      'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; sandbox",
     },
   });
 }

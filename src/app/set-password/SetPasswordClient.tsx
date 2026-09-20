@@ -21,8 +21,8 @@ export function SetPasswordClient() {
       setError('Passwords do not match. Please try again.');
       return;
     }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long.');
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long.');
       return;
     }
 
@@ -76,7 +76,7 @@ export function SetPasswordClient() {
               value={password} 
               onChange={(e) => setPassword(e.target.value)} 
               required 
-              minLength={6}
+              minLength={8}
             />
           </div>
           
@@ -92,7 +92,7 @@ export function SetPasswordClient() {
                 value={confirmPassword} 
                 onChange={(e) => setConfirmPassword(e.target.value)} 
                 required 
-                minLength={6}
+                minLength={8}
               />
               {isMatching && (
                 <CheckCircle2 size={18} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-green-500" />
