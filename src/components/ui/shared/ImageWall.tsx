@@ -56,9 +56,9 @@ const ImageWall: React.FC<ImageWallProps> = ({
             <Image
               src={`/images/stack/${i}.webp`}
               alt=""
-              width={600}
-              height={360}
-              style={{ objectFit: "cover", width: "100%", height: "100%" }}
+              fill
+              sizes="(min-width: 768px) 40vw, 42vw"
+              className="object-cover"
               priority={i <= 2}
             />
           </div>
@@ -66,9 +66,9 @@ const ImageWall: React.FC<ImageWallProps> = ({
             <Image
               src={`/images/stack/${i + 1}.webp`}
               alt=""
-              width={600}
-              height={360}
-              style={{ objectFit: "cover", width: "100%", height: "100%" }}
+              fill
+              sizes="(min-width: 768px) 40vw, 42vw"
+              className="object-cover"
               priority={i <= 2}
             />
           </div>

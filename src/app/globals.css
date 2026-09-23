@@ -2659,3 +2659,21 @@ html.dark [data-theme="dashboard"] aside nav button[class*="bg-white/10"] {
   padding: 0.32rem 0.7rem;
 }
 .creator-tag:hover .creator-handle { transform: translate(-50%, -2px); border-color: rgb(var(--brand-rgb) / 45%); }
+
+/* ------------------------------------------------------------------ */
+/* Hero showreel as a native <video>                                   */
+/* The `.hx-video` rule above over-sizes and scales the YouTube iframe */
+/* by 1.35 purely to push the player's UI bars out of frame. A native  */
+/* file has no chrome to hide, so it simply covers the stage.          */
+/* ------------------------------------------------------------------ */
+.hx-video.hx-video-file {
+  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  object-fit: cover;
+  object-position: center;
+  background: #0b2a3d;
+}

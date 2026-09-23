@@ -64,7 +64,7 @@ const MenuPage = () => {
         showHero={showHero}
         showContent={showContent}
         onLoadingFinish={() => setShowContent(true)}
-        videoSrc="https://www.youtube.com/embed/aYSp5qUTC54?autoplay=1&mute=1&loop=1&playlist=aYSp5qUTC54&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1&color=white"
+        videoSrc="/videos/showreel-1080.mp4"
       />
       {showLoading && <LoadingOverlay onFinish={() => setShowLoading(false)} />}
       {showContent && (

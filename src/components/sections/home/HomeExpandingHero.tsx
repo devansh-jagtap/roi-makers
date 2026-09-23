@@ -13,8 +13,31 @@ interface HeroProps {
   showHero: boolean;
   showContent: boolean;
   onLoadingFinish: () => void;
-  /** The showreel shown inside the capsule. A YouTube embed URL. */
+  /** The showreel shown inside the capsule: a self-hosted MP4 path (default)
+   *  or, for backwards compatibility, a YouTube embed URL. */
   videoSrc?: string;
+}
+
+/**
+ * The self-hosted showreel. Encoded from the original upload with no audio
+ * track (the clip is always muted), `+faststart` so playback begins before
+ * the file has finished downloading, and a poster frame that paints instantly.
+ * WebM/VP9 is offered first for the browsers that take it (about a third
+ * smaller); phones get a 720p H.264 that is half the weight of the 1080p one.
+ */
+const LOCAL_SHOWREEL = {
+  mp4: "/videos/showreel-1080.mp4",
+  webm: "/videos/showreel-1080.webm",
+  mobileMp4: "/videos/showreel-720.mp4",
+  poster: "/videos/showreel-poster.webp",
+};
+
+function isYouTube(src: string): boolean {
+  try {
+    return /youtube|youtu\.be/.test(new URL(src).hostname);
+  } catch {
+    return false;
+  }
 }
 
 /** Force a YouTube embed into a silent, chromeless, looping background clip. */
@@ -52,9 +75,9 @@ function toBackgroundEmbed(src: string): string {
  *  indistinguishable from the live footage — and unlike a second player it is
  *  rasterised once rather than on every scrubbed frame. */
 function posterFor(embed: string): string {
+  if (!isYouTube(embed)) return LOCAL_SHOWREEL.poster;
   try {
     const url = new URL(embed);
-    if (!/youtube|youtu\.be/.test(url.hostname)) return "";
     const id = url.pathname.split("/").pop();
     return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : "";
   } catch {
@@ -84,8 +107,7 @@ function slotInsetOf(slot: HTMLElement, host: HTMLElement) {
   };
 }
 
-const FALLBACK_EMBED =
-  "https://www.youtube-nocookie.com/embed/aYSp5qUTC54?autoplay=1&mute=1&loop=1&playlist=aYSp5qUTC54&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1";
+const FALLBACK_EMBED = LOCAL_SHOWREEL.mp4;
 
 const marqueeItems = [
   {
@@ -121,7 +143,9 @@ const marqueeItems = [
  * below it exists and the pin measures correctly.
  */
 export default function HomeExpandingHero({ showLoading, showHero, showContent, onLoadingFinish, videoSrc }: HeroProps) {
-  const embed = toBackgroundEmbed(videoSrc || FALLBACK_EMBED);
+  const source = videoSrc || FALLBACK_EMBED;
+  const useFile = !isYouTube(source);
+  const embed = useFile ? source : toBackgroundEmbed(source);
   const poster = posterFor(embed);
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -289,16 +313,44 @@ export default function HomeExpandingHero({ showLoading, showHero, showContent, 
         {/* The showreel, masked to the inline slot until you scroll. */}
         <div ref={stageRef} className="hx-stage">
           <div className="hx-video-frame" aria-hidden>
-            <iframe
-              className="hx-video"
-              src={embed}
-              title="ROI Makers showreel"
-              allow="autoplay; encrypted-media; picture-in-picture"
-              loading="eager"
-              frameBorder={0}
-            />
-            {/* Blocks clicks so the YouTube UI never appears. */}
-            <span className="hx-video-guard" />
+            {useFile ? (
+              /* Native, muted, inline autoplay: no third-party player script,
+                 no iframe, and the poster is on screen before the first byte
+                 of video arrives. */
+              <video
+                className="hx-video hx-video-file"
+                poster={poster}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                disablePictureInPicture
+                disableRemotePlayback
+                tabIndex={-1}
+              >
+                {embed === LOCAL_SHOWREEL.mp4 && (
+                  <>
+                    <source src={LOCAL_SHOWREEL.mobileMp4} type="video/mp4" media="(max-width: 767px)" />
+                    <source src={LOCAL_SHOWREEL.webm} type="video/webm" />
+                  </>
+                )}
+                <source src={embed} type="video/mp4" />
+              </video>
+            ) : (
+              <>
+                <iframe
+                  className="hx-video"
+                  src={embed}
+                  title="ROI Makers showreel"
+                  allow="autoplay; encrypted-media; picture-in-picture"
+                  loading="eager"
+                  frameBorder={0}
+                />
+                {/* Blocks clicks so the YouTube UI never appears. */}
+                <span className="hx-video-guard" />
+              </>
+            )}
           </div>
           <div ref={captionRef} className="hx-caption">
             <p className="hx-caption-kicker">Showreel</p>
